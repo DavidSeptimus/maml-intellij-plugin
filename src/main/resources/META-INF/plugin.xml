@@ -5,8 +5,12 @@
     <vendor>David Septimus</vendor>
 
     <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.json</depends>
 
-    <resource-bundle>messages.MamlBundle</resource-bundle>
+
+
+
+  <resource-bundle>messages.MamlBundle</resource-bundle>
 
   <extensions defaultExtensionNs="com.intellij">
     <fileType implementationClass="com.davidseptimus.maml.MamlFileType"
@@ -14,6 +18,8 @@
               order="first"
               name="MAML"
               extensions="maml"/>
+    <lang.quoteHandler language="MAML" implementationClass="com.davidseptimus.maml.MamlQuoteHandler"/>
+    <lang.braceMatcher language="MAML" implementationClass="com.davidseptimus.maml.MamlBraceMatcher"/>
     <colorSettingsPage implementation="com.davidseptimus.maml.highlighting.MamlColorSettingsPage"/>
 
     <!-- Settings -->
@@ -25,6 +31,41 @@
                              bundle="messages.MamlBundle"/>
   </extensions>
 
+  <extensions defaultExtensionNs="com.intellij.json">
+    <jsonSchemaEnabler implementation="com.davidseptimus.maml.json.MamlJsonSchemaEnabler"/>
+    <jsonLikePsiWalkerFactory implementation="com.davidseptimus.maml.json.MamlJsonLikePsiWalkerFactory"/>
+  </extensions>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <!-- JSON Schema-based completion and documentation -->
+    <completion.contributor language="MAML"
+                            implementationClass="com.davidseptimus.maml.json.MamlJsonSchemaCompletionContributor"/>
+    <lang.documentationProvider language="MAML"
+                                implementationClass="com.davidseptimus.maml.json.MamlJsonSchemaDocumentationProvider"/>
+
+    <!-- JSON Schema validation -->
+    <localInspection language="MAML"
+                     groupKey="inspection.schema.compliance.group.name"
+                     groupBundle="messages.MamlBundle"
+                     key="inspection.schema.compliance.display.name"
+                     bundle="messages.MamlBundle"
+                     shortName="MamlSchemaCompliance"
+                     enabledByDefault="true"
+                     level="ERROR"
+                     implementationClass="com.davidseptimus.maml.inspections.MamlSchemaComplianceInspection"/>
+
+    <!-- Duplicate keys detection -->
+    <localInspection language="MAML"
+                     groupKey="inspection.duplicate.keys.group.name"
+                     groupBundle="messages.MamlBundle"
+                     key="inspection.duplicate.keys.display.name"
+                     bundle="messages.MamlBundle"
+                     shortName="MamlDuplicateKeys"
+                     enabledByDefault="true"
+                     level="WARNING"
+                     implementationClass="com.davidseptimus.maml.inspections.MamlDuplicateKeysInspection"/>
+  </extensions>
+
   <extensions defaultExtensionNs="com.intellij.lang">
       <parserDefinition language="MAML"
                         implementationClass="com.davidseptimus.maml.MamlParserDefinition"/>
@@ -34,5 +75,7 @@
                implementationClass="com.davidseptimus.maml.MamlCommenter"/>
     <foldingBuilder language="MAML"
                     implementationClass="com.davidseptimus.maml.MamlFoldingBuilder"/>
+    <namesValidator language="MAML"
+                    implementationClass="com.davidseptimus.maml.MamlNamesValidator"/>
   </extensions>
 </idea-plugin>

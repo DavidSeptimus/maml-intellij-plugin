@@ -20,18 +20,46 @@ value ::= object | array | STRING | MULTILINE_STRING | NUMBER | TRUE | FALSE | N
   mixin="com.davidseptimus.maml.psi.MamlValueMixin"
 }
 
-object ::= LBRACE members? RBRACE
+// Object with error recovery - pin after opening brace
+object ::= LBRACE members? RBRACE {
+  pin=1
+}
 
 // Members can be separated by commas or newlines (which are in whitespace)
 // The separator is optional - newlines in whitespace act as implicit separators
-members ::= key_value (COMMA? key_value)* COMMA?
+members ::= key_value_recoverable (COMMA? key_value_recoverable)* COMMA?
 
-key_value ::= key COLON value
+// Wrap key_value with recovery to continue parsing after errors
+private key_value_recoverable ::= key_value {
+  recoverWhile=key_value_recover
+}
 
-key ::= STRING | IDENTIFIER
+// Key-value pair - pin after seeing the colon
+key_value ::= key COLON value {
+  pin=2
+}
 
-array ::= LBRACKET items? RBRACKET
+// Recovery: skip tokens until we see what could be the next key, end of object, comma, or EOF
+private key_value_recover ::= !(RBRACE | STRING | IDENTIFIER | COMMA | <<eof>>)
+
+key ::= STRING | IDENTIFIER {
+  implements="com.davidseptimus.maml.MamlNamedElement"
+  mixin="com.davidseptimus.maml.psi.MamlKeyMixin"
+}
+
+// Array with error recovery - pin after opening bracket
+array ::= LBRACKET items? RBRACKET {
+  pin=1
+}
 
 // Items can be separated by commas or newlines (which are in whitespace)
 // The separator is optional - newlines in whitespace act as implicit separators
-items ::= value (COMMA? value)* COMMA?
+items ::= value_recoverable (COMMA? value_recoverable)* COMMA?
+
+// Wrap value with recovery to continue parsing after errors in arrays
+private value_recoverable ::= value {
+  recoverWhile=array_value_recover
+}
+
+// Recovery: skip until we see something that could start a value, end of array, comma, or EOF
+private array_value_recover ::= !(RBRACKET | LBRACE | LBRACKET | STRING | MULTILINE_STRING | NUMBER | TRUE | FALSE | NULL | IDENTIFIER | COMMENT | COMMA | <<eof>>)

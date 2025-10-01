@@ -1,0 +1,42 @@
+<html>
+<body>
+<p>
+    Reports duplicate keys within MAML objects.
+</p>
+<p>
+    According to the JSON specification, object keys must be unique. While some parsers may accept duplicate keys,
+    the behavior is undefined and typically results in the last occurrence overwriting previous values.
+    This inspection helps catch these issues early.
+</p>
+<p>
+    <b>Example:</b>
+</p>
+<pre><code>{
+  name: "John",
+  age: 30,
+  name: "Jane"  // Duplicate key 'name'
+}</code></pre>
+<!-- tooltip end -->
+<p>
+    <b>Why duplicate keys are problematic:</b>
+</p>
+<ul>
+    <li><b>Undefined behavior</b> - the JSON specification does not define how parsers should handle duplicates</li>
+    <li><b>Data loss</b> - most parsers silently discard all but the last value, losing earlier definitions</li>
+    <li><b>Confusion</b> - readers may not realize which value is actually used</li>
+    <li><b>Maintenance issues</b> - duplicate keys often indicate copy-paste errors or refactoring mistakes</li>
+</ul>
+<p>
+    <b>How to fix:</b>
+</p>
+<ul>
+    <li>Remove or rename duplicate keys to make them unique</li>
+    <li>If multiple values are intended, use an array instead</li>
+    <li>Merge the duplicate entries if they represent the same logical property</li>
+</ul>
+<p>
+    <b>Note:</b> This inspection compares the actual key names after removing quotes, so both <code>"name"</code>
+    and <code>name</code> (if identifiers are allowed) are considered the same key.
+</p>
+</body>
+</html>

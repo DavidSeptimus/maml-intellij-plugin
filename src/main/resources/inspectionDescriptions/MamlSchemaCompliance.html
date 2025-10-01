@@ -1,0 +1,45 @@
+<html>
+<body>
+<p>
+    Reports MAML values that do not comply with their associated JSON schema.
+</p>
+<p>
+    This inspection validates MAML files against JSON schemas and highlights type mismatches, missing required
+    properties,
+    invalid enum values, pattern violations, min/max constraint violations, and other schema compliance issues.
+</p>
+<p>
+    <b>Example:</b>
+</p>
+<pre><code>{
+  name: "John",
+  age: "thirty"  // Type mismatch: expected number, got string
+}</code></pre>
+<!-- tooltip end -->
+<p>
+    JSON schemas can be associated with MAML files through:
+</p>
+<ul>
+    <li>JSON Schema mappings in <a
+            href="settings://Languages%20%26%20Frameworks/Schemas%20and%20DTDs/JSON%20Schema%20Mappings">Settings |
+        Languages & Frameworks | Schemas and DTDs | JSON Schema Mappings</a></li>
+    <li>Schema URL in file comments</li>
+    <li><code>$schema</code> property in the MAML file</li>
+</ul>
+<p>
+    The inspection supports all JSON Schema draft versions and provides comprehensive validation including:
+</p>
+<ul>
+    <li><b>Type validation</b> - ensures values match expected types (string, number, boolean, object, array, null)</li>
+    <li><b>Required properties</b> - verifies all required object properties are present</li>
+    <li><b>Enum validation</b> - checks values are from allowed enum values</li>
+    <li><b>Pattern matching</b> - validates strings against regex patterns</li>
+    <li><b>Numeric constraints</b> - enforces minimum, maximum, multipleOf</li>
+    <li><b>String length</b> - checks minLength and maxLength</li>
+    <li><b>Array constraints</b> - validates minItems, maxItems, uniqueItems</li>
+    <li><b>Additional properties</b> - enforces additionalProperties restrictions</li>
+    <li><b>Property dependencies</b> - validates property dependencies</li>
+    <li><b>Schema composition</b> - supports allOf, anyOf, oneOf, not</li>
+</ul>
+</body>
+</html>

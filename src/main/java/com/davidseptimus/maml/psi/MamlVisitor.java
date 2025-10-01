@@ -4,6 +4,7 @@ package com.davidseptimus.maml.psi;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
+import com.davidseptimus.maml.MamlNamedElement;
 
 public class MamlVisitor extends PsiElementVisitor {
 
@@ -16,7 +17,7 @@ public class MamlVisitor extends PsiElementVisitor {
   }
 
   public void visitKey(@NotNull MamlKey o) {
-    visitPsiElement(o);
+    visitNamedElement(o);
   }
 
   public void visitKeyValue(@NotNull MamlKeyValue o) {
@@ -33,6 +34,10 @@ public class MamlVisitor extends PsiElementVisitor {
 
   public void visitValue(@NotNull MamlValue o) {
     visitValueElement(o);
+  }
+
+  public void visitNamedElement(@NotNull MamlNamedElement o) {
+    visitPsiElement(o);
   }
 
   public void visitValueElement(@NotNull MamlValueElement o) {

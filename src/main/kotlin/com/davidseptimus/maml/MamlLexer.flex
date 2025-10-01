@@ -73,8 +73,14 @@ COMMENT=#[^\r\n]*
   // Multiline string (must come before regular string)
   \"\"\"({ML_CHAR})*\"\"\" { return MULTILINE_STRING; }
 
+  // Unterminated multiline string (stops at EOF)
+  \"\"\"({ML_CHAR})* { return MULTILINE_STRING; }
+
   // Regular string
   \"({STRING_CHAR}|{ESCAPE_SEQ})*\" { return STRING; }
+
+  // Unterminated string (stops at newline or EOF instead of consuming rest of file)
+  \"({STRING_CHAR}|{ESCAPE_SEQ})* { return STRING; }
 
   // Number
   {NUMBER}                 { return NUMBER; }

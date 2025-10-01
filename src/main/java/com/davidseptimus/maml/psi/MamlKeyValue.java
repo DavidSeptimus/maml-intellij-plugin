@@ -10,7 +10,7 @@ public interface MamlKeyValue extends PsiElement {
   @NotNull
   MamlKey getKey();
 
-  @NotNull
+  @Nullable
   MamlValue getValue();
 
 }

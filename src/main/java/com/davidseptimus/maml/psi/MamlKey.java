@@ -4,7 +4,8 @@ package com.davidseptimus.maml.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.davidseptimus.maml.MamlNamedElement;
 
-public interface MamlKey extends PsiElement {
+public interface MamlKey extends MamlNamedElement {
 
 }

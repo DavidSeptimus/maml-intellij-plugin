@@ -8,10 +8,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.davidseptimus.maml.psi.MamlTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import com.davidseptimus.maml.psi.MamlKeyMixin;
 import com.davidseptimus.maml.psi.*;
 
-public class MamlKeyImpl extends ASTWrapperPsiElement implements MamlKey {
+public class MamlKeyImpl extends MamlKeyMixin implements MamlKey {
 
   public MamlKeyImpl(@NotNull ASTNode node) {
     super(node);

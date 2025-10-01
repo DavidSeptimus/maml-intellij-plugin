@@ -12,10 +12,6 @@
           </set>
         </option>
       </GradleProjectSettings>
-      <GradleProjectSettings>
-        <option name="externalProjectPath" value="$PROJECT_DIR$/src/gen" />
-        <option name="gradleJvm" value="temurin-21 (2)" />
-      </GradleProjectSettings>
     </option>
   </component>
 </project>

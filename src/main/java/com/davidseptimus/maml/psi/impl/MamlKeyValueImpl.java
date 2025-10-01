@@ -34,9 +34,9 @@ public class MamlKeyValueImpl extends ASTWrapperPsiElement implements MamlKeyVal
   }
 
   @Override
-  @NotNull
+  @Nullable
   public MamlValue getValue() {
-    return findNotNullChildByClass(MamlValue.class);
+    return findChildByClass(MamlValue.class);
   }
 
 }

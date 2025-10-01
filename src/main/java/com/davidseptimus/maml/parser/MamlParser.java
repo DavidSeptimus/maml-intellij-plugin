@@ -40,13 +40,14 @@ public class MamlParser implements PsiParser, LightPsiParser {
   public static boolean array(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "array")) return false;
     if (!nextTokenIs(b, LBRACKET)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, ARRAY, null);
     r = consumeToken(b, LBRACKET);
-    r = r && array_1(b, l + 1);
-    r = r && consumeToken(b, RBRACKET);
-    exit_section_(b, m, ARRAY, r);
-    return r;
+    p = r; // pin = 1
+    r = r && report_error_(b, array_1(b, l + 1));
+    r = p && consumeToken(b, RBRACKET) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   // items?
@@ -57,19 +58,52 @@ public class MamlParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // value (COMMA? value)* COMMA?
+  // !(RBRACKET | LBRACE | LBRACKET | STRING | MULTILINE_STRING | NUMBER | TRUE | FALSE | NULL | IDENTIFIER | COMMENT | COMMA | <<eof>>)
+  static boolean array_value_recover(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "array_value_recover")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !array_value_recover_0(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // RBRACKET | LBRACE | LBRACKET | STRING | MULTILINE_STRING | NUMBER | TRUE | FALSE | NULL | IDENTIFIER | COMMENT | COMMA | <<eof>>
+  private static boolean array_value_recover_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "array_value_recover_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, RBRACKET);
+    if (!r) r = consumeToken(b, LBRACE);
+    if (!r) r = consumeToken(b, LBRACKET);
+    if (!r) r = consumeToken(b, STRING);
+    if (!r) r = consumeToken(b, MULTILINE_STRING);
+    if (!r) r = consumeToken(b, NUMBER);
+    if (!r) r = consumeToken(b, TRUE);
+    if (!r) r = consumeToken(b, FALSE);
+    if (!r) r = consumeToken(b, NULL);
+    if (!r) r = consumeToken(b, IDENTIFIER);
+    if (!r) r = consumeToken(b, COMMENT);
+    if (!r) r = consumeToken(b, COMMA);
+    if (!r) r = eof(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // value_recoverable (COMMA? value_recoverable)* COMMA?
   public static boolean items(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "items")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, ITEMS, "<items>");
-    r = value(b, l + 1);
+    r = value_recoverable(b, l + 1);
     r = r && items_1(b, l + 1);
     r = r && items_2(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
 
-  // (COMMA? value)*
+  // (COMMA? value_recoverable)*
   private static boolean items_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "items_1")) return false;
     while (true) {
@@ -80,13 +114,13 @@ public class MamlParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // COMMA? value
+  // COMMA? value_recoverable
   private static boolean items_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "items_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = items_1_0_0(b, l + 1);
-    r = r && value(b, l + 1);
+    r = r && value_recoverable(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -123,12 +157,49 @@ public class MamlParser implements PsiParser, LightPsiParser {
   public static boolean key_value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "key_value")) return false;
     if (!nextTokenIs(b, "<key value>", IDENTIFIER, STRING)) return false;
-    boolean r;
+    boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, KEY_VALUE, "<key value>");
     r = key(b, l + 1);
     r = r && consumeToken(b, COLON);
+    p = r; // pin = 2
     r = r && value(b, l + 1);
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  /* ********************************************************** */
+  // !(RBRACE | STRING | IDENTIFIER | COMMA | <<eof>>)
+  static boolean key_value_recover(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "key_value_recover")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !key_value_recover_0(b, l + 1);
     exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // RBRACE | STRING | IDENTIFIER | COMMA | <<eof>>
+  private static boolean key_value_recover_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "key_value_recover_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, RBRACE);
+    if (!r) r = consumeToken(b, STRING);
+    if (!r) r = consumeToken(b, IDENTIFIER);
+    if (!r) r = consumeToken(b, COMMA);
+    if (!r) r = eof(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // key_value
+  static boolean key_value_recoverable(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "key_value_recoverable")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_);
+    r = key_value(b, l + 1);
+    exit_section_(b, l, m, r, false, MamlParser::key_value_recover);
     return r;
   }
 
@@ -141,20 +212,20 @@ public class MamlParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // key_value (COMMA? key_value)* COMMA?
+  // key_value_recoverable (COMMA? key_value_recoverable)* COMMA?
   public static boolean members(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "members")) return false;
     if (!nextTokenIs(b, "<members>", IDENTIFIER, STRING)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, MEMBERS, "<members>");
-    r = key_value(b, l + 1);
+    r = key_value_recoverable(b, l + 1);
     r = r && members_1(b, l + 1);
     r = r && members_2(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
 
-  // (COMMA? key_value)*
+  // (COMMA? key_value_recoverable)*
   private static boolean members_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "members_1")) return false;
     while (true) {
@@ -165,13 +236,13 @@ public class MamlParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // COMMA? key_value
+  // COMMA? key_value_recoverable
   private static boolean members_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "members_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = members_1_0_0(b, l + 1);
-    r = r && key_value(b, l + 1);
+    r = r && key_value_recoverable(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -195,13 +266,14 @@ public class MamlParser implements PsiParser, LightPsiParser {
   public static boolean object(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "object")) return false;
     if (!nextTokenIs(b, LBRACE)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, OBJECT, null);
     r = consumeToken(b, LBRACE);
-    r = r && object_1(b, l + 1);
-    r = r && consumeToken(b, RBRACE);
-    exit_section_(b, m, OBJECT, r);
-    return r;
+    p = r; // pin = 1
+    r = r && report_error_(b, object_1(b, l + 1));
+    r = p && consumeToken(b, RBRACE) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   // members?
@@ -227,6 +299,17 @@ public class MamlParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, NULL);
     if (!r) r = consumeToken(b, COMMENT);
     exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // value
+  static boolean value_recoverable(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "value_recoverable")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_);
+    r = value(b, l + 1);
+    exit_section_(b, l, m, r, false, MamlParser::array_value_recover);
     return r;
   }
 

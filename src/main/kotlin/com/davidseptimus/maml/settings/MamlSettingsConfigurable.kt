@@ -25,6 +25,8 @@ class MamlSettingsConfigurable : Configurable {
             .addComponent(JBLabel("<html><b>${MamlBundle.message("settings.codeFolding")}</b></html>"))
             .addLabeledComponent(MamlBundle.message("settings.commentPreviewLength"), commentLengthField)
             .addLabeledComponent(MamlBundle.message("settings.stringPreviewLength"), stringLengthField)
+            .addVerticalGap(15)
+            .addComponent(JBLabel("<html><i>Configure JSON Schema mappings in Settings → Languages & Frameworks → Schemas and DTDs → JSON Schema Mappings</i></html>"))
             .addComponentFillVertically(JPanel(), 0)
             .panel
 
