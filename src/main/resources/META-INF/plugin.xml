@@ -1,15 +1,38 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <id>org.jetbrains.plugins.template</id>
-    <name>IntelliJ Platform Plugin Template</name>
-    <vendor>JetBrains</vendor>
+    <id>com.davidseptimus.maml</id>
+    <name>MAML</name>
+    <vendor>David Septimus</vendor>
 
     <depends>com.intellij.modules.platform</depends>
 
-    <resource-bundle>messages.MyBundle</resource-bundle>
+    <resource-bundle>messages.MamlBundle</resource-bundle>
 
-    <extensions defaultExtensionNs="com.intellij">
-        <toolWindow factoryClass="org.jetbrains.plugins.template.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
-        <postStartupActivity implementation="org.jetbrains.plugins.template.startup.MyProjectActivity" />
-    </extensions>
+  <extensions defaultExtensionNs="com.intellij">
+    <fileType implementationClass="com.davidseptimus.maml.MamlFileType"
+              language="MAML"
+              order="first"
+              name="MAML"
+              extensions="maml"/>
+    <colorSettingsPage implementation="com.davidseptimus.maml.highlighting.MamlColorSettingsPage"/>
+
+    <!-- Settings -->
+    <applicationService serviceImplementation="com.davidseptimus.maml.settings.MamlSettings"/>
+    <applicationConfigurable parentId="language"
+                             instance="com.davidseptimus.maml.settings.MamlSettingsConfigurable"
+                             id="com.davidseptimus.maml.settings.MamlSettingsConfigurable"
+                             key="settings.displayName"
+                             bundle="messages.MamlBundle"/>
+  </extensions>
+
+  <extensions defaultExtensionNs="com.intellij.lang">
+      <parserDefinition language="MAML"
+                        implementationClass="com.davidseptimus.maml.MamlParserDefinition"/>
+      <syntaxHighlighterFactory language="MAML"
+                                implementationClass="com.davidseptimus.maml.highlighting.MamlSyntaxHighlighterFactory"/>
+    <commenter language="MAML"
+               implementationClass="com.davidseptimus.maml.MamlCommenter"/>
+    <foldingBuilder language="MAML"
+                    implementationClass="com.davidseptimus.maml.MamlFoldingBuilder"/>
+  </extensions>
 </idea-plugin>

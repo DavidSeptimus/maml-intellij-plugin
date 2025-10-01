@@ -1,0 +1,37 @@
+{
+  parserClass="com.davidseptimus.maml.parser.MamlParser"
+  parserUtilClass="com.davidseptimus.maml.parser.MamlParserUtil"
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+  psiClassPrefix="Maml"
+  psiImplClassSuffix="Impl"
+  psiPackage="com.davidseptimus.maml.psi"
+  psiImplPackage="com.davidseptimus.maml.psi.impl"
+  elementTypeHolderClass="com.davidseptimus.maml.psi.MamlTypes"
+  elementTypeClass="com.davidseptimus.maml.psi.MamlElementType"
+  tokenTypeClass="com.davidseptimus.maml.psi.MamlTokenType"
+}
+
+// File can be empty or contain a single value
+// Whitespace and comments are automatically handled by Grammar-Kit
+mamlFile ::= value?
+
+value ::= object | array | STRING | MULTILINE_STRING | NUMBER | TRUE | FALSE | NULL | COMMENT {
+  implements="com.davidseptimus.maml.psi.MamlValueElement"
+  mixin="com.davidseptimus.maml.psi.MamlValueMixin"
+}
+
+object ::= LBRACE members? RBRACE
+
+// Members can be separated by commas or newlines (which are in whitespace)
+// The separator is optional - newlines in whitespace act as implicit separators
+members ::= key_value (COMMA? key_value)* COMMA?
+
+key_value ::= key COLON value
+
+key ::= STRING | IDENTIFIER
+
+array ::= LBRACKET items? RBRACKET
+
+// Items can be separated by commas or newlines (which are in whitespace)
+// The separator is optional - newlines in whitespace act as implicit separators
+items ::= value (COMMA? value)* COMMA?
