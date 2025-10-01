@@ -50,6 +50,15 @@ class MamlColorSettingsPage : ColorSettingsPage {
           tags: ["development", "testing", "production"],
           ports: [8080, 8443, 9000],
 
+          # Strings with escape sequences
+          message: "Hello\nWorld\t!",
+          path: "C:\\Program Files\\App",
+          quote: "He said \"Hello\"",
+          unicode: "Star: \u2605",
+
+          # Invalid escape sequences (highlighted as errors)
+          invalid: "Bad\xescape",
+
           # Multiline string
           description: ""${'"'}
             This is a multiline string
@@ -64,7 +73,6 @@ class MamlColorSettingsPage : ColorSettingsPage {
             null
           ]
         }
-        \bad
     """.trimIndent()
 
     override fun getAdditionalHighlightingTagToDescriptorMap(): Map<String, TextAttributesKey>? = null
@@ -72,15 +80,30 @@ class MamlColorSettingsPage : ColorSettingsPage {
 }
 
 private val DESCRIPTORS = arrayOf(
-    AttributesDescriptor("Braces", MamlTokenAttributes.BRACES),
-    AttributesDescriptor("Brackets", MamlTokenAttributes.BRACKETS),
-    AttributesDescriptor("Comma", MamlTokenAttributes.COMMA),
-    AttributesDescriptor("Colon", MamlTokenAttributes.COLON),
-    AttributesDescriptor("String", MamlTokenAttributes.STRING),
-    AttributesDescriptor("Multiline string", MamlTokenAttributes.MULTILINE_STRING),
-    AttributesDescriptor("Number", MamlTokenAttributes.NUMBER),
-    AttributesDescriptor("Keyword", MamlTokenAttributes.KEYWORD),
-    AttributesDescriptor("Identifier", MamlTokenAttributes.IDENTIFIER),
-    AttributesDescriptor("Comment", MamlTokenAttributes.COMMENT),
-    AttributesDescriptor("Bad character", MamlTokenAttributes.BAD_CHARACTER)
+    // Punctuation
+    AttributesDescriptor("Punctuation", MamlTokenAttributes.PUNCTUATION),
+    AttributesDescriptor("Punctuation//Braces", MamlTokenAttributes.BRACES),
+    AttributesDescriptor("Punctuation//Brackets", MamlTokenAttributes.BRACKETS),
+    AttributesDescriptor("Punctuation//Comma", MamlTokenAttributes.COMMA),
+    AttributesDescriptor("Punctuation//Colon", MamlTokenAttributes.COLON),
+
+    // Values
+    AttributesDescriptor("Values//String", MamlTokenAttributes.STRING),
+    AttributesDescriptor("Values//Multiline string", MamlTokenAttributes.MULTILINE_STRING),
+    AttributesDescriptor("Values//Number", MamlTokenAttributes.NUMBER),
+    AttributesDescriptor("Values//Keyword", MamlTokenAttributes.KEYWORD),
+
+    // Identifiers
+    AttributesDescriptor("Identifiers//Identifier", MamlTokenAttributes.IDENTIFIER),
+    AttributesDescriptor("Identifiers//Key", MamlTokenAttributes.KEY),
+
+    // Comments
+    AttributesDescriptor("Comments//Comment", MamlTokenAttributes.COMMENT),
+
+    // Escape sequences
+    AttributesDescriptor("Escape sequences//Valid escape sequence", MamlTokenAttributes.VALID_ESCAPE),
+    AttributesDescriptor("Escape sequences//Invalid escape sequence", MamlTokenAttributes.INVALID_ESCAPE),
+
+    // Errors
+    AttributesDescriptor("Errors//Bad character", MamlTokenAttributes.BAD_CHARACTER)
 )

@@ -1,6 +1,5 @@
 package com.davidseptimus.maml.highlighting
 
-import com.davidseptimus.maml.highlighting.MamlTokenAttributes
 import com.davidseptimus.maml.psi.MamlTypes
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.psi.TokenType

@@ -43,6 +43,12 @@
     <lang.documentationProvider language="MAML"
                                 implementationClass="com.davidseptimus.maml.json.MamlJsonSchemaDocumentationProvider"/>
 
+    <!-- Annotators -->
+    <annotator language="MAML"
+                implementationClass="com.davidseptimus.maml.annotators.MamlKeyAnnotator"/>
+    <annotator language="MAML"
+                implementationClass="com.davidseptimus.maml.annotators.MamlStringEscapeAnnotator"/>
+
     <!-- JSON Schema validation -->
     <localInspection language="MAML"
                      groupKey="inspection.schema.compliance.group.name"
@@ -64,6 +70,27 @@
                      enabledByDefault="true"
                      level="WARNING"
                      implementationClass="com.davidseptimus.maml.inspections.MamlDuplicateKeysInspection"/>
+
+    <!-- Invalid escape sequences -->
+    <localInspection language="MAML"
+                     groupKey="inspection.invalid.escape.group.name"
+                     groupBundle="messages.MamlBundle"
+                     key="inspection.invalid.escape.display.name"
+                     bundle="messages.MamlBundle"
+                     shortName="MamlInvalidEscape"
+                     enabledByDefault="true"
+                     level="ERROR"
+                     implementationClass="com.davidseptimus.maml.inspections.MamlInvalidEscapeInspection"/>
+
+    <!-- Intention actions -->
+    <intentionAction>
+      <className>com.davidseptimus.maml.intentions.ConvertToMultilineStringIntention</className>
+      <category>MAML</category>
+    </intentionAction>
+    <intentionAction>
+      <className>com.davidseptimus.maml.intentions.ConvertToSingleLineStringIntention</className>
+      <category>MAML</category>
+    </intentionAction>
   </extensions>
 
   <extensions defaultExtensionNs="com.intellij.lang">

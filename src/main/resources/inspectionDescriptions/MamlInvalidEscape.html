@@ -1,0 +1,37 @@
+<html>
+<body>
+<p>Reports invalid escape sequences in MAML string literals.</p>
+
+<p>In MAML, single-line strings (delimited with double quotes <code>"</code>) support the following escape sequences:</p>
+<ul>
+    <li><code>\\</code> - backslash</li>
+    <li><code>\"</code> - double quote</li>
+    <li><code>\n</code> - newline</li>
+    <li><code>\r</code> - carriage return</li>
+    <li><code>\t</code> - tab</li>
+    <li><code>\b</code> - backspace</li>
+    <li><code>\f</code> - form feed</li>
+    <li><code>\/</code> - forward slash</li>
+    <li><code>\uXXXX</code> - unicode escape sequence</li>
+</ul>
+
+<p>Any other escape sequence (e.g., <code>\x</code>, <code>\a</code>) is invalid and will be highlighted as an error.</p>
+
+<p><b>Examples:</b></p>
+<pre>
+# Valid
+"Hello\nWorld"
+"Tab\tseparated"
+"Quote: \""
+
+# Invalid
+"Invalid\xescape"  # \x is not a valid escape
+"Bad\aescape"      # \a is not a valid escape
+</pre>
+
+<p>The quick fix will escape the backslash to treat it as a literal character.</p>
+
+<p><b>Note:</b> Multiline strings (delimited with triple quotes <code>"""</code>) do not require escape sequences
+    and are not checked by this inspection.</p>
+</body>
+</html>

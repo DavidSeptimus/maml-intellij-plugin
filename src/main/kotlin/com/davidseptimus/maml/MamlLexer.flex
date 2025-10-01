@@ -29,7 +29,8 @@ NL=\r\n|\n|\r
 
 // String characters - excluding backslash and quote
 STRING_CHAR=[^\\\"\u0000-\u001F]
-ESCAPE_SEQ=\\[\\\"\/nrt]|\\u\{[0-9A-Fa-f]{1,6}\}
+// Accept any escape sequence (validation happens in annotator/inspection)
+ESCAPE_SEQ=\\.
 
 // Multiline string - any character except quote, or quoted sequences
 ML_CHAR=[^\"]|\"[^\"]|\"\"[^\"]
