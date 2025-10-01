@@ -1,0 +1,41 @@
+<html>
+<body>
+<p>Reports invalid identifier keys in MAML configuration files.</p>
+
+<p>In MAML, keys can be either identifiers or quoted strings:</p>
+
+<h3>Identifier Keys</h3>
+<p>Identifier keys have specific character restrictions:</p>
+<ul>
+    <li>Must contain only letters (A-Z, a-z), digits (0-9), underscores (_), and hyphens (-)</li>
+    <li>Cannot be empty</li>
+    <li>Can be composed entirely of digits (e.g., <code>1234</code>), but are always interpreted as strings</li>
+</ul>
+
+<h3>Quoted String Keys</h3>
+<p>Quoted string keys (delimited with <code>"</code>) follow the same rules as regular strings and allow a much broader
+    set of characters. Empty quoted string keys are allowed.</p>
+
+<p><b>Examples:</b></p>
+<pre>
+# Valid identifier keys
+title: "Hello"
+my-key: "value"
+key_123: "test"
+123: "numeric key"
+
+# Invalid identifier keys
+my.key: "value"        # Contains '.'
+my key: "value"        # Contains space
+key@home: "value"      # Contains '@'
+
+# Valid quoted string keys (any characters allowed)
+"my.key": "value"
+"my key": "value"
+"key@home": "value"
+"": "empty key allowed"
+</pre>
+
+<p>The quick fix will automatically convert invalid identifier keys to quoted string keys.</p>
+</body>
+</html>

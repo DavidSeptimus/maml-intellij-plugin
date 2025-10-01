@@ -33,23 +33,39 @@ class ConvertToMultilineStringIntention : PsiElementBaseIntentionAction(), Inten
         val text = element.text
         val content = text.substring(1, text.length - 1) // Remove opening and closing quotes
 
-        // Unescape common escape sequences for multiline
-        // In multiline strings, we don't need to escape newlines
-        val unescaped = content
-            .replace("\\n", "\n")
-            .replace("\\t", "\t")
-            .replace("\\\"", "\"")  // Quotes don't need escaping in multiline
+        // Unescape escape sequences for multiline, preserving whitespace in the string content
+        var result = StringBuilder()
+        var i = 0
+        while (i < content.length) {
+            if (content[i] == '\\' && i + 1 < content.length) {
+                when (content[i + 1]) {
+                    'n' -> result.append('\n')
+                    't' -> result.append('\t')
+                    'r' -> result.append('\r')
+                    '"' -> result.append('"')
+                    '\\' -> result.append('\\')
+                    else -> {
+                        // Keep unknown escapes as-is
+                        result.append(content[i])
+                        result.append(content[i + 1])
+                    }
+                }
+                i += 2
+            } else {
+                result.append(content[i])
+                i++
+            }
+        }
+        val unescaped = result.toString()
 
-        // Get the indentation of the current line
-        val document = editor?.document
-        val lineNumber = document?.getLineNumber(element.textRange.startOffset) ?: 0
-        val lineStartOffset = document?.getLineStartOffset(lineNumber) ?: 0
-        val lineEndOffset = element.textRange.startOffset
-        val linePrefix = document?.getText(com.intellij.openapi.util.TextRange(lineStartOffset, lineEndOffset)) ?: ""
-        val indentation = linePrefix.takeWhile { it.isWhitespace() }
-
-        // Start content on new line with preserved indentation
-        val multilineText = "\"\"\"\n$indentation$unescaped\n$indentation\"\"\""
+        // Create multiline string with triple quotes
+        // If original string has no newlines, keep it on same line
+        // If it has newlines, start content on a new line after opening """
+        val multilineText = if (unescaped.contains('\n')) {
+            "\"\"\"\n$unescaped\"\"\""
+        } else {
+            "\"\"\"$unescaped\"\"\""
+        }
 
         // Create a temporary file with a value to extract the multiline string from
         val tempFile = MamlElementFactory.createFile(project, multilineText)

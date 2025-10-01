@@ -33,20 +33,22 @@ class ConvertToSingleLineStringIntention : PsiElementBaseIntentionAction(), Inte
         val text = element.text
         val content = text.substring(3, text.length - 3) // Remove opening and closing triple quotes
 
-        // Split into lines and find first non-empty line to preserve its leading whitespace
-        val lines = content.lines()
-        val firstTextLine = lines.firstOrNull { it.isNotBlank() } ?: ""
-        val leadingWhitespace = firstTextLine.takeWhile { it.isWhitespace() }
+        // Escape special characters for single-line string, preserving all whitespace in content
+        val result = StringBuilder()
+        for (char in content) {
+            when (char) {
+                '\\' -> result.append("\\\\")
+                '"' -> result.append("\\\"")
+                '\n' -> result.append("\\n")
+                '\r' -> result.append("\\r")
+                '\t' -> result.append("\\t")
+                '\b' -> result.append("\\b")
+                else -> result.append(char)
+            }
+        }
+        val escaped = result.toString()
 
-        // Escape special characters for single-line string
-        val escaped = content
-            .replace("\\", "\\\\")  // Escape backslashes first
-            .replace("\"", "\\\"")  // Escape quotes
-            .replace("\n", "\\n")   // Escape newlines
-            .replace("\r", "\\r")   // Escape carriage returns
-            .replace("\t", "\\t")   // Escape tabs
-
-        // Create single-line string with regular quotes, preserving leading whitespace
+        // Create single-line string with regular quotes
         val singleLineText = "\"$escaped\""
 
         // Create a temporary file with a value to extract the string from

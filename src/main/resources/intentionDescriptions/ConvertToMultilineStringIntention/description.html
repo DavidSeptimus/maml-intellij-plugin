@@ -1,0 +1,24 @@
+<html>
+<body>
+<p>Converts a single-line string to a multiline string format.</p>
+
+<p>
+    In MAML, multiline strings are delimited with triple quotes (<code>"""</code>) and allow you to include
+    newlines and special characters without escaping them. This intention unescapes common escape sequences
+    like <code>\n</code>, <code>\t</code>, and <code>\"</code>, converting them to their literal characters.
+</p>
+
+<p><b>Before:</b></p>
+<pre><code>message: "Hello\nWorld\tTest"</code></pre>
+
+<p><b>After:</b></p>
+<pre><code>message: """
+Hello
+World	Test"""</code></pre>
+
+<p>
+    The content always starts on a new line after the opening <code>"""</code>. The closing <code>"""</code>
+    is placed on the same line as the last content unless the string ends with a newline character.
+</p>
+</body>
+</html>

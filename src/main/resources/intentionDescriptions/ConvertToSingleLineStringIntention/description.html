@@ -1,0 +1,25 @@
+<html>
+<body>
+<p>Converts a multiline string to a single-line string format.</p>
+
+<p>
+    In MAML, single-line strings are delimited with regular quotes (<code>"</code>) and require special
+    characters to be escaped. This intention escapes newlines, tabs, quotes, backslashes, and other
+    special characters, converting them to their escape sequences.
+</p>
+
+<p><b>Before:</b></p>
+<pre><code>message: """
+Hello
+World	Test"""</code></pre>
+
+<p><b>After:</b></p>
+<pre><code>message: "Hello\nWorld\tTest"</code></pre>
+
+<p>
+    All whitespace within the string content is preserved. Special characters are escaped as:
+    <code>\\</code> (backslash), <code>\"</code> (quote), <code>\n</code> (newline),
+    <code>\r</code> (carriage return), <code>\t</code> (tab), and <code>\b</code> (backspace).
+</p>
+</body>
+</html>

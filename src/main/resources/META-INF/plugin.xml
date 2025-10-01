@@ -45,6 +45,8 @@
 
     <!-- Annotators -->
     <annotator language="MAML"
+                implementationClass="com.davidseptimus.maml.annotators.MamlSyntaxErrorAnnotator"/>
+    <annotator language="MAML"
                 implementationClass="com.davidseptimus.maml.annotators.MamlKeyAnnotator"/>
     <annotator language="MAML"
                 implementationClass="com.davidseptimus.maml.annotators.MamlStringEscapeAnnotator"/>
@@ -68,7 +70,7 @@
                      bundle="messages.MamlBundle"
                      shortName="MamlDuplicateKeys"
                      enabledByDefault="true"
-                     level="WARNING"
+                     level="ERROR"
                      implementationClass="com.davidseptimus.maml.inspections.MamlDuplicateKeysInspection"/>
 
     <!-- Invalid escape sequences -->
@@ -82,14 +84,27 @@
                      level="ERROR"
                      implementationClass="com.davidseptimus.maml.inspections.MamlInvalidEscapeInspection"/>
 
+    <!-- Invalid identifier keys -->
+    <localInspection language="MAML"
+                     groupKey="inspection.invalid.key.group.name"
+                     groupBundle="messages.MamlBundle"
+                     key="inspection.invalid.key.display.name"
+                     bundle="messages.MamlBundle"
+                     shortName="MamlInvalidKey"
+                     enabledByDefault="true"
+                     level="ERROR"
+                     implementationClass="com.davidseptimus.maml.inspections.MamlInvalidKeyInspection"/>
+
     <!-- Intention actions -->
     <intentionAction>
+      <language>MAML</language>
       <className>com.davidseptimus.maml.intentions.ConvertToMultilineStringIntention</className>
-      <category>MAML</category>
+      <categoryKey>intention.category.maml.key</categoryKey>
     </intentionAction>
     <intentionAction>
+      <language>MAML</language>
       <className>com.davidseptimus.maml.intentions.ConvertToSingleLineStringIntention</className>
-      <category>MAML</category>
+      <categoryKey>intention.category.maml.key</categoryKey>
     </intentionAction>
   </extensions>
 

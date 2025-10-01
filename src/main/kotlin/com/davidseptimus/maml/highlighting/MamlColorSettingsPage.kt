@@ -26,7 +26,7 @@ class MamlColorSettingsPage : ColorSettingsPage {
 
         {
           # String keys and values
-          "name": "MAML Demo",
+          <key>"name"</key>: "MAML Demo",
           title: "Unquoted Key Example",
 
           # Numbers
@@ -41,7 +41,7 @@ class MamlColorSettingsPage : ColorSettingsPage {
           placeholder: null,
 
           # Nested object
-          "config": {
+          <key>"config"</key>: {
             debug-mode: true,
             max_retries: 3
           },
@@ -75,7 +75,9 @@ class MamlColorSettingsPage : ColorSettingsPage {
         }
     """.trimIndent()
 
-    override fun getAdditionalHighlightingTagToDescriptorMap(): Map<String, TextAttributesKey>? = null
+    override fun getAdditionalHighlightingTagToDescriptorMap(): Map<String, TextAttributesKey> = mapOf(
+        "key" to MamlTokenAttributes.KEY
+    )
 
 }
 
