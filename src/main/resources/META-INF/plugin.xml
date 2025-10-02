@@ -106,6 +106,9 @@
       <className>com.davidseptimus.maml.intentions.ConvertToSingleLineStringIntention</className>
       <categoryKey>intention.category.maml.key</categoryKey>
     </intentionAction>
+
+    <!-- Refactoring -->
+    <renamePsiElementProcessor implementation="com.davidseptimus.maml.refactoring.MamlRenamePsiElementProcessor"/>
   </extensions>
 
   <extensions defaultExtensionNs="com.intellij.lang">

@@ -4,7 +4,6 @@ package com.davidseptimus.maml.psi;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
-import com.davidseptimus.maml.MamlNamedElement;
 
 public class MamlVisitor extends PsiElementVisitor {
 

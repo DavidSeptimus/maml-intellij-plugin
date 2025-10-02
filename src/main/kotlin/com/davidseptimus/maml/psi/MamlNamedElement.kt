@@ -1,4 +1,4 @@
-package com.davidseptimus.maml
+package com.davidseptimus.maml.psi
 
 import com.intellij.psi.PsiNamedElement
 

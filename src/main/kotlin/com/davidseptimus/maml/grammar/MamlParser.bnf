@@ -43,7 +43,7 @@ key_value ::= key COLON value {
 private key_value_recover ::= !(RBRACE | STRING | IDENTIFIER | COMMA | <<eof>>)
 
 key ::= STRING | IDENTIFIER {
-  implements="com.davidseptimus.maml.MamlNamedElement"
+  implements="com.davidseptimus.maml.psi.MamlNamedElement"
   mixin="com.davidseptimus.maml.psi.MamlKeyMixin"
 }
 
