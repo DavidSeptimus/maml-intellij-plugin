@@ -13,13 +13,13 @@
   <resource-bundle>messages.MamlBundle</resource-bundle>
 
   <extensions defaultExtensionNs="com.intellij">
-    <fileType implementationClass="com.davidseptimus.maml.MamlFileType"
+    <fileType implementationClass="com.davidseptimus.maml.lang.MamlFileType"
               language="MAML"
               order="first"
               name="MAML"
               extensions="maml"/>
-    <lang.quoteHandler language="MAML" implementationClass="com.davidseptimus.maml.MamlQuoteHandler"/>
-    <lang.braceMatcher language="MAML" implementationClass="com.davidseptimus.maml.MamlBraceMatcher"/>
+    <lang.quoteHandler language="MAML" implementationClass="com.davidseptimus.maml.editor.MamlQuoteHandler"/>
+    <lang.braceMatcher language="MAML" implementationClass="com.davidseptimus.maml.editor.MamlBraceMatcher"/>
     <colorSettingsPage implementation="com.davidseptimus.maml.highlighting.MamlColorSettingsPage"/>
 
     <!-- Settings -->
@@ -113,14 +113,16 @@
 
   <extensions defaultExtensionNs="com.intellij.lang">
       <parserDefinition language="MAML"
-                        implementationClass="com.davidseptimus.maml.MamlParserDefinition"/>
+                        implementationClass="com.davidseptimus.maml.lang.MamlParserDefinition"/>
       <syntaxHighlighterFactory language="MAML"
                                 implementationClass="com.davidseptimus.maml.highlighting.MamlSyntaxHighlighterFactory"/>
     <commenter language="MAML"
-               implementationClass="com.davidseptimus.maml.MamlCommenter"/>
+               implementationClass="com.davidseptimus.maml.editor.MamlCommenter"/>
     <foldingBuilder language="MAML"
-                    implementationClass="com.davidseptimus.maml.MamlFoldingBuilder"/>
+                    implementationClass="com.davidseptimus.maml.editor.MamlFoldingBuilder"/>
     <namesValidator language="MAML"
-                    implementationClass="com.davidseptimus.maml.MamlNamesValidator"/>
+                    implementationClass="com.davidseptimus.maml.refactoring.MamlNamesValidator"/>
+    <psiStructureViewFactory language="MAML"
+                             implementationClass="com.davidseptimus.maml.structure.MamlStructureViewFactory"/>
   </extensions>
 </idea-plugin>

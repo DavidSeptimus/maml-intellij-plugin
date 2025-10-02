@@ -1,6 +1,6 @@
 package com.davidseptimus.maml.highlighting
 
-import com.davidseptimus.maml.MamlLexerAdapter
+import com.davidseptimus.maml.lang.MamlLexerAdapter
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase
 import com.intellij.psi.tree.IElementType
 

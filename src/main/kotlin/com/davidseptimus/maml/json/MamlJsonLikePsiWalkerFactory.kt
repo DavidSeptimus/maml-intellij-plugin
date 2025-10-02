@@ -1,6 +1,6 @@
 package com.davidseptimus.maml.json
 
-import com.davidseptimus.maml.psi.MamlFile
+import com.davidseptimus.maml.lang.psi.MamlFile
 import com.intellij.psi.PsiElement
 import com.jetbrains.jsonSchema.extension.JsonLikePsiWalker
 import com.jetbrains.jsonSchema.extension.JsonLikePsiWalkerFactory

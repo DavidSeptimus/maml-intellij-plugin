@@ -1,7 +1,7 @@
 package com.davidseptimus.maml.json
 
-import com.davidseptimus.maml.psi.MamlKeyValue
-import com.davidseptimus.maml.psi.MamlObject
+import com.davidseptimus.maml.lang.psi.MamlKeyValue
+import com.davidseptimus.maml.lang.psi.MamlObject
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.parentOfType
 import com.jetbrains.jsonSchema.extension.adapters.JsonObjectValueAdapter

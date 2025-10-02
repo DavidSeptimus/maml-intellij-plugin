@@ -1,7 +1,8 @@
 package com.davidseptimus.maml.inspections
 
 import com.davidseptimus.maml.MamlBundle
-import com.davidseptimus.maml.psi.MamlKey
+import com.davidseptimus.maml.lang.psi.MamlElementFactory
+import com.davidseptimus.maml.lang.psi.MamlKey
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemDescriptor
@@ -72,7 +73,7 @@ class MamlInvalidKeyInspection : LocalInspectionTool() {
             val quotedKey = "\"$escaped\""
 
             // Create new key element
-            val tempFile = com.davidseptimus.maml.psi.MamlElementFactory.createKey(project, quotedKey)
+            val tempFile = MamlElementFactory.createKey(project, quotedKey)
             element.replace(tempFile)
         }
     }

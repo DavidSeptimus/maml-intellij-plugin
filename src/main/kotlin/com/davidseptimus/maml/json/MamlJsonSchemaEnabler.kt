@@ -1,6 +1,6 @@
 package com.davidseptimus.maml.json
 
-import com.davidseptimus.maml.MamlFileType
+import com.davidseptimus.maml.lang.MamlFileType
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.jetbrains.jsonSchema.extension.JsonSchemaEnabler

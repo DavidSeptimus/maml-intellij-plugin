@@ -1,10 +1,10 @@
 package com.davidseptimus.maml.json
 
-import com.davidseptimus.maml.psi.*
+import com.davidseptimus.maml.lang.psi.MamlFile
+import com.davidseptimus.maml.lang.psi.*
 import com.intellij.json.pointer.JsonPointerPosition
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.psi.util.parentOfType
 import com.intellij.util.ThreeState
 import com.jetbrains.jsonSchema.extension.JsonLikePsiWalker

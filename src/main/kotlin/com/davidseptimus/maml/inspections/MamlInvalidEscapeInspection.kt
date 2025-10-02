@@ -1,7 +1,8 @@
 package com.davidseptimus.maml.inspections
 
 import com.davidseptimus.maml.MamlBundle
-import com.davidseptimus.maml.psi.MamlTypes
+import com.davidseptimus.maml.lang.psi.MamlElementFactory
+import com.davidseptimus.maml.lang.psi.MamlTypes
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemDescriptor
@@ -89,7 +90,7 @@ class MamlInvalidEscapeInspection : LocalInspectionTool() {
                     text.substring(range.endOffset)
 
             // Use element factory to create replacement
-            val tempFile = com.davidseptimus.maml.psi.MamlElementFactory.createFile(project, newText)
+            val tempFile = MamlElementFactory.createFile(project, newText)
             val newElement = tempFile.firstChild?.firstChild
 
             if (newElement != null) {

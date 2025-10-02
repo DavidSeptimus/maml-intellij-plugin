@@ -1,8 +1,8 @@
 package com.davidseptimus.maml.intentions
 
 import com.davidseptimus.maml.MamlBundle
-import com.davidseptimus.maml.psi.MamlElementFactory
-import com.davidseptimus.maml.psi.MamlTypes
+import com.davidseptimus.maml.lang.psi.MamlElementFactory
+import com.davidseptimus.maml.lang.psi.MamlTypes
 import com.intellij.codeInsight.intention.IntentionAction
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction
 import com.intellij.openapi.editor.Editor

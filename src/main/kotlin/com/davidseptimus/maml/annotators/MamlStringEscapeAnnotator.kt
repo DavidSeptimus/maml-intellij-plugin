@@ -2,7 +2,7 @@ package com.davidseptimus.maml.annotators
 
 import com.davidseptimus.maml.MamlBundle
 import com.davidseptimus.maml.highlighting.MamlTokenAttributes
-import com.davidseptimus.maml.psi.MamlTypes
+import com.davidseptimus.maml.lang.psi.MamlTypes
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity

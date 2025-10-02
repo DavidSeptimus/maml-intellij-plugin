@@ -1,14 +1,12 @@
 package com.davidseptimus.maml.refactoring
 
-import com.davidseptimus.maml.psi.MamlNamedElement
-import com.davidseptimus.maml.psi.MamlKeyValue
-import com.davidseptimus.maml.psi.MamlObject
+import com.davidseptimus.maml.lang.psi.MamlNamedElement
+import com.davidseptimus.maml.lang.psi.MamlObject
 import com.intellij.psi.PsiElement
 import com.intellij.psi.search.LocalSearchScope
 import com.intellij.psi.search.SearchScope
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.refactoring.rename.RenamePsiElementProcessor
-import com.intellij.refactoring.util.CommonRefactoringUtil
 import com.intellij.refactoring.rename.UnresolvableCollisionUsageInfo
 import com.intellij.usageView.UsageInfo
 

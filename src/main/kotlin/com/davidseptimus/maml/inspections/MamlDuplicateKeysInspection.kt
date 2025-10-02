@@ -1,9 +1,8 @@
 package com.davidseptimus.maml.inspections
 
 import com.davidseptimus.maml.MamlBundle
-import com.davidseptimus.maml.psi.MamlKeyValue
-import com.davidseptimus.maml.psi.MamlObject
-import com.davidseptimus.maml.psi.MamlVisitor
+import com.davidseptimus.maml.lang.psi.MamlObject
+import com.davidseptimus.maml.lang.psi.MamlVisitor
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemDescriptor
@@ -11,9 +10,7 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElementVisitor
-import com.intellij.refactoring.RefactoringActionHandler
 import com.intellij.refactoring.RefactoringActionHandlerFactory
-import com.intellij.refactoring.actions.RenameElementAction
 
 /**
  * Inspection that detects and highlights duplicate keys within MAML objects.
