@@ -32,8 +32,8 @@ STRING_CHAR=[^\\\"\u0000-\u001F]
 // Accept any escape sequence (validation happens in annotator/inspection)
 ESCAPE_SEQ=\\.
 
-// Multiline string - any character except quote, or quoted sequences
-ML_CHAR=[^\"]|\"[^\"]|\"\"[^\"]
+// Multiline string - any character except quote, or quoted sequences, or escaped triple quotes
+ML_CHAR=[^\"]|\"[^\"]|\"\"[^\"]|\\\"\"\"
 
 // Numbers
 DIGIT=[0-9]

@@ -5,6 +5,7 @@ package com.davidseptimus.maml.lang;
 
 import com.intellij.psi.tree.IElementType;
 import com.intellij.lexer.FlexLexer;
+import com.intellij.psi.tree.IElementType;
 
 import static com.intellij.psi.TokenType.BAD_CHARACTER;
 import static com.intellij.psi.TokenType.WHITE_SPACE;
@@ -102,11 +103,11 @@ public class MamlLexer implements FlexLexer {
     "\1\0\1\1\2\2\1\3\1\4\1\5\1\6\2\7"+
     "\1\10\1\6\1\11\1\12\3\6\1\13\1\14\2\3"+
     "\2\0\4\6\1\3\1\15\1\7\1\0\1\6\1\7"+
-    "\3\6\2\0\1\7\1\6\1\16\1\17\1\0\1\20"+
-    "\1\15";
+    "\3\6\1\0\1\15\1\0\1\7\1\6\1\16\1\17"+
+    "\2\0\1\20\1\15\1\0";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[45];
+    int [] result = new int[48];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -135,11 +136,11 @@ public class MamlLexer implements FlexLexer {
     "\0\340\0\u0100\0\40\0\u0120\0\40\0\40\0\u0140\0\u0160"+
     "\0\u0180\0\40\0\40\0\u01a0\0\u01c0\0\u01e0\0\u0200\0\u0220"+
     "\0\u0240\0\u0260\0\u0280\0\40\0\u02a0\0\u02c0\0\u02e0\0\u0300"+
-    "\0\u0300\0\u0320\0\u0340\0\u0360\0\u0380\0\u03a0\0\u02e0\0\u03c0"+
-    "\0\u0120\0\u0120\0\u03e0\0\u0120\0\40";
+    "\0\u0300\0\u0320\0\u0340\0\u0360\0\u0380\0\u03a0\0\u03c0\0\u02e0"+
+    "\0\u03e0\0\u0120\0\u0120\0\u0400\0\u0420\0\u0120\0\40\0\u0440";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[45];
+    int [] result = new int[48];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -182,19 +183,20 @@ public class MamlLexer implements FlexLexer {
     "\1\14\1\0\2\14\1\0\2\14\3\0\3\14\1\42"+
     "\5\14\15\0\1\14\1\0\2\14\1\0\2\14\3\0"+
     "\3\14\1\43\5\14\15\0\1\14\1\0\2\14\1\0"+
-    "\2\14\3\0\10\14\1\44\3\0\6\35\1\45\31\35"+
-    "\14\0\2\36\2\0\1\46\4\0\1\46\26\0\2\47"+
-    "\34\0\1\14\1\0\2\41\1\0\2\14\3\0\11\14"+
-    "\15\0\1\14\1\0\2\14\1\0\2\14\3\0\6\14"+
-    "\1\50\2\14\15\0\1\14\1\0\2\14\1\0\2\14"+
-    "\3\0\3\14\1\51\5\14\15\0\1\14\1\0\2\14"+
-    "\1\0\2\14\3\0\1\14\1\52\7\14\3\0\6\35"+
-    "\1\53\31\35\10\0\1\37\1\0\1\37\1\0\2\47"+
-    "\34\0\1\14\1\0\2\14\1\0\2\14\3\0\1\14"+
-    "\1\54\7\14\3\0\6\35\1\55\31\35";
+    "\2\14\3\0\10\14\1\44\3\0\6\35\1\45\13\35"+
+    "\1\46\15\35\14\0\2\36\2\0\1\47\4\0\1\47"+
+    "\26\0\2\50\34\0\1\14\1\0\2\41\1\0\2\14"+
+    "\3\0\11\14\15\0\1\14\1\0\2\14\1\0\2\14"+
+    "\3\0\6\14\1\51\2\14\15\0\1\14\1\0\2\14"+
+    "\1\0\2\14\3\0\3\14\1\52\5\14\15\0\1\14"+
+    "\1\0\2\14\1\0\2\14\3\0\1\14\1\53\7\14"+
+    "\3\0\6\35\1\54\37\35\1\55\13\35\1\46\15\35"+
+    "\10\0\1\37\1\0\1\37\1\0\2\50\34\0\1\14"+
+    "\1\0\2\14\1\0\2\14\3\0\1\14\1\56\7\14"+
+    "\3\0\6\35\1\57\37\35\1\60\71\35";
 
   private static int [] zzUnpacktrans() {
-    int [] result = new int[1024];
+    int [] result = new int[1120];
     int offset = 0;
     offset = zzUnpacktrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -234,10 +236,11 @@ public class MamlLexer implements FlexLexer {
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
     "\1\0\1\11\4\1\1\11\3\1\1\11\1\1\2\11"+
     "\3\1\2\11\2\1\2\0\4\1\1\11\2\1\1\0"+
-    "\5\1\2\0\4\1\1\0\1\1\1\11";
+    "\5\1\1\0\1\1\1\0\4\1\2\0\1\1\1\11"+
+    "\1\0";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[45];
+    int [] result = new int[48];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
