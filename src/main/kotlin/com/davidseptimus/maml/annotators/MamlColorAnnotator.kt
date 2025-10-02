@@ -1,5 +1,6 @@
 package com.davidseptimus.maml.annotators
 
+import com.davidseptimus.maml.MamlBundle
 import com.davidseptimus.maml.lang.psi.MamlTypes
 import com.davidseptimus.maml.lang.psi.MamlValueElement
 import com.intellij.lang.annotation.AnnotationHolder
@@ -165,7 +166,7 @@ class MamlColorAnnotator : Annotator {
                     ColorChooserService.instance.showDialog(
                         project,
                         editor.component,
-                        "Choose Color",
+                        MamlBundle.message("annotator.color.picker.title"),
                         color,
                         enableOpacity,
                         listOf(listener),
@@ -219,7 +220,7 @@ class MamlColorAnnotator : Annotator {
         }
 
         override fun getTooltipText(): String {
-            return "Color: #${ColorUtil.toHex(color)}"
+            return MamlBundle.message("annotator.color.tooltip", "#${ColorUtil.toHex(color)}")
         }
 
         override fun equals(other: Any?): Boolean {
