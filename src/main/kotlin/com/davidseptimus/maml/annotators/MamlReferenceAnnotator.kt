@@ -11,13 +11,20 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 
 /**
- * Annotator that highlights URLs and resolved file paths in string values.
+ * Annotator that highlights URLs and resolved file paths in string values and comments.
  */
 class MamlReferenceAnnotator : Annotator {
 
-    override fun annotate(element: PsiElement, holder: AnnotationHolder) {
-        if (element !is MamlValueElement) return
+    private val URL_PATTERN = Regex("https?://[^\\s\"']+|file://[^\\s\"']+")
 
+    override fun annotate(element: PsiElement, holder: AnnotationHolder) {
+        when {
+            element is MamlValueElement -> annotateValue(element, holder)
+            element is LeafPsiElement && element.elementType == MamlTypes.COMMENT -> annotateComment(element, holder)
+        }
+    }
+
+    private fun annotateValue(element: MamlValueElement, holder: AnnotationHolder) {
         // Check if this is a string value
         val child = element.firstChild
         if (child !is LeafPsiElement) return
@@ -28,27 +35,38 @@ class MamlReferenceAnnotator : Annotator {
 
         // Check if it's a URL
         if (text.startsWith("http://") || text.startsWith("https://") || text.startsWith("file://")) {
-            highlightAsUrl(element, holder)
+            highlightAsUrl(element, holder, getStringContentRange(element))
             return
         }
 
         // Check if the reference resolves to a file
         val reference = element.reference
         if (reference != null && reference.resolve() != null) {
-            highlightAsFilePath(element, holder)
+            highlightAsFilePath(element, holder, getStringContentRange(element))
         }
     }
 
-    private fun highlightAsUrl(element: PsiElement, holder: AnnotationHolder) {
-        val range = getStringContentRange(element)
+    private fun annotateComment(element: LeafPsiElement, holder: AnnotationHolder) {
+        val text = element.text
+        val matches = URL_PATTERN.findAll(text)
+
+        for (match in matches) {
+            val startOffset = element.textRange.startOffset + match.range.first
+            val endOffset = element.textRange.startOffset + match.range.last + 1
+            val range = TextRange.create(startOffset, endOffset)
+
+            highlightAsUrl(element, holder, range)
+        }
+    }
+
+    private fun highlightAsUrl(element: PsiElement, holder: AnnotationHolder, range: TextRange) {
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
             .range(range)
             .textAttributes(MamlTokenAttributes.URL)
             .create()
     }
 
-    private fun highlightAsFilePath(element: PsiElement, holder: AnnotationHolder) {
-        val range = getStringContentRange(element)
+    private fun highlightAsFilePath(element: PsiElement, holder: AnnotationHolder, range: TextRange) {
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
             .range(range)
             .textAttributes(MamlTokenAttributes.FILE_PATH)

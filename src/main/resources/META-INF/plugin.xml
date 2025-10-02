@@ -52,6 +52,8 @@
                 implementationClass="com.davidseptimus.maml.annotators.MamlStringEscapeAnnotator"/>
     <annotator language="MAML"
                 implementationClass="com.davidseptimus.maml.annotators.MamlReferenceAnnotator"/>
+    <annotator language="MAML"
+                implementationClass="com.davidseptimus.maml.annotators.MamlColorAnnotator"/>
 
     <!-- JSON Schema validation -->
     <localInspection language="MAML"
