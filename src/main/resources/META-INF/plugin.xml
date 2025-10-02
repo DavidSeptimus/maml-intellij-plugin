@@ -60,7 +60,7 @@
                      shortName="MamlSchemaCompliance"
                      enabledByDefault="true"
                      level="ERROR"
-                     implementationClass="com.davidseptimus.maml.inspections.MamlSchemaComplianceInspection"/>
+                     implementationClass="com.davidseptimus.maml.inspections.MamlJsonSchemaComplianceInspection"/>
 
     <!-- Duplicate keys detection -->
     <localInspection language="MAML"

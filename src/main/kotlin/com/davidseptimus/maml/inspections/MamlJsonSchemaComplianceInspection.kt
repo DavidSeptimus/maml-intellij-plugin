@@ -27,7 +27,7 @@ import com.jetbrains.jsonSchema.impl.JsonSchemaObject
  * - Additional property validation
  * - And all other JSON Schema validation features
  */
-class MamlSchemaComplianceInspection : LocalInspectionTool() {
+class MamlJsonSchemaComplianceInspection : LocalInspectionTool() {
 
     @JvmField
     var caseInsensitiveEnum = false
