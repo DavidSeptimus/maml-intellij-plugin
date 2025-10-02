@@ -1,12 +1,10 @@
-<html>
+<html lang="en">
 <body>
 <p>
     Reports duplicate keys within MAML objects.
 </p>
 <p>
-    According to the JSON specification, object keys must be unique. While some parsers may accept duplicate keys,
-    the behavior is undefined and typically results in the last occurrence overwriting previous values.
-    This inspection helps catch these issues early.
+    MAML does not allow duplicate keys in objects. Each key within an object must be unique.
 </p>
 <p>
     <b>Example:</b>
@@ -17,15 +15,6 @@
   name: "Jane"  // Duplicate key 'name'
 }</code></pre>
 <!-- tooltip end -->
-<p>
-    <b>Why duplicate keys are problematic:</b>
-</p>
-<ul>
-    <li><b>Undefined behavior</b> - the JSON specification does not define how parsers should handle duplicates</li>
-    <li><b>Data loss</b> - most parsers silently discard all but the last value, losing earlier definitions</li>
-    <li><b>Confusion</b> - readers may not realize which value is actually used</li>
-    <li><b>Maintenance issues</b> - duplicate keys often indicate copy-paste errors or refactoring mistakes</li>
-</ul>
 <p>
     <b>How to fix:</b>
 </p>
