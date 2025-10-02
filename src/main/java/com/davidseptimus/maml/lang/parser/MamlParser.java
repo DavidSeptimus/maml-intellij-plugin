@@ -7,6 +7,7 @@ import static com.davidseptimus.maml.lang.psi.MamlTypes.*;
 import static com.davidseptimus.maml.lang.parser.MamlParserUtil.*;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.tree.TokenSet;
 import com.intellij.lang.PsiParser;
 import com.intellij.lang.LightPsiParser;
 
@@ -283,7 +284,7 @@ public class MamlParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // object | array | STRING | MULTILINE_STRING | NUMBER | TRUE | FALSE | NULL | COMMENT
+  // object | array | STRING | MULTILINE_STRING | NUMBER | TRUE | FALSE | NULL
   public static boolean value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value")) return false;
     boolean r;
@@ -296,7 +297,6 @@ public class MamlParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, TRUE);
     if (!r) r = consumeToken(b, FALSE);
     if (!r) r = consumeToken(b, NULL);
-    if (!r) r = consumeToken(b, COMMENT);
     exit_section_(b, l, m, r, false, null);
     return r;
   }

@@ -15,7 +15,7 @@
 // Whitespace and comments are automatically handled by Grammar-Kit
 mamlFile ::= value?
 
-value ::= object | array | STRING | MULTILINE_STRING | NUMBER | TRUE | FALSE | NULL | COMMENT {
+value ::= object | array | STRING | MULTILINE_STRING | NUMBER | TRUE | FALSE | NULL {
   implements="com.davidseptimus.maml.lang.psi.MamlValueElement"
   mixin="com.davidseptimus.maml.lang.psi.MamlValueMixin"
 }
