@@ -5,10 +5,16 @@ import com.intellij.lang.ASTNode
 import com.intellij.openapi.paths.WebReference
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
+import com.intellij.psi.impl.source.tree.LeafPsiElement
 
 abstract class MamlValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), MamlValueElement {
 
     override fun getReference(): PsiReference? {
+        // Only provide references for string values, not objects or arrays
+        val child = firstChild
+        if (child !is LeafPsiElement) return null
+        if (child.elementType != MamlTypes.STRING && child.elementType != MamlTypes.MULTILINE_STRING) return null
+
         val refValue = ref
         if (refValue.isEmpty()) return null
 
