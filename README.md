@@ -39,6 +39,7 @@ A plugin for JetBrains IDE's providing comprehensive language support for MAML (
 - **JSON Schema Support**: Automatic schema-based completions and validation
 - **Documentation**: Inline documentation from JSON schemas
 - **Code Folding**: Collapse and expand objects, arrays, and multiline strings
+- **URL and File Path Recognition**: Clickable links for URLs and file paths
 
 ### Inspections
 - Schema compliance validation
@@ -60,6 +61,7 @@ A plugin for JetBrains IDE's providing comprehensive language support for MAML (
 - Brace matching and auto-completion
 - Block commenting with `#`
 - Reference support for file paths and URLs
+- Color picker gutter icon for hex, rgb, and rgba color values
 
 ### Settings
 - Code folding preferences

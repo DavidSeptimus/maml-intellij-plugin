@@ -25,6 +25,20 @@ import javax.swing.Icon
 class MamlColorAnnotator : Annotator {
 
     private val hexColorPattern = Regex("^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$")
+    private val rgbPattern =
+        Regex("^rgb\\s*\\(\\s*(\\d{1,3})\\s*,\\s*(\\d{1,3})\\s*,\\s*(\\d{1,3})\\s*\\)$", RegexOption.IGNORE_CASE)
+    private val rgbaPattern = Regex(
+        "^rgba\\s*\\(\\s*(\\d{1,3})\\s*,\\s*(\\d{1,3})\\s*,\\s*(\\d{1,3})\\s*,\\s*(0|1|0?\\.\\d+|1\\.0+)\\s*\\)$",
+        RegexOption.IGNORE_CASE
+    )
+
+    private enum class ColorFormat {
+        HEX_RGB,      // #RGB
+        HEX_RRGGBB,   // #RRGGBB
+        HEX_RGBA,     // #RRGGBBAA
+        RGB,          // rgb(r, g, b)
+        RGBA          // rgba(r, g, b, a)
+    }
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         if (element !is MamlValueElement) return
@@ -35,46 +49,84 @@ class MamlColorAnnotator : Annotator {
         if (child.elementType != MamlTypes.STRING) return
 
         val text = element.text.trim().removeSurrounding("\"")
-        if (!hexColorPattern.matches(text)) return
-
         val color = parseColor(text) ?: return
 
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
-            .gutterIconRenderer(ColorIconRenderer(element, color))
+            .gutterIconRenderer(ColorIconRenderer(element, color, hexColorPattern, rgbPattern, rgbaPattern))
             .create()
     }
 
     private fun parseColor(colorText: String): Color? {
-        if (!colorText.startsWith("#")) return null
+        // Try hex color
+        if (hexColorPattern.matches(colorText)) {
+            return parseHexColor(colorText)
+        }
 
+        // Try rgb() or rgba()
+        rgbPattern.matchEntire(colorText)?.let { match ->
+            return parseRgbColor(match)
+        }
+
+        rgbaPattern.matchEntire(colorText)?.let { match ->
+            return parseRgbaColor(match)
+        }
+
+        return null
+    }
+
+    private fun parseHexColor(colorText: String): Color? {
         return try {
             val hex = colorText.substring(1)
             when (hex.length) {
-                3 -> {
-                    // #RGB -> #RRGGBB
-                    val r = hex[0].toString().repeat(2)
-                    val g = hex[1].toString().repeat(2)
-                    val b = hex[2].toString().repeat(2)
-                    ColorUtil.fromHex("$r$g$b")
-                }
-                6 -> {
-                    // #RRGGBB
-                    ColorUtil.fromHex(hex)
-                }
-                8 -> {
-                    // #RRGGBBAA
-                    ColorUtil.fromHex(hex)
-                }
+                3 -> ColorUtil.fromHex(hex) // #RGB
+                6 -> ColorUtil.fromHex(hex) // #RRGGBB
+                8 -> ColorUtil.fromHex(hex) // #RRGGBBAA
                 else -> null
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
+            null
+        }
+    }
+
+    private fun parseRgbColor(match: MatchResult): Color? {
+        return try {
+            val r = match.groupValues[1].toInt()
+            val g = match.groupValues[2].toInt()
+            val b = match.groupValues[3].toInt()
+
+            if (r in 0..255 && g in 0..255 && b in 0..255) {
+                Color(r, g, b)
+            } else {
+                null
+            }
+        } catch (_: Exception) {
+            null
+        }
+    }
+
+    private fun parseRgbaColor(match: MatchResult): Color? {
+        return try {
+            val r = match.groupValues[1].toInt()
+            val g = match.groupValues[2].toInt()
+            val b = match.groupValues[3].toInt()
+            val a = (match.groupValues[4].toFloat() * 255).toInt()
+
+            if (r in 0..255 && g in 0..255 && b in 0..255 && a in 0..255) {
+                Color(r, g, b, a)
+            } else {
+                null
+            }
+        } catch (_: Exception) {
             null
         }
     }
 
     private class ColorIconRenderer(
         private val element: PsiElement,
-        private val color: Color
+        private val color: Color,
+        private val hexColorPattern: Regex,
+        private val rgbPattern: Regex,
+        private val rgbaPattern: Regex
     ) : GutterIconRenderer() {
 
         override fun getIcon(): Icon {
@@ -87,32 +139,82 @@ class MamlColorAnnotator : Annotator {
                     val editor = event.getData(CommonDataKeys.EDITOR) ?: return
                     val project = element.project
 
+                    // Determine original format
+                    val originalText = element.text.trim().removeSurrounding("\"")
+                    val originalFormat = detectColorFormat(originalText)
+
                     val listener = object : ColorPickerListener {
                         override fun colorChanged(newColor: Color) {
-                            val newColorHex = "#${ColorUtil.toHex(newColor)}"
+                            val newColorText = formatColor(newColor, originalFormat)
                             WriteCommandAction.runWriteCommandAction(project) {
                                 val child = element.firstChild
                                 if (child is LeafPsiElement && child.elementType == MamlTypes.STRING) {
-                                    child.replaceWithText("\"$newColorHex\"")
+                                    child.replaceWithText("\"$newColorText\"")
                                 }
                             }
                         }
 
-                        override fun closed(color: Color?) {
+                        override fun closed(@Suppress("UNUSED_PARAMETER") color: Color?) {
                             // No action needed on close
                         }
                     }
+
+                    // Determine if we should enable opacity based on original color format
+                    val enableOpacity = originalFormat == ColorFormat.RGBA || originalFormat == ColorFormat.HEX_RGBA
 
                     ColorChooserService.instance.showDialog(
                         project,
                         editor.component,
                         "Choose Color",
                         color,
-                        true,
+                        enableOpacity,
                         listOf(listener),
                         true
                     )
                 }
+            }
+        }
+
+        private fun detectColorFormat(colorText: String): ColorFormat {
+            return when {
+                rgbaPattern.matches(colorText) -> ColorFormat.RGBA
+                rgbPattern.matches(colorText) -> ColorFormat.RGB
+                hexColorPattern.matches(colorText) -> {
+                    val hex = colorText.substring(1)
+                    when (hex.length) {
+                        3 -> ColorFormat.HEX_RGB
+                        6 -> ColorFormat.HEX_RRGGBB
+                        8 -> ColorFormat.HEX_RGBA
+                        else -> ColorFormat.HEX_RRGGBB
+                    }
+                }
+
+                else -> ColorFormat.HEX_RRGGBB
+            }
+        }
+
+        private fun formatColor(color: Color, format: ColorFormat): String {
+            return when (format) {
+                ColorFormat.RGB -> "rgb(${color.red}, ${color.green}, ${color.blue})"
+                ColorFormat.RGBA -> {
+                    val alpha = String.format("%.2f", color.alpha / 255.0)
+                    "rgba(${color.red}, ${color.green}, ${color.blue}, $alpha)"
+                }
+
+                ColorFormat.HEX_RGB -> {
+                    // Convert to 3-character hex if possible
+                    val r = color.red.toString(16).padStart(2, '0')
+                    val g = color.green.toString(16).padStart(2, '0')
+                    val b = color.blue.toString(16).padStart(2, '0')
+                    if (r[0] == r[1] && g[0] == g[1] && b[0] == b[1]) {
+                        "#${r[0]}${g[0]}${b[0]}"
+                    } else {
+                        "#$r$g$b"
+                    }
+                }
+
+                ColorFormat.HEX_RRGGBB -> "#${ColorUtil.toHex(color).substring(0, 6)}"
+                ColorFormat.HEX_RGBA -> "#${ColorUtil.toHex(color)}"
             }
         }
 
