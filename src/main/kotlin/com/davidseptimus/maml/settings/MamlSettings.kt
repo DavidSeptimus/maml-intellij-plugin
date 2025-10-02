@@ -14,6 +14,7 @@ class MamlSettings : PersistentStateComponent<MamlSettings> {
 
     var commentPreviewWords: Int = 10
     var multilineStringPreviewWords: Int = 10
+    var showArrayItemCountHints: Boolean = true
 
     override fun getState(): MamlSettings = this
 

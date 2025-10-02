@@ -59,6 +59,12 @@ class MamlColorSettingsPage : ColorSettingsPage {
           # Invalid escape sequences (highlighted as errors)
           invalid: "Bad\xescape",
 
+          # References - URLs and file paths
+          <url>website</url>: <url>"https://example.com"</url>,
+          <url>api</url>: <url>"http://api.example.com/v1"</url>,
+          <filepath>config</filepath>: <filepath>"../config/settings.json"</filepath>,
+          <filepath>readme</filepath>: <filepath>"README.md"</filepath>,
+
           # Multiline string
           description: ""${'"'}
             This is a multiline string
@@ -76,7 +82,9 @@ class MamlColorSettingsPage : ColorSettingsPage {
     """.trimIndent()
 
     override fun getAdditionalHighlightingTagToDescriptorMap(): Map<String, TextAttributesKey> = mapOf(
-        "key" to MamlTokenAttributes.KEY
+        "key" to MamlTokenAttributes.KEY,
+        "url" to MamlTokenAttributes.URL,
+        "filepath" to MamlTokenAttributes.FILE_PATH
     )
 
 }
@@ -105,6 +113,10 @@ private val DESCRIPTORS = arrayOf(
     // Escape sequences
     AttributesDescriptor("Escape sequences//Valid escape sequence", MamlTokenAttributes.VALID_ESCAPE),
     AttributesDescriptor("Escape sequences//Invalid escape sequence", MamlTokenAttributes.INVALID_ESCAPE),
+
+    // References
+    AttributesDescriptor("References//URL", MamlTokenAttributes.URL),
+    AttributesDescriptor("References//File path", MamlTokenAttributes.FILE_PATH),
 
     // Errors
     AttributesDescriptor("Errors//Bad character", MamlTokenAttributes.BAD_CHARACTER)

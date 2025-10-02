@@ -27,7 +27,13 @@ class MamlStructureViewElement(private val element: NavigatablePsiElement) : Str
 
     override fun canNavigateToSource(): Boolean = element.canNavigateToSource()
 
-    override fun getAlphaSortKey(): String = element.text
+    override fun getAlphaSortKey(): String {
+        return when (element) {
+            is MamlKeyValue -> element.key.text.removeSurrounding("\"")
+            is MamlFile -> element.name
+            else -> element.text.take(100)
+        }
+    }
 
     override fun getPresentation(): ItemPresentation {
         return when (element) {

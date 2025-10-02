@@ -1,6 +1,8 @@
 package com.davidseptimus.maml.highlighting
 
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors
+import com.intellij.openapi.editor.colors.CodeInsightColors
+import com.intellij.openapi.editor.colors.CodeInsightColors.*
 import com.intellij.openapi.editor.colors.TextAttributesKey
 
 object MamlTokenAttributes {
@@ -38,5 +40,15 @@ object MamlTokenAttributes {
     val INVALID_ESCAPE = TextAttributesKey.createTextAttributesKey(
         "MAML_INVALID_ESCAPE",
         DefaultLanguageHighlighterColors.INVALID_STRING_ESCAPE
+    )
+
+    val URL = TextAttributesKey.createTextAttributesKey(
+        "MAML_URL",
+        HYPERLINK_ATTRIBUTES
+    )
+
+    val FILE_PATH = TextAttributesKey.createTextAttributesKey(
+        "MAML_FILE_PATH",
+        DefaultLanguageHighlighterColors.INSTANCE_FIELD
     )
 }

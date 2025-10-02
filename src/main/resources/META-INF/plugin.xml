@@ -50,6 +50,8 @@
                 implementationClass="com.davidseptimus.maml.annotators.MamlKeyAnnotator"/>
     <annotator language="MAML"
                 implementationClass="com.davidseptimus.maml.annotators.MamlStringEscapeAnnotator"/>
+    <annotator language="MAML"
+                implementationClass="com.davidseptimus.maml.annotators.MamlReferenceAnnotator"/>
 
     <!-- JSON Schema validation -->
     <localInspection language="MAML"
@@ -109,6 +111,10 @@
 
     <!-- Refactoring -->
     <renamePsiElementProcessor implementation="com.davidseptimus.maml.refactoring.MamlRenamePsiElementProcessor"/>
+
+    <!-- Inlay Hints -->
+    <codeInsight.inlayProvider language="MAML"
+                               implementationClass="com.davidseptimus.maml.hints.MamlInlayHintsProvider"/>
   </extensions>
 
   <extensions defaultExtensionNs="com.intellij.lang">
