@@ -132,5 +132,24 @@
                     implementationClass="com.davidseptimus.maml.refactoring.MamlNamesValidator"/>
     <psiStructureViewFactory language="MAML"
                              implementationClass="com.davidseptimus.maml.structure.MamlStructureViewFactory"/>
+    <formatter language="MAML"
+               implementationClass="com.davidseptimus.maml.formatter.MamlFormattingBuilderModel"/>
+  </extensions>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <!-- Code style settings -->
+    <codeStyleSettingsProvider implementation="com.davidseptimus.maml.formatter.MamlCodeStyleSettingsProvider"/>
+    <langCodeStyleSettingsProvider implementation="com.davidseptimus.maml.formatter.MamlLanguageCodeStyleSettingsProvider"/>
+
+    <!-- Line wrap position strategy -->
+    <lang.lineWrapStrategy language="MAML" implementationClass="com.davidseptimus.maml.formatter.MamlLineWrapPositionStrategy"/>
+
+    <!-- Pre-format processors (order matters!) -->
+    <!-- 1. Remove all commas first -->
+    <preFormatProcessor implementation="com.davidseptimus.maml.formatter.MamlCommaRemover" order="first"/>
+    <!-- 2. Remove trailing commas (if any remain) -->
+    <preFormatProcessor implementation="com.davidseptimus.maml.formatter.MamlTrailingCommaRemover"/>
+    <!-- 3. Fix comment spacing -->
+    <preFormatProcessor implementation="com.davidseptimus.maml.formatter.MamlCommentLeadingSpaceInserter"/>
   </extensions>
 </idea-plugin>

@@ -9,6 +9,7 @@ A plugin for JetBrains IDE's providing comprehensive language support for MAML (
 
 ### Core Features
 - Syntax Highlighting
+- Code Formatting
 - Code Intelligence with JSON Schema support
 - Code Inspections for schema compliance and common issues
 - Refactoring support including smart key renaming and string conversions
@@ -23,6 +24,7 @@ A plugin for JetBrains IDE's providing comprehensive language support for MAML (
 ## Features
 
 ### Syntax Highlighting
+
 - Full syntax highlighting for MAML syntax including:
   - Objects with braces `{ }`
   - Arrays with brackets `[ ]`
@@ -35,28 +37,43 @@ A plugin for JetBrains IDE's providing comprehensive language support for MAML (
   - Separators (commas and newlines)
   - Comments (line comments with `#`)
 
+### Code Formatting
+
+- Configurable code style settings based on IntellIJ's JSON code style settings
+- Options for tabs vs spaces, indentation size, spaces around colons and commas
+- Wrapping options for arrays and objects
+- Preservation of blank lines and trailing commas
+- Comment formatting options
+- Smart comma removal
+- Additional common formatting options
+
 ### Code Intelligence
+
 - **JSON Schema Support**: Automatic schema-based completions and validation
 - **Documentation**: Inline documentation from JSON schemas
 - **Code Folding**: Collapse and expand objects, arrays, and multiline strings
 - **URL and File Path Recognition**: Clickable links for URLs and file paths
 
 ### Inspections
+
 - Schema compliance validation
 - Duplicate key detection with quick fixes
 - Invalid escape sequence detection
 - Invalid identifier key validation
 
 ### Refactoring
+
 - **Smart Key Renaming**: Rename keys  with automatic detection of duplicate key conflicts
 - **String Conversions**: Convert between single-line and multiline strings
 
 ### Structure View
+
 - Hierarchical view of MAML document structure
 - Visual icons for objects, arrays, and properties
 - Quick navigation to elements
 
 ### Editor Features
+
 - Smart quote handling for strings
 - Brace matching and auto-completion
 - Block commenting with `#`
@@ -64,6 +81,7 @@ A plugin for JetBrains IDE's providing comprehensive language support for MAML (
 - Color picker gutter icon for hex, rgb, and rgba color values
 
 ### Settings
+
 - Code folding preferences
 - Toggle inspections on/off
 - Customizable color scheme for syntax elements
