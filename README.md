@@ -53,6 +53,7 @@ A plugin for JetBrains IDE's providing comprehensive language support for MAML (
 - **Documentation**: Inline documentation from JSON schemas
 - **Code Folding**: Collapse and expand objects, arrays, and multiline strings
 - **URL and File Path Recognition**: Clickable links for URLs and file paths
+- **Code Completion**: Context-aware suggestions for keys and keyword values (`true`, `false`, `null`)
 
 ### Inspections
 

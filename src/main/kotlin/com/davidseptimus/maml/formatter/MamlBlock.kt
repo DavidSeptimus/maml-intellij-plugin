@@ -131,6 +131,12 @@ class MamlBlock(
             MamlPsiUtil.hasElementType(node, KEY_VALUE) ->
                 (psiElement as MamlKeyValue).value == null
 
+            MamlPsiUtil.hasElementType(node, INCOMPLETE_KEY_VALUE) ->
+                true  // Always incomplete - missing colon and value
+
+            MamlPsiUtil.hasElementType(node, INVALID_VALUE) ->
+                true  // Always incomplete - partial/invalid value
+
             else -> false
         }
     }

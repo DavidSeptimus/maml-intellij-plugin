@@ -11,6 +11,9 @@ public interface MamlValue extends MamlValueElement {
   MamlArray getArray();
 
   @Nullable
+  MamlInvalidValue getInvalidValue();
+
+  @Nullable
   MamlObject getObject();
 
 }

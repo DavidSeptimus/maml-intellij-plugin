@@ -35,6 +35,12 @@ public class MamlValueImpl extends MamlValueMixin implements MamlValue {
 
   @Override
   @Nullable
+  public MamlInvalidValue getInvalidValue() {
+    return findChildByClass(MamlInvalidValue.class);
+  }
+
+  @Override
+  @Nullable
   public MamlObject getObject() {
     return findChildByClass(MamlObject.class);
   }

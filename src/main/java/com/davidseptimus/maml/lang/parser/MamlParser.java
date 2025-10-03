@@ -91,6 +91,52 @@ public class MamlParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // key &(!(COLON))
+  public static boolean incomplete_key_value(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "incomplete_key_value")) return false;
+    if (!nextTokenIs(b, "<incomplete key value>", IDENTIFIER, STRING)) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, INCOMPLETE_KEY_VALUE, "<incomplete key value>");
+    r = key(b, l + 1);
+    r = r && incomplete_key_value_1(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // &(!(COLON))
+  private static boolean incomplete_key_value_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "incomplete_key_value_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _AND_);
+    r = incomplete_key_value_1_0(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // !(COLON)
+  private static boolean incomplete_key_value_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "incomplete_key_value_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !consumeToken(b, COLON);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // IDENTIFIER | UNTERMINATED_STRING
+  public static boolean invalid_value(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "invalid_value")) return false;
+    if (!nextTokenIs(b, "<invalid value>", IDENTIFIER, UNTERMINATED_STRING)) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, INVALID_VALUE, "<invalid value>");
+    r = consumeToken(b, IDENTIFIER);
+    if (!r) r = consumeToken(b, UNTERMINATED_STRING);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
   // value_recoverable (COMMA? value_recoverable)* COMMA?
   public static boolean items(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "items")) return false;
@@ -193,12 +239,13 @@ public class MamlParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // key_value
+  // key_value | incomplete_key_value
   static boolean key_value_recoverable(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "key_value_recoverable")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_);
     r = key_value(b, l + 1);
+    if (!r) r = incomplete_key_value(b, l + 1);
     exit_section_(b, l, m, r, false, MamlParser::key_value_recover);
     return r;
   }
@@ -284,7 +331,7 @@ public class MamlParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // object | array | STRING | MULTILINE_STRING | NUMBER | TRUE | FALSE | NULL
+  // object | array | STRING | MULTILINE_STRING | NUMBER | TRUE | FALSE | NULL | invalid_value
   public static boolean value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value")) return false;
     boolean r;
@@ -297,6 +344,7 @@ public class MamlParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, TRUE);
     if (!r) r = consumeToken(b, FALSE);
     if (!r) r = consumeToken(b, NULL);
+    if (!r) r = invalid_value(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }

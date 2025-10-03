@@ -11,32 +11,20 @@ import static com.davidseptimus.maml.lang.psi.MamlTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.davidseptimus.maml.lang.psi.*;
 
-public class MamlMembersImpl extends ASTWrapperPsiElement implements MamlMembers {
+public class MamlInvalidValueImpl extends ASTWrapperPsiElement implements MamlInvalidValue {
 
-  public MamlMembersImpl(@NotNull ASTNode node) {
+  public MamlInvalidValueImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull MamlVisitor visitor) {
-    visitor.visitMembers(this);
+    visitor.visitInvalidValue(this);
   }
 
   @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof MamlVisitor) accept((MamlVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @NotNull
-  public List<MamlIncompleteKeyValue> getIncompleteKeyValueList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, MamlIncompleteKeyValue.class);
-  }
-
-  @Override
-  @NotNull
-  public List<MamlKeyValue> getKeyValueList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, MamlKeyValue.class);
   }
 
 }

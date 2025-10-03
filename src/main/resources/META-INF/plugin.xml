@@ -40,6 +40,10 @@
     <!-- JSON Schema-based completion and documentation -->
     <completion.contributor language="MAML"
                             implementationClass="com.davidseptimus.maml.json.MamlJsonSchemaCompletionContributor"/>
+    <completion.contributor language="MAML"
+                            implementationClass="com.davidseptimus.maml.completion.MamlKeywordCompletionContributor"/>
+    <completion.contributor language="MAML"
+                            implementationClass="com.davidseptimus.maml.completion.MamlKnownKeysCompletionContributor"/>
     <lang.documentationProvider language="MAML"
                                 implementationClass="com.davidseptimus.maml.json.MamlJsonSchemaDocumentationProvider"/>
 
@@ -54,6 +58,10 @@
                 implementationClass="com.davidseptimus.maml.annotators.MamlReferenceAnnotator"/>
     <annotator language="MAML"
                 implementationClass="com.davidseptimus.maml.annotators.MamlColorAnnotator"/>
+    <annotator language="MAML"
+                implementationClass="com.davidseptimus.maml.annotators.MamlInvalidValueAnnotator"/>
+    <annotator language="MAML"
+                implementationClass="com.davidseptimus.maml.annotators.MamlIncompleteKeyValueAnnotator"/>
 
     <!-- JSON Schema validation -->
     <localInspection language="MAML"
@@ -76,17 +84,6 @@
                      enabledByDefault="true"
                      level="ERROR"
                      implementationClass="com.davidseptimus.maml.inspections.MamlDuplicateKeysInspection"/>
-
-    <!-- Invalid escape sequences -->
-    <localInspection language="MAML"
-                     groupKey="inspection.invalid.escape.group.name"
-                     groupBundle="messages.MamlBundle"
-                     key="inspection.invalid.escape.display.name"
-                     bundle="messages.MamlBundle"
-                     shortName="MamlInvalidEscape"
-                     enabledByDefault="true"
-                     level="ERROR"
-                     implementationClass="com.davidseptimus.maml.inspections.MamlInvalidEscapeInspection"/>
 
     <!-- Invalid identifier keys -->
     <localInspection language="MAML"

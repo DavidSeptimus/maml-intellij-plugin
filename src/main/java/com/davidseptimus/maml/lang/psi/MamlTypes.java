@@ -9,6 +9,8 @@ import com.davidseptimus.maml.lang.psi.impl.*;
 public interface MamlTypes {
 
   IElementType ARRAY = new MamlElementType("ARRAY");
+  IElementType INCOMPLETE_KEY_VALUE = new MamlElementType("INCOMPLETE_KEY_VALUE");
+  IElementType INVALID_VALUE = new MamlElementType("INVALID_VALUE");
   IElementType ITEMS = new MamlElementType("ITEMS");
   IElementType KEY = new MamlElementType("KEY");
   IElementType KEY_VALUE = new MamlElementType("KEY_VALUE");
@@ -30,12 +32,19 @@ public interface MamlTypes {
   IElementType RBRACKET = new MamlTokenType("RBRACKET");
   IElementType STRING = new MamlTokenType("STRING");
   IElementType TRUE = new MamlTokenType("TRUE");
+  IElementType UNTERMINATED_STRING = new MamlTokenType("UNTERMINATED_STRING");
 
   class Factory {
     public static PsiElement createElement(ASTNode node) {
       IElementType type = node.getElementType();
       if (type == ARRAY) {
         return new MamlArrayImpl(node);
+      }
+      else if (type == INCOMPLETE_KEY_VALUE) {
+        return new MamlIncompleteKeyValueImpl(node);
+      }
+      else if (type == INVALID_VALUE) {
+        return new MamlInvalidValueImpl(node);
       }
       else if (type == ITEMS) {
         return new MamlItemsImpl(node);

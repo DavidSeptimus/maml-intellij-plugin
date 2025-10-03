@@ -101,10 +101,10 @@ public class MamlLexer implements FlexLexer {
 
   private static final String ZZ_ACTION_PACKED_0 =
     "\1\0\1\1\2\2\1\3\1\4\1\5\1\6\2\7"+
-    "\1\10\1\6\1\11\1\12\3\6\1\13\1\14\2\3"+
-    "\2\0\4\6\1\3\1\15\1\7\1\0\1\6\1\7"+
-    "\3\6\1\0\1\15\1\0\1\7\1\6\1\16\1\17"+
-    "\2\0\1\20\1\15\1\0";
+    "\1\10\1\6\1\11\1\12\3\6\1\13\1\14\1\3"+
+    "\1\15\2\0\4\6\1\15\1\16\1\7\1\0\1\6"+
+    "\1\7\3\6\1\0\1\16\1\0\1\7\1\6\1\17"+
+    "\1\20\2\0\1\21\1\16\1\0";
 
   private static int [] zzUnpackAction() {
     int [] result = new int[48];
@@ -558,82 +558,87 @@ public class MamlLexer implements FlexLexer {
             { return BAD_CHARACTER;
             }
           // fall through
-          case 17: break;
+          case 18: break;
           case 2:
             { return WHITE_SPACE;
             }
           // fall through
-          case 18: break;
+          case 19: break;
           case 3:
-            { return STRING;
+            { return UNTERMINATED_STRING;
             }
           // fall through
-          case 19: break;
+          case 20: break;
           case 4:
             { return COMMENT;
             }
           // fall through
-          case 20: break;
+          case 21: break;
           case 5:
             { return COMMA;
             }
           // fall through
-          case 21: break;
+          case 22: break;
           case 6:
             { return IDENTIFIER;
             }
           // fall through
-          case 22: break;
+          case 23: break;
           case 7:
             { return NUMBER;
             }
           // fall through
-          case 23: break;
+          case 24: break;
           case 8:
             { return COLON;
             }
           // fall through
-          case 24: break;
+          case 25: break;
           case 9:
             { return LBRACKET;
             }
           // fall through
-          case 25: break;
+          case 26: break;
           case 10:
             { return RBRACKET;
             }
           // fall through
-          case 26: break;
+          case 27: break;
           case 11:
             { return LBRACE;
             }
           // fall through
-          case 27: break;
+          case 28: break;
           case 12:
             { return RBRACE;
             }
           // fall through
-          case 28: break;
-          case 13:
-            { return MULTILINE_STRING;
-            }
-          // fall through
           case 29: break;
-          case 14:
-            { return NULL;
+          case 13:
+            { return STRING;
             }
           // fall through
           case 30: break;
-          case 15:
-            { return TRUE;
+          case 14:
+            { return MULTILINE_STRING;
             }
           // fall through
           case 31: break;
-          case 16:
-            { return FALSE;
+          case 15:
+            { return NULL;
             }
           // fall through
           case 32: break;
+          case 16:
+            { return TRUE;
+            }
+          // fall through
+          case 33: break;
+          case 17:
+            { return FALSE;
+            }
+          // fall through
+          case 34: break;
           default:
             zzScanError(ZZ_NO_MATCH);
           }

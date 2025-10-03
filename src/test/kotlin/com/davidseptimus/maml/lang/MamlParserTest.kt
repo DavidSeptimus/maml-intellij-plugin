@@ -425,7 +425,10 @@ class MamlParserTest : ParsingTestCase("", "maml", MamlParserDefinition()) {
     @Test
     fun testMissingColon() {
         val file = parse("{ key \"value\" }")
-        assertHasErrors(file)
+        // With incomplete_key_value support, this parses as incomplete key + invalid element
+        // The incomplete key-value is not an error, but the orphaned string is
+        val incompleteKV = PsiTreeUtil.findChildOfType(file, MamlIncompleteKeyValue::class.java)
+        assertNotNull("Expected incomplete key-value for 'key'", incompleteKV)
     }
 
     @Test
@@ -448,5 +451,67 @@ class MamlParserTest : ParsingTestCase("", "maml", MamlParserDefinition()) {
         // Should recover and parse valid values
         val array = PsiTreeUtil.findChildOfType(file, MamlArray::class.java)
         assertNotNull("Expected an array", array)
+    }
+
+    // Invalid Value Tests (new parser feature)
+
+    @Test
+    fun testPartialKeywordValue() {
+        val file = parse("{ key: fa }")
+        // Should parse but create an invalid value element
+        val obj = PsiTreeUtil.findChildOfType(file, MamlObject::class.java)
+        assertNotNull("Expected an object", obj)
+
+        val invalidValue = PsiTreeUtil.findChildOfType(file, MamlInvalidValue::class.java)
+        assertNotNull("Expected an invalid value for partial keyword 'fa'", invalidValue)
+    }
+
+    @Test
+    fun testUnterminatedStringValue() {
+        val file = parse("{ key: \"unterminated }")
+        // Should parse with unterminated string as invalid value
+        val obj = PsiTreeUtil.findChildOfType(file, MamlObject::class.java)
+        assertNotNull("Expected an object", obj)
+
+        val invalidValue = PsiTreeUtil.findChildOfType(file, MamlInvalidValue::class.java)
+        assertNotNull("Expected an invalid value for unterminated string", invalidValue)
+    }
+
+    @Test
+    fun testInvalidIdentifierInValue() {
+        val file = parse("[someIdentifier]")
+        // Should parse with identifier as invalid value
+        val array = PsiTreeUtil.findChildOfType(file, MamlArray::class.java)
+        assertNotNull("Expected an array", array)
+
+        val invalidValue = PsiTreeUtil.findChildOfType(file, MamlInvalidValue::class.java)
+        assertNotNull("Expected an invalid value for identifier in value position", invalidValue)
+    }
+
+    // Incomplete Key-Value Tests (new parser feature)
+
+    @Test
+    fun testIncompleteKeyValue() {
+        val file = parse("{ myKey }")
+        // Should parse but create an incomplete key-value element
+        val obj = PsiTreeUtil.findChildOfType(file, MamlObject::class.java)
+        assertNotNull("Expected an object", obj)
+
+        val incompleteKV = PsiTreeUtil.findChildOfType(file, MamlIncompleteKeyValue::class.java)
+        assertNotNull("Expected an incomplete key-value for key without colon", incompleteKV)
+    }
+
+    @Test
+    fun testIncompleteKeyValueWithOthers() {
+        val file = parse("{ good: \"value\", incomplete, another: 123 }")
+        // Should parse complete ones and mark incomplete one
+        val obj = PsiTreeUtil.findChildOfType(file, MamlObject::class.java)
+        assertNotNull("Expected an object", obj)
+
+        val completeKVs = PsiTreeUtil.findChildrenOfType(file, MamlKeyValue::class.java)
+        assertEquals("Expected 2 complete key-value pairs", 2, completeKVs.size)
+
+        val incompleteKVs = PsiTreeUtil.findChildrenOfType(file, MamlIncompleteKeyValue::class.java)
+        assertEquals("Expected 1 incomplete key-value", 1, incompleteKVs.size)
     }
 }

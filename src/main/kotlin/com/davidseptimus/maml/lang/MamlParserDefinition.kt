@@ -38,6 +38,10 @@ class MamlParserDefinition: ParserDefinition {
     }
 
     override fun getStringLiteralElements(): TokenSet {
+        return TokenSet.create(MamlTypes.STRING, MamlTypes.MULTILINE_STRING, MamlTypes.UNTERMINATED_STRING)
+    }
+
+    override fun getWhitespaceTokens(): TokenSet {
         return WHITE_SPACES
     }
 

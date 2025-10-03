@@ -15,10 +15,13 @@
 // Whitespace and comments are automatically handled by Grammar-Kit
 mamlFile ::= value?
 
-value ::= object | array | STRING | MULTILINE_STRING | NUMBER | TRUE | FALSE | NULL {
+value ::= object | array | STRING | MULTILINE_STRING | NUMBER | TRUE | FALSE | NULL | invalid_value {
   implements="com.davidseptimus.maml.lang.psi.MamlValueElement"
   mixin="com.davidseptimus.maml.lang.psi.MamlValueMixin"
 }
+
+// Invalid/partial value - used for error recovery (e.g., incomplete keywords like "fa" for "false")
+invalid_value ::= IDENTIFIER | UNTERMINATED_STRING
 
 // Object with error recovery - pin after opening brace
 object ::= LBRACE members? RBRACE {
@@ -30,13 +33,19 @@ object ::= LBRACE members? RBRACE {
 members ::= key_value_recoverable (COMMA? key_value_recoverable)* COMMA?
 
 // Wrap key_value with recovery to continue parsing after errors
-private key_value_recoverable ::= key_value {
+private key_value_recoverable ::= key_value | incomplete_key_value {
   recoverWhile=key_value_recover
 }
 
-// Key-value pair - pin after seeing the colon
+// Complete key-value pair - pin after seeing the colon (not the key)
 key_value ::= key COLON value {
   pin=2
+  methods=[getPresentation]
+}
+
+// Incomplete key-value pair - just a key without colon (for completion/error recovery)
+// Uses lookahead to only match if NOT followed by colon
+incomplete_key_value ::= key &(!(COLON)) {
   methods=[getPresentation]
 }
 

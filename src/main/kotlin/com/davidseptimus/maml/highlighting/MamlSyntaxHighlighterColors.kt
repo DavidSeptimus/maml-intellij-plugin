@@ -22,6 +22,9 @@ object MamlSyntaxHighlighterColors {
             MamlTypes.IDENTIFIER -> arrayOf(MamlTokenAttributes.IDENTIFIER)
 
             MamlTypes.COMMENT -> arrayOf(MamlTokenAttributes.COMMENT)
+            MamlTypes.UNTERMINATED_STRING -> arrayOf(MamlTokenAttributes.STRING)
+            MamlTypes.INVALID_VALUE -> arrayOf(MamlTokenAttributes.INVALID_ESCAPE)
+            MamlTypes.INCOMPLETE_KEY_VALUE -> arrayOf(MamlTokenAttributes.IDENTIFIER)
 
             TokenType.BAD_CHARACTER -> arrayOf(MamlTokenAttributes.BAD_CHARACTER)
 

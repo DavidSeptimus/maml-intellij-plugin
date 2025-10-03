@@ -11,6 +11,14 @@ public class MamlVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitIncompleteKeyValue(@NotNull MamlIncompleteKeyValue o) {
+    visitPsiElement(o);
+  }
+
+  public void visitInvalidValue(@NotNull MamlInvalidValue o) {
+    visitPsiElement(o);
+  }
+
   public void visitItems(@NotNull MamlItems o) {
     visitPsiElement(o);
   }

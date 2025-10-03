@@ -5,12 +5,6 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface MamlMembers extends PsiElement {
-
-  @NotNull
-  List<MamlIncompleteKeyValue> getIncompleteKeyValueList();
-
-  @NotNull
-  List<MamlKeyValue> getKeyValueList();
+public interface MamlInvalidValue extends PsiElement {
 
 }

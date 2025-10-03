@@ -81,7 +81,7 @@ COMMENT=#[^\r\n]*
   \"({STRING_CHAR}|{ESCAPE_SEQ})*\" { return STRING; }
 
   // Unterminated string (stops at newline or EOF instead of consuming rest of file)
-  \"({STRING_CHAR}|{ESCAPE_SEQ})* { return STRING; }
+  \"({STRING_CHAR}|{ESCAPE_SEQ})* { return UNTERMINATED_STRING; }
 
   // Number
   {NUMBER}                 { return NUMBER; }
