@@ -4,6 +4,15 @@
 
 ## [Unreleased]
 
+### Added
+
+- Added formatting option to unquote keys when possible
+- Added enter delegate handler to insert and indented new line in empty `{}` and `[]` blocks
+
+### Fixed
+
+- Fixed indentation bug when inserting a new line after a closing `}` or `]`
+
 ## [0.3.0] - 2025-10-03
 
 ### Added

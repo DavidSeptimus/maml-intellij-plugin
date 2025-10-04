@@ -4,12 +4,9 @@ import com.davidseptimus.maml.lang.psi.*
 import com.davidseptimus.maml.lang.psi.MamlTypes.*
 import com.intellij.formatting.*
 import com.intellij.lang.ASTNode
-import com.intellij.lang.tree.util.siblings
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
 import com.intellij.psi.TokenType
-import com.intellij.psi.formatter.FormatterUtil.isWhitespaceOrEmpty
 import com.intellij.psi.tree.TokenSet
 
 class MamlBlock(
@@ -30,7 +27,7 @@ class MamlBlock(
     }
     private val propertyValueAlignment: Alignment? = when {
         psiElement is MamlObject -> Alignment.createAlignment(true)
-        MamlPsiUtil.hasElementType(node, MamlTypes.MEMBERS) -> Alignment.createAlignment(true)
+        MamlPsiUtil.hasElementType(node, MEMBERS) -> Alignment.createAlignment(true)
         else -> null
     }
 
@@ -112,10 +109,8 @@ class MamlBlock(
     override fun getChildAttributes(newChildIndex: Int): ChildAttributes {
         return if (MamlPsiUtil.hasElementType(node, MAML_CONTAINERS)) {
             ChildAttributes(Indent.getNormalIndent(), null)
-        } else if (node.psi is PsiFile) {
-            ChildAttributes(Indent.getNoneIndent(), null)
         } else {
-            ChildAttributes(null, null)
+            ChildAttributes(Indent.getNoneIndent(), null)
         }
     }
 

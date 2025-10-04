@@ -104,6 +104,13 @@ class MamlLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider(
                     MamlBundle.message("formatter.wrapping_remove_commas.label"),
                     MamlBundle.message("formatter.wrapping.other_group.label")
                 )
+
+                consumer.showCustomOption(
+                    MamlCodeStyleSettings::class.java,
+                    "UNQUOTE_SAFE_KEYS",
+                    MamlBundle.message("formatter.unquote_safe_keys.label"),
+                    MamlBundle.message("formatter.wrapping.other_group.label")
+                )
             }
             else -> {}
         }

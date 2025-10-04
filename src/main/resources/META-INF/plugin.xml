@@ -20,6 +20,7 @@
               extensions="maml"/>
     <lang.quoteHandler language="MAML" implementationClass="com.davidseptimus.maml.editor.MamlQuoteHandler"/>
     <lang.braceMatcher language="MAML" implementationClass="com.davidseptimus.maml.editor.MamlBraceMatcher"/>
+      <enterHandlerDelegate implementation="com.davidseptimus.maml.editor.MamlEnterBetweenBracesHandler"/>
     <colorSettingsPage implementation="com.davidseptimus.maml.highlighting.MamlColorSettingsPage"/>
 
     <!-- Settings -->
@@ -145,11 +146,13 @@
     <lang.lineWrapStrategy language="MAML" implementationClass="com.davidseptimus.maml.formatter.MamlLineWrapPositionStrategy"/>
 
     <!-- Pre-format processors (order matters!) -->
-    <!-- 1. Remove all commas first -->
-    <preFormatProcessor implementation="com.davidseptimus.maml.formatter.MamlCommaRemover" order="first"/>
-    <!-- 2. Remove trailing commas (if any remain) -->
+      <!-- 1. Unquote keys that can be safely unquoted -->
+      <preFormatProcessor implementation="com.davidseptimus.maml.formatter.MamlKeyUnquoter" order="first"/>
+      <!-- 2. Remove all commas -->
+      <preFormatProcessor implementation="com.davidseptimus.maml.formatter.MamlCommaRemover"/>
+      <!-- 3. Remove trailing commas (if any remain) -->
     <preFormatProcessor implementation="com.davidseptimus.maml.formatter.MamlTrailingCommaRemover"/>
-    <!-- 3. Fix comment spacing -->
+      <!-- 4. Fix comment spacing -->
     <preFormatProcessor implementation="com.davidseptimus.maml.formatter.MamlCommentLeadingSpaceInserter"/>
   </extensions>
 </idea-plugin>

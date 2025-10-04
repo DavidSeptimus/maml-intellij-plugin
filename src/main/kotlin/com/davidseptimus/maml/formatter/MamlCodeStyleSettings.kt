@@ -16,6 +16,9 @@ class MamlCodeStyleSettings(container: CodeStyleSettings) :
     var REMOVE_COMMAS: Boolean = false
 
     @JvmField
+    var UNQUOTE_SAFE_KEYS: Boolean = false
+
+    @JvmField
     var SPACE_AFTER_COLON: Boolean = true
 
     @JvmField
