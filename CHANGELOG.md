@@ -8,6 +8,7 @@
 
 - Added quick-fix to add missing properties based on JSON Schema
 - Added quick-fix to remove disallowed properties based on JSON Schema
+- Added placeholder file and plugin icons
 
 ### Fixed
 

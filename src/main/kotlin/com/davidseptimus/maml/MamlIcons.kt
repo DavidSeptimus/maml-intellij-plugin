@@ -1,11 +1,11 @@
 package com.davidseptimus.maml
 
-import com.intellij.icons.AllIcons
+import com.intellij.openapi.util.IconLoader
 import javax.swing.Icon
 
 class MamlIcons {
     companion object {
-        val FILE: Icon = AllIcons.FileTypes.Json
+        val FILE: Icon = IconLoader.getIcon("/icons/mamlFileIcon.svg", MamlIcons::class.java)
     }
 
 }
