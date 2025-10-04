@@ -5,6 +5,17 @@
 ## [Unreleased]
 
 ### Added
+
+- Added quick-fix to add missing properties based on JSON Schema
+- Added quick-fix to remove disallowed properties based on JSON Schema
+
+### Fixed
+
+- Fixed documentation from JSON Schema not showing in documentation popup
+
+## [0.2.0] - 2025-10-03
+
+### Added
 - Comprehensive syntax highlighting for MAML files
 - JSON Schema integration for code intelligence and completions
 - Schema compliance inspections with detailed error reporting

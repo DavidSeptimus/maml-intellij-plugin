@@ -31,6 +31,54 @@ object MamlElementFactory {
     }
 
     /**
+     * Creates a new key-value pair with the given key and value.
+     *
+     * @param project the project context
+     * @param keyText the key text (with or without quotes)
+     * @param valueText the value text
+     * @return a new MamlKeyValue element
+     */
+    fun createKeyValue(project: Project, keyText: String, valueText: String): MamlKeyValue {
+        val fileText = "{ $keyText: $valueText }"
+        val file = createFile(project, fileText)
+
+        val value = file.firstChild as? MamlValue
+        val obj = value?.`object`
+        val members = obj?.members
+        val keyValue = members?.keyValueList?.firstOrNull()
+        return keyValue ?: throw IllegalStateException("Failed to create key-value element")
+    }
+
+    /**
+     * Creates a new members element with a single key-value pair.
+     *
+     * @param project the project context
+     * @param keyText the key text
+     * @param valueText the value text
+     * @return a new MamlMembers element
+     */
+    fun createMembers(project: Project, keyText: String, valueText: String): MamlMembers {
+        val fileText = "{ $keyText: $valueText }"
+        val file = createFile(project, fileText)
+
+        val value = file.firstChild as? MamlValue
+        val obj = value?.`object`
+        val members = obj?.members
+        return members ?: throw IllegalStateException("Failed to create members element")
+    }
+
+    /**
+     * Creates a newline whitespace element.
+     *
+     * @param project the project context
+     * @return a newline PsiElement
+     */
+    fun createNewline(project: Project): com.intellij.psi.PsiElement {
+        val file = createFile(project, "\n")
+        return file.firstChild
+    }
+
+    /**
      * Creates a temporary MAML file with the given text.
      *
      * @param project the project context

@@ -1,6 +1,5 @@
 package com.davidseptimus.maml.json
 
-import com.davidseptimus.maml.lang.psi.MamlFile
 import com.davidseptimus.maml.lang.psi.*
 import com.intellij.json.pointer.JsonPointerPosition
 import com.intellij.psi.PsiElement
@@ -21,6 +20,13 @@ object MamlJsonPsiWalker : JsonLikePsiWalker {
     }
 
     override fun findElementToCheck(element: PsiElement): PsiElement? {
+        // For keys, return the entire key-value pair so schema lookup can find the property definition
+        val key = element.parentOfType<MamlKey>()
+        if (key != null) {
+            return key.parent as? MamlKeyValue ?: key
+        }
+
+        // Otherwise check for value or key-value pair
         return element.parentOfType<MamlValue>() ?: element.parentOfType<MamlKeyValue>()
     }
 

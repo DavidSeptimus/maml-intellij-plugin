@@ -1,19 +1,17 @@
 package com.davidseptimus.maml.inspections
 
 import com.davidseptimus.maml.MamlBundle
-import com.intellij.codeInspection.LocalInspectionTool
-import com.intellij.codeInspection.LocalInspectionToolSession
-import com.intellij.codeInspection.ProblemsHolder
+import com.davidseptimus.maml.lang.psi.MamlObject
+import com.intellij.codeInspection.*
 import com.intellij.codeInspection.options.OptPane
 import com.intellij.codeInspection.options.OptPane.checkbox
 import com.intellij.codeInspection.options.OptPane.pane
+import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.jetbrains.jsonSchema.extension.JsonLikePsiWalker
 import com.jetbrains.jsonSchema.ide.JsonSchemaService
-import com.jetbrains.jsonSchema.impl.JsonComplianceCheckerOptions
-import com.jetbrains.jsonSchema.impl.JsonSchemaComplianceChecker
-import com.jetbrains.jsonSchema.impl.JsonSchemaObject
+import com.jetbrains.jsonSchema.impl.*
 
 /**
  * Inspection that validates MAML files against their associated JSON schemas.
@@ -79,11 +77,134 @@ class MamlJsonSchemaComplianceInspection : LocalInspectionTool() {
         val walker = JsonLikePsiWalker.getWalker(element, rootSchema) ?: return
 
         // Create compliance checker with options
-        val options = JsonComplianceCheckerOptions(caseInsensitiveEnum,)
+        val options = JsonComplianceCheckerOptions(caseInsensitiveEnum)
+
+        // Wrap the holder to add quick fixes for missing required properties
+        val wrappedHolder = MamlProblemsHolderWrapper(holder, rootSchema)
 
         // Run the compliance checker
-        // This will add problems to the holder for any schema violations
-        JsonSchemaComplianceChecker(rootSchema, holder, walker, session, options).annotate(element)
+        // This will add problems to the wrapped holder for any schema violations
+        JsonSchemaComplianceChecker(rootSchema, wrappedHolder, walker, session, options).annotate(element)
+    }
+
+    /**
+     * Wraps ProblemsHolder to intercept problem registrations and add quick fixes
+     * for missing required properties.
+     */
+    private class MamlProblemsHolderWrapper(
+        private val delegate: ProblemsHolder,
+        private val rootSchema: JsonSchemaObject
+    ) : ProblemsHolder(delegate.manager, delegate.file, delegate.isOnTheFly) {
+
+        override fun registerProblem(
+            psiElement: PsiElement,
+            descriptionTemplate: String,
+            highlightType: ProblemHighlightType,
+            vararg fixes: LocalQuickFix
+        ) {
+            val additionalFixes = getQuickFixesForProblem(psiElement, descriptionTemplate)
+            val allFixes = fixes.toList() + additionalFixes.toList()
+            delegate.registerProblem(psiElement, descriptionTemplate, highlightType, *allFixes.toTypedArray())
+        }
+
+        override fun registerProblem(
+            psiElement: PsiElement,
+            rangeInElement: TextRange?,
+            descriptionTemplate: String,
+            vararg fixes: LocalQuickFix
+        ) {
+            val additionalFixes = getQuickFixesForProblem(psiElement, descriptionTemplate)
+            val allFixes = fixes.toList() + additionalFixes.toList()
+            delegate.registerProblem(psiElement, rangeInElement, descriptionTemplate, *allFixes.toTypedArray())
+        }
+
+        override fun registerProblem(
+            psiElement: PsiElement,
+            descriptionTemplate: String,
+            highlightType: ProblemHighlightType,
+            rangeInElement: TextRange?,
+            vararg fixes: LocalQuickFix
+        ) {
+            val additionalFixes = getQuickFixesForProblem(psiElement, descriptionTemplate)
+            val allFixes = fixes.toList() + additionalFixes.toList()
+            delegate.registerProblem(
+                psiElement,
+                descriptionTemplate,
+                highlightType,
+                rangeInElement,
+                *allFixes.toTypedArray()
+            )
+        }
+
+        private fun getQuickFixesForProblem(element: PsiElement, message: String): Array<LocalQuickFix> {
+            // Check for missing required property error
+            getMissingRequiredPropertyFix(element, message)?.let { return arrayOf(it) }
+
+            // Check for disallowed property error
+            getDisallowedPropertyFix(element, message)?.let { return arrayOf(it) }
+
+            return emptyArray()
+        }
+
+        private fun getMissingRequiredPropertyFix(element: PsiElement, message: String): LocalQuickFix? {
+            val missingPropPattern = Regex("Missing required propert(?:y|ies):?\\s+['\"]?([^'\"]+)['\"]?")
+            val match = missingPropPattern.find(message) ?: return null
+            val propertyName = match.groupValues.getOrNull(1) ?: return null
+
+            // Find the schema for the property to determine a suggested value
+            val obj = element as? MamlObject ?: return null
+            val walker = JsonLikePsiWalker.getWalker(element, rootSchema) ?: return null
+            val position = walker.findPosition(obj, false) ?: return null
+
+            // Resolve the schema for this position
+            val valueAdapter = walker.createValueAdapter(obj)
+            val schemas = JsonSchemaResolver(delegate.project, rootSchema, position, valueAdapter).resolve()
+
+            for (schema in schemas) {
+                val propSchema = schema.getPropertyByName(propertyName)
+                val suggestedValue = getSuggestedValue(propSchema)
+                return MamlMissingRequiredPropertyQuickFix(propertyName, suggestedValue)
+            }
+
+            return null
+        }
+
+        private fun getDisallowedPropertyFix(element: PsiElement, message: String): LocalQuickFix? {
+            val disallowedPropPattern = Regex("Property is not allowed")
+            if (!disallowedPropPattern.containsMatchIn(message)) return null
+
+            // Extract property name from the key-value pair
+            val keyValue = element as? com.davidseptimus.maml.lang.psi.MamlKeyValue
+                ?: element.parent as? com.davidseptimus.maml.lang.psi.MamlKeyValue
+                ?: return null
+
+            val propertyName = keyValue.key.name ?: return null
+            return MamlRemoveDisallowedPropertyQuickFix(propertyName)
+        }
+
+        private fun getSuggestedValue(schema: JsonSchemaObject?): String {
+            if (schema == null) return "\"\""
+
+            return when {
+                schema.default != null -> schema.default.toString()
+                schema.enum != null && schema.enum!!.isNotEmpty() -> {
+                    val first = schema.enum!!.first()
+                    if (first is String) "\"$first\"" else first.toString()
+                }
+
+                schema.type != null -> when (schema.type) {
+                    JsonSchemaType._string -> "\"\""
+                    JsonSchemaType._number, JsonSchemaType._integer -> "0"
+                    JsonSchemaType._boolean -> "false"
+                    JsonSchemaType._array -> "[]"
+                    JsonSchemaType._object -> "{}"
+                    JsonSchemaType._null -> "null"
+                    else -> "\"\""
+                }
+
+                else -> "\"\""
+            }
+        }
     }
 
     override fun getOptionsPane(): OptPane {

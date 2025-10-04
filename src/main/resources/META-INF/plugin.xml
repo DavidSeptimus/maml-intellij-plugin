@@ -39,11 +39,14 @@
   <extensions defaultExtensionNs="com.intellij">
     <!-- JSON Schema-based completion and documentation -->
     <completion.contributor language="MAML"
-                            implementationClass="com.davidseptimus.maml.json.MamlJsonSchemaCompletionContributor"/>
+                            implementationClass="com.davidseptimus.maml.json.MamlJsonSchemaCompletionContributor"
+                            order="first"/>
     <completion.contributor language="MAML"
-                            implementationClass="com.davidseptimus.maml.completion.MamlKeywordCompletionContributor"/>
+                            implementationClass="com.davidseptimus.maml.completion.MamlKeywordCompletionContributor"
+                            order="last"/>
     <completion.contributor language="MAML"
-                            implementationClass="com.davidseptimus.maml.completion.MamlKnownKeysCompletionContributor"/>
+                            implementationClass="com.davidseptimus.maml.completion.MamlKnownKeysCompletionContributor"
+                            order="last"/>
     <lang.documentationProvider language="MAML"
                                 implementationClass="com.davidseptimus.maml.json.MamlJsonSchemaDocumentationProvider"/>
 
@@ -63,7 +66,7 @@
     <annotator language="MAML"
                 implementationClass="com.davidseptimus.maml.annotators.MamlIncompleteKeyValueAnnotator"/>
 
-    <!-- JSON Schema validation -->
+      <!-- JSON Schema validation (includes missing required properties quick fixes) -->
     <localInspection language="MAML"
                      groupKey="inspection.schema.compliance.group.name"
                      groupBundle="messages.MamlBundle"

@@ -9,18 +9,25 @@ import org.jetbrains.annotations.Nls
 class MamlJsonSchemaDocumentationProvider : DocumentationProvider {
     @Nls
     override fun getQuickNavigateInfo(element: PsiElement?, originalElement: PsiElement?): String? =
-        findSchemaAndGenerateDoc(element, true)
+        findSchemaAndGenerateDoc(element, originalElement, true)
 
     @Nls
     override fun generateDoc(element: PsiElement?, originalElement: PsiElement?): String? =
-        findSchemaAndGenerateDoc(element, false)
+        findSchemaAndGenerateDoc(element, originalElement, false)
 
     @Nls
-    private fun findSchemaAndGenerateDoc(element: PsiElement?, preferShort: Boolean): String? {
-        if (element == null) return null
-        val service = JsonSchemaService.Impl.get(element.project)
-        val file = element.containingFile ?: return null
-        val schema = service.getSchemaObject(file) ?: return null
-        return JsonSchemaDocumentationProvider.generateDoc(element, schema, preferShort, null)
+    private fun findSchemaAndGenerateDoc(
+        element: PsiElement?,
+        originalElement: PsiElement?,
+        preferShort: Boolean
+    ): String? {
+        val targetElement = originalElement ?: element ?: return null
+        val file = targetElement.containingFile ?: return null
+        val virtualFile = file.virtualFile ?: return null
+
+        val service = JsonSchemaService.Impl.get(targetElement.project)
+        val schema = service.getSchemaObject(virtualFile) ?: return null
+
+        return JsonSchemaDocumentationProvider.generateDoc(targetElement, schema, preferShort, null)
     }
 }
