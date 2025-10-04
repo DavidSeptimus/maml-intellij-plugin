@@ -1,7 +1,6 @@
 package com.davidseptimus.maml.highlighting
 
 import com.davidseptimus.maml.MamlIcons
-import com.davidseptimus.maml.highlighting.MamlTokenAttributes
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.fileTypes.SyntaxHighlighter
 import com.intellij.openapi.options.colors.AttributesDescriptor
@@ -16,7 +15,7 @@ class MamlColorSettingsPage : ColorSettingsPage {
 
     override fun getDisplayName(): String = "MAML"
 
-    override fun getIcon(): Icon? = MamlIcons.FILE
+    override fun getIcon(): Icon = MamlIcons.FILE
 
     override fun getHighlighter(): SyntaxHighlighter = MamlSyntaxHighlighter()
 
@@ -60,10 +59,8 @@ class MamlColorSettingsPage : ColorSettingsPage {
           invalid: "Bad\xescape",
 
           # References - URLs and file paths
-          <url>website</url>: <url>"https://example.com"</url>,
-          <url>api</url>: <url>"http://api.example.com/v1"</url>,
-          <filepath>config</filepath>: <filepath>"../config/settings.json"</filepath>,
-          <filepath>readme</filepath>: <filepath>"README.md"</filepath>,
+          website: <url>"https://example.com"</url>,
+          config: <filepath>"../config/settings.json"</filepath>,
 
           # Multiline string
           description: ""${'"'}
