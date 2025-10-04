@@ -57,7 +57,7 @@ class MamlInlayHintsProvider : InlayHintsProvider<MamlInlayHintsProvider.Setting
                         val closingBracket = element.lastChild
                         if (closingBracket?.text == "]") {
                             val text = if (itemCount == 1) "1 item" else "$itemCount items"
-                            val presentation = factory.offsetFromTopForSmallText(factory.smallText(text))
+                            val presentation = factory.roundWithBackgroundAndSmallInset(factory.smallText(text))
                             sink.addInlineElement(
                                 closingBracket.textRange.startOffset,
                                 relatesToPrecedingText = true,
