@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [0.3.0] - 2025-10-03
+
 ### Added
 
 - Added quick-fix to add missing properties based on JSON Schema
