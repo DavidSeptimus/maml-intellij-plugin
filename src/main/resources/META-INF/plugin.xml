@@ -147,7 +147,7 @@
 
     <!-- Pre-format processors (order matters!) -->
       <!-- 1. Unquote keys that can be safely unquoted -->
-      <preFormatProcessor implementation="com.davidseptimus.maml.formatter.MamlKeyUnquoter" order="first"/>
+      <preFormatProcessor implementation="com.davidseptimus.maml.formatter.MamlKeyFormatter" order="first"/>
       <!-- 2. Remove all commas -->
       <preFormatProcessor implementation="com.davidseptimus.maml.formatter.MamlCommaRemover"/>
       <!-- 3. Remove trailing commas (if any remain) -->

@@ -16,7 +16,7 @@ class MamlCodeStyleSettings(container: CodeStyleSettings) :
     var REMOVE_COMMAS: Boolean = false
 
     @JvmField
-    var UNQUOTE_SAFE_KEYS: Boolean = false
+    var KEY_QUOTING_STYLE: Int = KeyQuotingStyle.DO_NOT_MODIFY.id
 
     @JvmField
     var SPACE_AFTER_COLON: Boolean = true
@@ -43,6 +43,15 @@ class MamlCodeStyleSettings(container: CodeStyleSettings) :
         DO_NOT_ALIGN(0, "formatter.align.properties.none"),
         ALIGN_ON_VALUE(1, "formatter.align.properties.on.value"),
         ALIGN_ON_COLON(2, "formatter.align.properties.on.colon");
+
+        val description: String
+            get() = MamlBundle.message(key)
+    }
+
+    enum class KeyQuotingStyle(val id: Int, private val key: String) {
+        DO_NOT_MODIFY(0, "formatter.key_quoting.do_not_modify"),
+        REMOVE_QUOTES(1, "formatter.key_quoting.remove_quotes"),
+        ADD_QUOTES(2, "formatter.key_quoting.add_quotes");
 
         val description: String
             get() = MamlBundle.message(key)

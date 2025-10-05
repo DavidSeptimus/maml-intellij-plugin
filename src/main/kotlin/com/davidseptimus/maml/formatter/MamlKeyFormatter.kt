@@ -11,21 +11,30 @@ import com.intellij.psi.impl.source.codeStyle.PreFormatProcessor
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 
 /**
- * Pre-format processor that unquotes string keys that can be safely represented as identifiers.
+ * Pre-format processor that modifies key quoting based on the configured style.
+ *
+ * Supports three modes:
+ * 1. DO_NOT_MODIFY: Leaves keys as-is
+ * 2. REMOVE_QUOTES: Unquotes string keys that can be safely represented as identifiers
+ * 3. ADD_QUOTES: Quotes all identifier keys as strings
  *
  * A quoted string key can be safely unquoted if:
- * 1. It contains only alphanumeric characters, dashes, and underscores
- * 2. It is not a reserved keyword (true, false, null)
+ * - It contains only alphanumeric characters, dashes, and underscores
+ * - It is not a reserved keyword (true, false, null)
  *
- * For example:
+ * Examples:
  * ```
- * "simple-key": value  -> simple-key: value
- * "hello_world": 123   -> hello_world: 123
- * "true": value        -> "true": value  (kept quoted - reserved keyword)
- * "has spaces": value  -> "has spaces": value  (kept quoted - contains spaces)
+ * REMOVE_QUOTES:
+ *   "simple-key": value  -> simple-key: value
+ *   "hello_world": 123   -> hello_world: 123
+ *   "true": value        -> "true": value  (kept quoted - reserved keyword)
+ *
+ * ADD_QUOTES:
+ *   simple-key: value    -> "simple-key": value
+ *   hello_world: 123     -> "hello_world": 123
  * ```
  */
-class MamlKeyUnquoter : PreFormatProcessor {
+class MamlKeyFormatter : PreFormatProcessor {
 
     override fun process(element: ASTNode, range: TextRange): TextRange {
         val psi = element.psi
@@ -36,11 +45,21 @@ class MamlKeyUnquoter : PreFormatProcessor {
         }
 
         val customSettings = CodeStyle.getCustomSettings(file, MamlCodeStyleSettings::class.java)
-        if (!customSettings.UNQUOTE_SAFE_KEYS) {
-            return range
-        }
+        val quotingStyle =
+            MamlCodeStyleSettings.KeyQuotingStyle.entries.find { it.id == customSettings.KEY_QUOTING_STYLE }
+                ?: MamlCodeStyleSettings.KeyQuotingStyle.DO_NOT_MODIFY
 
-        unquoteKeys(element)
+        when (quotingStyle) {
+            MamlCodeStyleSettings.KeyQuotingStyle.REMOVE_QUOTES -> {
+                unquoteKeys(element)
+            }
+
+            MamlCodeStyleSettings.KeyQuotingStyle.ADD_QUOTES -> {
+                quoteKeys(element)
+            }
+
+            else -> {}
+        }
 
         return TextRange.create(element.startOffset, element.startOffset + element.textLength)
     }
@@ -105,5 +124,41 @@ class MamlKeyUnquoter : PreFormatProcessor {
 
         // Check if it matches the identifier pattern: [a-zA-Z0-9_-]+
         return content.all { it.isLetterOrDigit() || it == '_' || it == '-' }
+    }
+
+    /**
+     * Converts all identifier keys to quoted string keys.
+     */
+    private fun quoteKeys(node: ASTNode) {
+        var child = node.firstChildNode
+        while (child != null) {
+            val next = child.treeNext
+
+            if (child.elementType == MamlTypes.IDENTIFIER && child.psi.parent is MamlKey) {
+                tryQuoteKey(node, child)
+            } else {
+                // Recursively process children
+                quoteKeys(child)
+            }
+
+            child = next
+        }
+    }
+
+    /**
+     * Attempts to quote an identifier key as a string.
+     */
+    private fun tryQuoteKey(parent: ASTNode, identifierNode: ASTNode) {
+        if (identifierNode !is LeafPsiElement) {
+            return
+        }
+
+        val content = identifierNode.text
+        val quotedString = "\"$content\""
+
+        // Replace the identifier with a quoted string
+        val stringNode = LeafPsiElement(MamlTypes.STRING, quotedString)
+        CodeEditUtil.setNodeGenerated(stringNode, true)
+        parent.replaceChild(identifierNode, stringNode)
     }
 }

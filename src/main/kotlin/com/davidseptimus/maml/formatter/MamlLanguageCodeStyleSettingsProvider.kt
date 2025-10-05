@@ -107,9 +107,11 @@ class MamlLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider(
 
                 consumer.showCustomOption(
                     MamlCodeStyleSettings::class.java,
-                    "UNQUOTE_SAFE_KEYS",
-                    MamlBundle.message("formatter.unquote_safe_keys.label"),
-                    MamlBundle.message("formatter.wrapping.other_group.label")
+                    "KEY_QUOTING_STYLE",
+                    MamlBundle.message("formatter.key_quoting.label"),
+                    MamlBundle.message("formatter.wrapping.other_group.label"),
+                    KEY_QUOTING_OPTIONS,
+                    KEY_QUOTING_VALUES
                 )
             }
             else -> {}
@@ -132,21 +134,40 @@ class MamlLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider(
     }
 
     override fun getAccessor(codeStyleObject: Any, field: Field): CodeStyleFieldAccessor<*, *>? {
-        if (codeStyleObject is MamlCodeStyleSettings && field.name == "PROPERTY_ALIGNMENT") {
-            return MagicIntegerConstAccessor(
-                codeStyleObject,
-                field,
-                intArrayOf(
-                    MamlCodeStyleSettings.PropertyAlignment.DO_NOT_ALIGN.id,
-                    MamlCodeStyleSettings.PropertyAlignment.ALIGN_ON_VALUE.id,
-                    MamlCodeStyleSettings.PropertyAlignment.ALIGN_ON_COLON.id
-                ),
-                arrayOf(
-                    "do_not_align",
-                    "align_on_value",
-                    "align_on_colon"
+        if (codeStyleObject is MamlCodeStyleSettings) {
+            return when (field.name) {
+                "PROPERTY_ALIGNMENT" -> MagicIntegerConstAccessor(
+                    codeStyleObject,
+                    field,
+                    intArrayOf(
+                        MamlCodeStyleSettings.PropertyAlignment.DO_NOT_ALIGN.id,
+                        MamlCodeStyleSettings.PropertyAlignment.ALIGN_ON_VALUE.id,
+                        MamlCodeStyleSettings.PropertyAlignment.ALIGN_ON_COLON.id
+                    ),
+                    arrayOf(
+                        "do_not_align",
+                        "align_on_value",
+                        "align_on_colon"
+                    )
                 )
-            )
+
+                "KEY_QUOTING_STYLE" -> MagicIntegerConstAccessor(
+                    codeStyleObject,
+                    field,
+                    intArrayOf(
+                        MamlCodeStyleSettings.KeyQuotingStyle.DO_NOT_MODIFY.id,
+                        MamlCodeStyleSettings.KeyQuotingStyle.REMOVE_QUOTES.id,
+                        MamlCodeStyleSettings.KeyQuotingStyle.ADD_QUOTES.id
+                    ),
+                    arrayOf(
+                        "do_not_modify",
+                        "remove_quotes",
+                        "add_quotes"
+                    )
+                )
+
+                else -> null
+            }
         }
         return null
     }
@@ -158,6 +179,9 @@ class MamlLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider(
 
 private val ALIGN_OPTIONS = MamlCodeStyleSettings.PropertyAlignment.entries.map { it.description }.toTypedArray()
 private val ALIGN_VALUES = MamlCodeStyleSettings.PropertyAlignment.entries.map { it.id }.toIntArray()
+
+private val KEY_QUOTING_OPTIONS = MamlCodeStyleSettings.KeyQuotingStyle.entries.map { it.description }.toTypedArray()
+private val KEY_QUOTING_VALUES = MamlCodeStyleSettings.KeyQuotingStyle.entries.map { it.id }.toIntArray()
 
 private val SAMPLE = """
     {
