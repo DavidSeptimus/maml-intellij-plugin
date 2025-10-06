@@ -1,0 +1,37 @@
+<html lang="en">
+<body>
+<p>Removes commas from arrays and objects, using newlines for separation instead.</p>
+
+<p>
+    In MAML, commas are optional when items are on separate lines. This intention removes all commas from
+    an array or object and ensures each item is placed on its own line, creating a more readable format
+    for multi-item containers.
+</p>
+
+<p><b>Before (array):</b></p>
+<pre><code>items: [1, 2, 3]</code></pre>
+
+<p><b>After (array):</b></p>
+<pre><code>items: [
+  1
+  2
+  3
+]</code></pre>
+
+<p><b>Before (object):</b></p>
+<pre><code>{name: "John", age: 30, city: "NYC"}</code></pre>
+
+<p><b>After (object):</b></p>
+<pre><code>{
+  name: "John"
+  age: 30
+  city: "NYC"
+}</code></pre>
+
+<p>
+    <strong>Note:</strong> This intention automatically adds newlines between items before removing commas
+    to ensure the result remains valid MAML syntax (commas are required on the same line, but optional
+    across lines).
+</p>
+</body>
+</html>

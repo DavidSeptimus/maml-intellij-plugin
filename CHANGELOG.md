@@ -4,9 +4,18 @@
 
 ## [Unreleased]
 
+- Added intentions to condense or expand arrays and objects
+- Added quick-fixes to add missing comma or wrap siblings to eliminate the need for a comma
+
+### Fixed
+
+- Fixed handling of missing commas on siblings sharing the same line
+
+## [0.4.0] - 2025-10-05
+
 ### Added
 
-- Added formatting option to unquote keys when possible
+- Added formatting option to quote or unquote keys where possible
 - Added enter delegate handler to insert and indented new line in empty `{}` and `[]` blocks
 
 ### Fixed

@@ -3,6 +3,7 @@ package com.davidseptimus.maml.intentions
 import com.davidseptimus.maml.MamlBundle
 import com.davidseptimus.maml.lang.psi.MamlElementFactory
 import com.davidseptimus.maml.lang.psi.MamlTypes
+import com.davidseptimus.maml.util.MamlStringUtil
 import com.intellij.codeInsight.intention.IntentionAction
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction
 import com.intellij.openapi.editor.Editor
@@ -29,27 +30,8 @@ class ConvertToSingleLineStringIntention : PsiElementBaseIntentionAction(), Inte
     override fun invoke(project: Project, editor: Editor?, element: PsiElement) {
         if (element.elementType != MamlTypes.MULTILINE_STRING) return
 
-        // Get the multiline string content without the triple quotes
-        val text = element.text
-        val content = text.substring(3, text.length - 3) // Remove opening and closing triple quotes
-
-        // Escape special characters for single-line string, preserving all whitespace in content
-        val result = StringBuilder()
-        for (char in content) {
-            when (char) {
-                '\\' -> result.append("\\\\")
-                '"' -> result.append("\\\"")
-                '\n' -> result.append("\\n")
-                '\r' -> result.append("\\r")
-                '\t' -> result.append("\\t")
-                '\b' -> result.append("\\b")
-                else -> result.append(char)
-            }
-        }
-        val escaped = result.toString()
-
-        // Create single-line string with regular quotes
-        val singleLineText = "\"$escaped\""
+        val content = MamlStringUtil.multilineToQuotedContent(element.text)
+        val singleLineText = MamlStringUtil.wrapInQuotes(content)
 
         // Create a temporary file with a value to extract the string from
         val tempFile = MamlElementFactory.createFile(project, singleLineText)

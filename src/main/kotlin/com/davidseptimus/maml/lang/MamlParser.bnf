@@ -28,8 +28,9 @@ object ::= LBRACE members? RBRACE {
   pin=1
 }
 
-// Members can be separated by commas or newlines (which are in whitespace)
-// The separator is optional - newlines in whitespace act as implicit separators
+// Members are key-value pairs in an object
+// Runtime rule: Commas are required when key-values are on the same line, optional across lines
+// Grammar accepts optional commas for error recovery; MamlMissingCommaAnnotator enforces the rule
 members ::= key_value_recoverable (COMMA? key_value_recoverable)* COMMA?
 
 // Wrap key_value with recovery to continue parsing after errors
@@ -62,8 +63,9 @@ array ::= LBRACKET items? RBRACKET {
   pin=1
 }
 
-// Items can be separated by commas or newlines (which are in whitespace)
-// The separator is optional - newlines in whitespace act as implicit separators
+// Items are values in an array
+// Runtime rule: Commas are required when values are on the same line, optional across lines
+// Grammar accepts optional commas for error recovery; MamlMissingCommaAnnotator enforces the rule
 items ::= value_recoverable (COMMA? value_recoverable)* COMMA?
 
 // Wrap value with recovery to continue parsing after errors in arrays

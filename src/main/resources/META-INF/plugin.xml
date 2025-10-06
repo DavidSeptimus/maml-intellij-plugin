@@ -66,6 +66,8 @@
                 implementationClass="com.davidseptimus.maml.annotators.MamlInvalidValueAnnotator"/>
     <annotator language="MAML"
                 implementationClass="com.davidseptimus.maml.annotators.MamlIncompleteKeyValueAnnotator"/>
+      <annotator language="MAML"
+                 implementationClass="com.davidseptimus.maml.annotators.MamlMissingCommaAnnotator"/>
 
       <!-- JSON Schema validation (includes missing required properties quick fixes) -->
     <localInspection language="MAML"
@@ -111,6 +113,21 @@
       <className>com.davidseptimus.maml.intentions.ConvertToSingleLineStringIntention</className>
       <categoryKey>intention.category.maml.key</categoryKey>
     </intentionAction>
+      <intentionAction>
+          <language>MAML</language>
+          <className>com.davidseptimus.maml.intentions.InlineContentsIntention</className>
+          <categoryKey>intention.category.maml.key</categoryKey>
+      </intentionAction>
+      <intentionAction>
+          <language>MAML</language>
+          <className>com.davidseptimus.maml.intentions.ExpandContentsIntention</className>
+          <categoryKey>intention.category.maml.key</categoryKey>
+      </intentionAction>
+      <intentionAction>
+          <language>MAML</language>
+          <className>com.davidseptimus.maml.intentions.RemoveCommasFromContainerIntention</className>
+          <categoryKey>intention.category.maml.key</categoryKey>
+      </intentionAction>
 
     <!-- Refactoring -->
     <renamePsiElementProcessor implementation="com.davidseptimus.maml.refactoring.MamlRenamePsiElementProcessor"/>
@@ -155,4 +172,14 @@
       <!-- 4. Fix comment spacing -->
     <preFormatProcessor implementation="com.davidseptimus.maml.formatter.MamlCommentLeadingSpaceInserter"/>
   </extensions>
+
+    <actions>
+        <!-- MAML Conversion Actions -->
+        <action id="ConvertToJson" class="com.davidseptimus.maml.actions.ConvertToJsonAction">
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+        </action>
+        <action id="ConvertToYaml" class="com.davidseptimus.maml.actions.ConvertToYamlAction">
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+        </action>
+    </actions>
 </idea-plugin>
