@@ -4,6 +4,17 @@
 
 ## [Unreleased]
 
+### Added
+
+- Added `text/maml` MIME type to MAML language registration
+
+### Fixed
+
+- Fixed `.maml` default file extension
+- Fixed scratch file creation with MAML language causing errors
+
+## [0.5.0] - 2025-10-05
+
 - Added intentions to condense or expand arrays and objects
 - Added quick-fixes to add missing comma or wrap siblings to eliminate the need for a comma
 

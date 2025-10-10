@@ -9,4 +9,8 @@ object MamlLanguage : Language("MAML") {
     override fun isCaseSensitive(): Boolean {
         return true
     }
+
+    override fun getMimeTypes(): Array<out String?> {
+        return arrayOf("text/maml")
+    }
 }

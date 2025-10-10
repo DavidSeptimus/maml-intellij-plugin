@@ -8,178 +8,168 @@
     <depends>com.intellij.modules.json</depends>
 
 
+    <resource-bundle>messages.MamlBundle</resource-bundle>
 
+    <extensions defaultExtensionNs="com.intellij">
+        <fileType implementationClass="com.davidseptimus.maml.lang.MamlFileType"
+                  language="MAML"
+                  order="first"
+                  name="MAML"
+                  extensions="maml"/>
+        <lang.quoteHandler language="MAML" implementationClass="com.davidseptimus.maml.editor.MamlQuoteHandler"/>
+        <lang.braceMatcher language="MAML" implementationClass="com.davidseptimus.maml.editor.MamlBraceMatcher"/>
+        <enterHandlerDelegate implementation="com.davidseptimus.maml.editor.MamlEnterBetweenBracesHandler"/>
+        <colorSettingsPage implementation="com.davidseptimus.maml.highlighting.MamlColorSettingsPage"/>
 
-  <resource-bundle>messages.MamlBundle</resource-bundle>
+        <!-- Settings -->
+        <applicationService serviceImplementation="com.davidseptimus.maml.settings.MamlSettings"/>
+        <applicationConfigurable parentId="language"
+                                 instance="com.davidseptimus.maml.settings.MamlSettingsConfigurable"
+                                 id="com.davidseptimus.maml.settings.MamlSettingsConfigurable"
+                                 key="settings.displayName"
+                                 bundle="messages.MamlBundle"/>
+    </extensions>
 
-  <extensions defaultExtensionNs="com.intellij">
-    <fileType implementationClass="com.davidseptimus.maml.lang.MamlFileType"
-              language="MAML"
-              order="first"
-              name="MAML"
-              extensions="maml"/>
-    <lang.quoteHandler language="MAML" implementationClass="com.davidseptimus.maml.editor.MamlQuoteHandler"/>
-    <lang.braceMatcher language="MAML" implementationClass="com.davidseptimus.maml.editor.MamlBraceMatcher"/>
-      <enterHandlerDelegate implementation="com.davidseptimus.maml.editor.MamlEnterBetweenBracesHandler"/>
-    <colorSettingsPage implementation="com.davidseptimus.maml.highlighting.MamlColorSettingsPage"/>
+    <extensions defaultExtensionNs="com.intellij.json">
+        <jsonSchemaEnabler implementation="com.davidseptimus.maml.json.MamlJsonSchemaEnabler"/>
+        <jsonLikePsiWalkerFactory implementation="com.davidseptimus.maml.json.MamlJsonLikePsiWalkerFactory"/>
+    </extensions>
 
-    <!-- Settings -->
-    <applicationService serviceImplementation="com.davidseptimus.maml.settings.MamlSettings"/>
-    <applicationConfigurable parentId="language"
-                             instance="com.davidseptimus.maml.settings.MamlSettingsConfigurable"
-                             id="com.davidseptimus.maml.settings.MamlSettingsConfigurable"
-                             key="settings.displayName"
-                             bundle="messages.MamlBundle"/>
-  </extensions>
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- JSON Schema-based completion and documentation -->
+        <completion.contributor language="MAML"
+                                implementationClass="com.davidseptimus.maml.json.MamlJsonSchemaCompletionContributor"
+                                order="first"/>
+        <completion.contributor language="MAML"
+                                implementationClass="com.davidseptimus.maml.completion.MamlKeywordCompletionContributor"
+                                order="last"/>
+        <completion.contributor language="MAML"
+                                implementationClass="com.davidseptimus.maml.completion.MamlKnownKeysCompletionContributor"
+                                order="last"/>
+        <lang.documentationProvider language="MAML"
+                                    implementationClass="com.davidseptimus.maml.json.MamlJsonSchemaDocumentationProvider"/>
 
-  <extensions defaultExtensionNs="com.intellij.json">
-    <jsonSchemaEnabler implementation="com.davidseptimus.maml.json.MamlJsonSchemaEnabler"/>
-    <jsonLikePsiWalkerFactory implementation="com.davidseptimus.maml.json.MamlJsonLikePsiWalkerFactory"/>
-  </extensions>
+        <!-- Annotators -->
+        <annotator language="MAML"
+                   implementationClass="com.davidseptimus.maml.annotators.MamlSyntaxErrorAnnotator"/>
+        <annotator language="MAML"
+                   implementationClass="com.davidseptimus.maml.annotators.MamlKeyAnnotator"/>
+        <annotator language="MAML"
+                   implementationClass="com.davidseptimus.maml.annotators.MamlStringEscapeAnnotator"/>
+        <annotator language="MAML"
+                   implementationClass="com.davidseptimus.maml.annotators.MamlReferenceAnnotator"/>
+        <annotator language="MAML"
+                   implementationClass="com.davidseptimus.maml.annotators.MamlColorAnnotator"/>
+        <annotator language="MAML"
+                   implementationClass="com.davidseptimus.maml.annotators.MamlInvalidValueAnnotator"/>
+        <annotator language="MAML"
+                   implementationClass="com.davidseptimus.maml.annotators.MamlIncompleteKeyValueAnnotator"/>
+        <annotator language="MAML"
+                   implementationClass="com.davidseptimus.maml.annotators.MamlMissingCommaAnnotator"/>
 
-  <extensions defaultExtensionNs="com.intellij">
-    <!-- JSON Schema-based completion and documentation -->
-    <completion.contributor language="MAML"
-                            implementationClass="com.davidseptimus.maml.json.MamlJsonSchemaCompletionContributor"
-                            order="first"/>
-    <completion.contributor language="MAML"
-                            implementationClass="com.davidseptimus.maml.completion.MamlKeywordCompletionContributor"
-                            order="last"/>
-    <completion.contributor language="MAML"
-                            implementationClass="com.davidseptimus.maml.completion.MamlKnownKeysCompletionContributor"
-                            order="last"/>
-    <lang.documentationProvider language="MAML"
-                                implementationClass="com.davidseptimus.maml.json.MamlJsonSchemaDocumentationProvider"/>
+        <!-- JSON Schema validation (includes missing required properties quick fixes) -->
+        <localInspection language="MAML"
+                         groupKey="inspection.schema.compliance.group.name"
+                         groupBundle="messages.MamlBundle"
+                         key="inspection.schema.compliance.display.name"
+                         bundle="messages.MamlBundle"
+                         shortName="MamlSchemaCompliance"
+                         enabledByDefault="true"
+                         level="ERROR"
+                         implementationClass="com.davidseptimus.maml.inspections.MamlJsonSchemaComplianceInspection"/>
 
-    <!-- Annotators -->
-    <annotator language="MAML"
-                implementationClass="com.davidseptimus.maml.annotators.MamlSyntaxErrorAnnotator"/>
-    <annotator language="MAML"
-                implementationClass="com.davidseptimus.maml.annotators.MamlKeyAnnotator"/>
-    <annotator language="MAML"
-                implementationClass="com.davidseptimus.maml.annotators.MamlStringEscapeAnnotator"/>
-    <annotator language="MAML"
-                implementationClass="com.davidseptimus.maml.annotators.MamlReferenceAnnotator"/>
-    <annotator language="MAML"
-                implementationClass="com.davidseptimus.maml.annotators.MamlColorAnnotator"/>
-    <annotator language="MAML"
-                implementationClass="com.davidseptimus.maml.annotators.MamlInvalidValueAnnotator"/>
-    <annotator language="MAML"
-                implementationClass="com.davidseptimus.maml.annotators.MamlIncompleteKeyValueAnnotator"/>
-      <annotator language="MAML"
-                 implementationClass="com.davidseptimus.maml.annotators.MamlMissingCommaAnnotator"/>
+        <!-- Duplicate keys detection -->
+        <localInspection language="MAML"
+                         groupKey="inspection.duplicate.keys.group.name"
+                         groupBundle="messages.MamlBundle"
+                         key="inspection.duplicate.keys.display.name"
+                         bundle="messages.MamlBundle"
+                         shortName="MamlDuplicateKeys"
+                         enabledByDefault="true"
+                         level="ERROR"
+                         implementationClass="com.davidseptimus.maml.inspections.MamlDuplicateKeysInspection"/>
 
-      <!-- JSON Schema validation (includes missing required properties quick fixes) -->
-    <localInspection language="MAML"
-                     groupKey="inspection.schema.compliance.group.name"
-                     groupBundle="messages.MamlBundle"
-                     key="inspection.schema.compliance.display.name"
-                     bundle="messages.MamlBundle"
-                     shortName="MamlSchemaCompliance"
-                     enabledByDefault="true"
-                     level="ERROR"
-                     implementationClass="com.davidseptimus.maml.inspections.MamlJsonSchemaComplianceInspection"/>
+        <!-- Invalid identifier keys -->
+        <localInspection language="MAML"
+                         groupKey="inspection.invalid.key.group.name"
+                         groupBundle="messages.MamlBundle"
+                         key="inspection.invalid.key.display.name"
+                         bundle="messages.MamlBundle"
+                         shortName="MamlInvalidKey"
+                         enabledByDefault="true"
+                         level="ERROR"
+                         implementationClass="com.davidseptimus.maml.inspections.MamlInvalidKeyInspection"/>
 
-    <!-- Duplicate keys detection -->
-    <localInspection language="MAML"
-                     groupKey="inspection.duplicate.keys.group.name"
-                     groupBundle="messages.MamlBundle"
-                     key="inspection.duplicate.keys.display.name"
-                     bundle="messages.MamlBundle"
-                     shortName="MamlDuplicateKeys"
-                     enabledByDefault="true"
-                     level="ERROR"
-                     implementationClass="com.davidseptimus.maml.inspections.MamlDuplicateKeysInspection"/>
+        <!-- Intention actions -->
+        <intentionAction>
+            <language>MAML</language>
+            <className>com.davidseptimus.maml.intentions.ConvertToMultilineStringIntention</className>
+            <categoryKey>intention.category.maml.key</categoryKey>
+        </intentionAction>
+        <intentionAction>
+            <language>MAML</language>
+            <className>com.davidseptimus.maml.intentions.ConvertToSingleLineStringIntention</className>
+            <categoryKey>intention.category.maml.key</categoryKey>
+        </intentionAction>
+        <intentionAction>
+            <language>MAML</language>
+            <className>com.davidseptimus.maml.intentions.InlineContentsIntention</className>
+            <categoryKey>intention.category.maml.key</categoryKey>
+        </intentionAction>
+        <intentionAction>
+            <language>MAML</language>
+            <className>com.davidseptimus.maml.intentions.ExpandContentsIntention</className>
+            <categoryKey>intention.category.maml.key</categoryKey>
+        </intentionAction>
+        <intentionAction>
+            <language>MAML</language>
+            <className>com.davidseptimus.maml.intentions.RemoveCommasFromContainerIntention</className>
+            <categoryKey>intention.category.maml.key</categoryKey>
+        </intentionAction>
 
-    <!-- Invalid identifier keys -->
-    <localInspection language="MAML"
-                     groupKey="inspection.invalid.key.group.name"
-                     groupBundle="messages.MamlBundle"
-                     key="inspection.invalid.key.display.name"
-                     bundle="messages.MamlBundle"
-                     shortName="MamlInvalidKey"
-                     enabledByDefault="true"
-                     level="ERROR"
-                     implementationClass="com.davidseptimus.maml.inspections.MamlInvalidKeyInspection"/>
+        <!-- Refactoring -->
+        <renamePsiElementProcessor implementation="com.davidseptimus.maml.refactoring.MamlRenamePsiElementProcessor"/>
 
-    <!-- Intention actions -->
-    <intentionAction>
-      <language>MAML</language>
-      <className>com.davidseptimus.maml.intentions.ConvertToMultilineStringIntention</className>
-      <categoryKey>intention.category.maml.key</categoryKey>
-    </intentionAction>
-    <intentionAction>
-      <language>MAML</language>
-      <className>com.davidseptimus.maml.intentions.ConvertToSingleLineStringIntention</className>
-      <categoryKey>intention.category.maml.key</categoryKey>
-    </intentionAction>
-      <intentionAction>
-          <language>MAML</language>
-          <className>com.davidseptimus.maml.intentions.InlineContentsIntention</className>
-          <categoryKey>intention.category.maml.key</categoryKey>
-      </intentionAction>
-      <intentionAction>
-          <language>MAML</language>
-          <className>com.davidseptimus.maml.intentions.ExpandContentsIntention</className>
-          <categoryKey>intention.category.maml.key</categoryKey>
-      </intentionAction>
-      <intentionAction>
-          <language>MAML</language>
-          <className>com.davidseptimus.maml.intentions.RemoveCommasFromContainerIntention</className>
-          <categoryKey>intention.category.maml.key</categoryKey>
-      </intentionAction>
+        <!-- Inlay Hints -->
+        <codeInsight.inlayProvider language="MAML"
+                                   implementationClass="com.davidseptimus.maml.hints.MamlInlayHintsProvider"/>
+    </extensions>
 
-    <!-- Refactoring -->
-    <renamePsiElementProcessor implementation="com.davidseptimus.maml.refactoring.MamlRenamePsiElementProcessor"/>
+    <extensions defaultExtensionNs="com.intellij.lang">
+        <parserDefinition language="MAML"
+                          implementationClass="com.davidseptimus.maml.lang.MamlParserDefinition"/>
+        <syntaxHighlighterFactory language="MAML"
+                                  implementationClass="com.davidseptimus.maml.highlighting.MamlSyntaxHighlighterFactory"/>
+        <commenter language="MAML"
+                   implementationClass="com.davidseptimus.maml.editor.MamlCommenter"/>
+        <foldingBuilder language="MAML"
+                        implementationClass="com.davidseptimus.maml.editor.MamlFoldingBuilder"/>
+        <namesValidator language="MAML"
+                        implementationClass="com.davidseptimus.maml.refactoring.MamlNamesValidator"/>
+        <psiStructureViewFactory language="MAML"
+                                 implementationClass="com.davidseptimus.maml.structure.MamlStructureViewFactory"/>
+        <formatter language="MAML"
+                   implementationClass="com.davidseptimus.maml.formatter.MamlFormattingBuilderModel"/>
+    </extensions>
 
-    <!-- Inlay Hints -->
-    <codeInsight.inlayProvider language="MAML"
-                               implementationClass="com.davidseptimus.maml.hints.MamlInlayHintsProvider"/>
-  </extensions>
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Code style settings -->
+        <codeStyleSettingsProvider implementation="com.davidseptimus.maml.formatter.MamlCodeStyleSettingsProvider"/>
+        <langCodeStyleSettingsProvider
+                implementation="com.davidseptimus.maml.formatter.MamlLanguageCodeStyleSettingsProvider"/>
 
-  <extensions defaultExtensionNs="com.intellij.lang">
-      <parserDefinition language="MAML"
-                        implementationClass="com.davidseptimus.maml.lang.MamlParserDefinition"/>
-      <syntaxHighlighterFactory language="MAML"
-                                implementationClass="com.davidseptimus.maml.highlighting.MamlSyntaxHighlighterFactory"/>
-    <commenter language="MAML"
-               implementationClass="com.davidseptimus.maml.editor.MamlCommenter"/>
-    <foldingBuilder language="MAML"
-                    implementationClass="com.davidseptimus.maml.editor.MamlFoldingBuilder"/>
-    <namesValidator language="MAML"
-                    implementationClass="com.davidseptimus.maml.refactoring.MamlNamesValidator"/>
-    <psiStructureViewFactory language="MAML"
-                             implementationClass="com.davidseptimus.maml.structure.MamlStructureViewFactory"/>
-    <formatter language="MAML"
-               implementationClass="com.davidseptimus.maml.formatter.MamlFormattingBuilderModel"/>
-  </extensions>
+        <!-- Line wrap position strategy -->
+        <lang.lineWrapStrategy language="MAML"
+                               implementationClass="com.davidseptimus.maml.formatter.MamlLineWrapPositionStrategy"/>
 
-  <extensions defaultExtensionNs="com.intellij">
-    <!-- Code style settings -->
-    <codeStyleSettingsProvider implementation="com.davidseptimus.maml.formatter.MamlCodeStyleSettingsProvider"/>
-    <langCodeStyleSettingsProvider implementation="com.davidseptimus.maml.formatter.MamlLanguageCodeStyleSettingsProvider"/>
-
-    <!-- Line wrap position strategy -->
-    <lang.lineWrapStrategy language="MAML" implementationClass="com.davidseptimus.maml.formatter.MamlLineWrapPositionStrategy"/>
-
-    <!-- Pre-format processors (order matters!) -->
-      <!-- 1. Unquote keys that can be safely unquoted -->
-      <preFormatProcessor implementation="com.davidseptimus.maml.formatter.MamlKeyFormatter" order="first"/>
-      <!-- 2. Remove all commas -->
-      <preFormatProcessor implementation="com.davidseptimus.maml.formatter.MamlCommaRemover"/>
-      <!-- 3. Remove trailing commas (if any remain) -->
-    <preFormatProcessor implementation="com.davidseptimus.maml.formatter.MamlTrailingCommaRemover"/>
-      <!-- 4. Fix comment spacing -->
-    <preFormatProcessor implementation="com.davidseptimus.maml.formatter.MamlCommentLeadingSpaceInserter"/>
-  </extensions>
-
-    <actions>
-        <!-- MAML Conversion Actions -->
-        <action id="ConvertToJson" class="com.davidseptimus.maml.actions.ConvertToJsonAction">
-            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
-        </action>
-        <action id="ConvertToYaml" class="com.davidseptimus.maml.actions.ConvertToYamlAction">
-            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
-        </action>
-    </actions>
+        <!-- Pre-format processors (order matters!) -->
+        <!-- 1. Unquote keys that can be safely unquoted -->
+        <preFormatProcessor implementation="com.davidseptimus.maml.formatter.MamlKeyFormatter" order="first"/>
+        <!-- 2. Remove all commas -->
+        <preFormatProcessor implementation="com.davidseptimus.maml.formatter.MamlCommaRemover"/>
+        <!-- 3. Remove trailing commas (if any remain) -->
+        <preFormatProcessor implementation="com.davidseptimus.maml.formatter.MamlTrailingCommaRemover"/>
+        <!-- 4. Fix comment spacing -->
+        <preFormatProcessor implementation="com.davidseptimus.maml.formatter.MamlCommentLeadingSpaceInserter"/>
+    </extensions>
 </idea-plugin>
