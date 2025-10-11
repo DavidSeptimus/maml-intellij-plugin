@@ -8,7 +8,7 @@
 
 - Fixed error when opening projects due to missing inspection and intention descriptions
 
-## [v0.5.1] - 2025-10-10
+## [0.5.1] - 2025-10-10
 
 ### Added
 
