@@ -1,0 +1,41 @@
+<html lang="en">
+<body>
+<p>Recursively inlines/flattens container contents onto a single line, adding commas as needed.</p>
+
+<p>
+    This intention takes arrays and objects that span multiple lines and collapses them to a single line,
+    adding commas between items where required. It works recursively, so nested containers are also inlined.
+</p>
+
+<p><b>Before (array):</b></p>
+<pre><code>items: [
+  1
+  2
+  3
+]</code></pre>
+
+<p><b>After (array):</b></p>
+<pre><code>items: [1, 2, 3]</code></pre>
+
+<p><b>Before (nested object):</b></p>
+<pre><code>config: {
+  server: {
+    host: "localhost"
+    port: 8080
+  }
+  debug: true
+}</code></pre>
+
+<p><b>After (nested object):</b></p>
+<pre><code>config: {server: {host: "localhost", port: 8080}, debug: true}</code></pre>
+
+<p>
+    <strong>Special behavior:</strong> When invoked on a key (rather than inside a container), this intention
+    will inline the value's contents if the value is an array or object.
+</p>
+
+<p>
+    <strong>Note:</strong> This is the opposite of "Remove commas" which breaks items onto separate lines.
+</p>
+</body>
+</html>

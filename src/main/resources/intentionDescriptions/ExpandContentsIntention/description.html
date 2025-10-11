@@ -1,0 +1,47 @@
+<html lang="en">
+<body>
+<p>Recursively expands/unfolds container contents onto multiple lines.</p>
+
+<p>
+    This intention takes arrays and objects that are on a single line and expands them across multiple lines,
+    with each item on its own line. It works recursively, so nested containers are also expanded.
+    The intention respects your code style settings for comma usage.
+</p>
+
+<p><b>Before (array):</b></p>
+<pre><code>items: [1, 2, 3]</code></pre>
+
+<p><b>After (array):</b></p>
+<pre><code>items: [
+    1,
+    2,
+    3
+]</code></pre>
+
+<p><b>Before (nested object):</b></p>
+<pre><code>config: {server: {host: "localhost", port: 8080}, debug: true}</code></pre>
+
+<p><b>After (nested object):</b></p>
+<pre><code>config: {
+    server: {
+        host: "localhost",
+        port: 8080
+    },
+    debug: true
+}</code></pre>
+
+<p>
+    <strong>Code style:</strong> If your MAML code style is set to "Remove commas", the expanded output will
+    use newlines for separation without commas. Otherwise, commas will be added between items.
+</p>
+
+<p>
+    <strong>Special behavior:</strong> When invoked on a key (rather than inside a container), this intention
+    will expand the value's contents if the value is an array or object.
+</p>
+
+<p>
+    <strong>Note:</strong> This is the opposite of "Inline contents" which flattens items onto a single line.
+</p>
+</body>
+</html>

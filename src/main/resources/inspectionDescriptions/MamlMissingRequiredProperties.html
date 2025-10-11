@@ -1,0 +1,39 @@
+<html lang="en">
+<body>
+<p>
+    Reports MAML objects that are missing required properties defined in their associated JSON schema.
+</p>
+<p>
+    When a JSON schema specifies certain properties as required, all objects matching that schema must include those
+    properties. This inspection identifies missing required properties and provides a quick fix to automatically add
+    them with appropriate default values.
+</p>
+<p>
+    <b>Example:</b>
+</p>
+<pre><code>{
+  name: "John"
+  // Missing required property 'email'
+}</code></pre>
+<!-- tooltip end -->
+<p>
+    <b>How to fix:</b>
+</p>
+<ul>
+    <li>Use the quick fix "Add required property 'propertyName'" to automatically insert the missing property</li>
+    <li>Manually add the required property with an appropriate value</li>
+</ul>
+<p>
+    The quick fix will insert the missing property with a suggested default value based on the schema:
+</p>
+<ul>
+    <li>Schema default value if specified</li>
+    <li>First enum value if the property has enum constraints</li>
+    <li>Type-appropriate default (empty string for strings, 0 for numbers, false for booleans, etc.)</li>
+</ul>
+<p>
+    <b>Schema configuration:</b> JSON schemas can be associated with MAML files through
+    <i>Settings &gt; Languages &amp; Frameworks &gt; Schemas and DTDs &gt; JSON Schema Mappings</i>
+</p>
+</body>
+</html>
