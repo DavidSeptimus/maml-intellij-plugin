@@ -1,6 +1,6 @@
 ## MAML IntelliJ Plugin
 
-![Build](https://github.com/DavidSeptimus/armada-theme-intellij-plugin/workflows/Build/badge.svg)
+![Build](https://github.com/DavidSeptimus/maml-intellij-plugin/workflows/Build/badge.svg)
 [![Version](https://img.shields.io/jetbrains/plugin/v/28634-maml.svg)](https://plugins.jetbrains.com/plugin/28634-maml)
 [![Downloads](https://img.shields.io/jetbrains/plugin/d/28634-maml.svg)](https://plugins.jetbrains.com/plugin/28634-maml)
 
