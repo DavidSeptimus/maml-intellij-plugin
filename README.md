@@ -27,17 +27,8 @@ A plugin for JetBrains IDE's providing comprehensive language support for MAML (
 
 ### Syntax Highlighting
 
-- Full syntax highlighting for MAML syntax including:
-  - Objects with braces `{ }`
-  - Arrays with brackets `[ ]`
-  - Quoted and Unquoted keys
-  - string values with escape sequences
-  - Multiline strings with triple quotes `"""`
-  - Numbers (integers, floats, scientific notation)
-  - Booleans (`true`, `false`)
-  - Null values (`null`)
-  - Separators (commas and newlines)
-  - Comments (line comments with `#`)
+- Full syntax highlighting for MAML syntax
+- Smart error recovery to help pipoint syntax mistakes and provide improved error messages
 
 ### Code Formatting
 
@@ -121,9 +112,6 @@ Keeps formatting as-is.
 ```
 
 ## Installation
-
-> [!NOTE]  
-> Coming soon!
 
 1. Download the plugin from the JetBrains Marketplace
 2. Install via: **Settings** → **Plugins** → **Marketplace** → Search for "MAML"
