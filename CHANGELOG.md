@@ -4,6 +4,21 @@
 
 ## [Unreleased]
 
+### Added
+
+- Highlighting for escaped triple quotes in raw strings
+
+### Changed
+
+- Marked various classes as `DumbAware` to enable most plugin capabilities during indexing
+
+### Fixed
+
+- Fixed incorrect handling of unicode escape sequences in strings
+- Fixed typo in message bundle
+
+## [0.5.2] - 2025-10-11
+
 ### Fixed
 
 - Fixed error when opening projects due to missing inspection and intention descriptions
