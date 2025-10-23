@@ -54,7 +54,8 @@ class MamlUnicodeFoldingBuilderTest : BasePlatformTestCase() {
         val text = """{ text: "\u{1F600}\u{2764}\u{2605}" }"""
         configureFolding(text)
         val regions = myFixture.editor.foldingModel.allFoldRegions
-        assertEquals("Should have three folding regions", 3, regions.size)
+        assertEquals("Should have one folding region for consecutive escapes", 1, regions.size)
+        assertEquals("Should fold to combined string", "😀❤★", regions[0].placeholderText)
     }
 
     // Hex digit validation tests
@@ -285,6 +286,17 @@ class MamlUnicodeFoldingBuilderTest : BasePlatformTestCase() {
         assertEquals("Should have three folding regions across multiple strings", 3, regions.size)
     }
 
+    // Emoji sequence tests
+
+    fun testEmojiWithSkinToneModifier() {
+        // Waving hand (U+1F44B) + medium skin tone (U+1F3FD)
+        val text = """{ emoji: "\u{1F44B}\u{1F3FD}" }"""
+        configureFolding(text)
+        val regions = myFixture.editor.foldingModel.allFoldRegions
+        assertEquals("Should have one folding region for emoji sequence", 1, regions.size)
+        assertEquals("Should fold to emoji with skin tone", "👋🏽", regions[0].placeholderText)
+    }
+
     // Mixed content tests
 
     fun testMixedEscapesAndText() {
@@ -329,6 +341,23 @@ class MamlUnicodeFoldingBuilderTest : BasePlatformTestCase() {
         assertEquals("Should not create folding for whitespace characters", 0, regions.size)
     }
 
+    fun testSequenceWithSpaceBetweenEmojis() {
+        // Space (U+20) between two emojis - should fold all three code points
+        val text = """{ text: "\u{1F600}\u{20}\u{1F601}" }"""
+        configureFolding(text)
+        val regions = myFixture.editor.foldingModel.allFoldRegions
+        assertEquals("Should have one folding region for sequence with space", 1, regions.size)
+        assertEquals("Should fold to emoji-space-emoji", "😀 😁", regions[0].placeholderText)
+    }
+
+    fun testSequenceOfOnlySpaces() {
+        // Two spaces - should not fold (no renderable code points)
+        val text = """{ text: "\u{20}\u{20}" }"""
+        configureFolding(text)
+        val regions = myFixture.editor.foldingModel.allFoldRegions
+        assertEquals("Should not create folding for sequence of only whitespace", 0, regions.size)
+    }
+
     // Leading zeros tests
 
     fun testLeadingZeros() {
@@ -346,8 +375,10 @@ class MamlUnicodeFoldingBuilderTest : BasePlatformTestCase() {
         val text = """{ text: "$escapes" }"""
         configureFolding(text)
         val regions = myFixture.editor.foldingModel.allFoldRegions
-        assertEquals("Should have 20 folding regions", 20, regions.size)
-        assertTrue("All should fold to emoji", regions.all { it.placeholderText == "😀" })
+        assertEquals("Should have one folding region for consecutive escapes", 1, regions.size)
+        // Should fold to 20 emoji characters
+        val expected = "😀".repeat(20)
+        assertEquals("Should fold to 20 emojis", expected, regions[0].placeholderText)
     }
 
     // Whitespace tests

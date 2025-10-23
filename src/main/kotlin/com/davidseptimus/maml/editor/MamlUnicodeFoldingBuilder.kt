@@ -43,69 +43,60 @@ class MamlUnicodeFoldingBuilder : FoldingBuilderEx(), DumbAware {
                 var i = 0
 
                 while (i < content.length) {
-                    if (content[i] == '\\' && i + 1 < content.length) {
-                        // Check if this is an escaped backslash
-                        if (content[i + 1] == '\\') {
-                            // Skip the escaped backslash
-                            i += 2
-                            continue
-                        }
+                    // Skip escaped backslashes
+                    if (i + 1 < content.length && content[i] == '\\' && content[i + 1] == '\\') {
+                        i += 2
+                        continue
+                    }
 
-                        // Check for Unicode escape
-                        if (content[i + 1] == 'u') {
-                            // Check for opening brace
-                            if (i + 2 < content.length && content[i + 2] == '{') {
-                                // Find closing brace
-                                var closingBraceIndex = i + 3
-                                while (closingBraceIndex < content.length && content[closingBraceIndex] != '}') {
-                                    closingBraceIndex++
-                                }
+                    // Check for start of Unicode escape sequence
+                    if (!content.startsWith("\\u{", i)) {
+                        i++
+                        continue
+                    }
 
-                                if (closingBraceIndex < content.length) {
-                                    // Extract and validate hex digits
-                                    val hexDigits = content.substring(i + 3, closingBraceIndex)
-                                    if (hexDigits.isNotEmpty() &&
-                                        hexDigits.length <= 6 &&
-                                        hexDigits.all { it in '0'..'9' || it in 'a'..'f' || it in 'A'..'F' }
-                                    ) {
+                    // Found start of sequence - collect consecutive Unicode escapes
+                    val sequenceStart = i
+                    val allCodePoints = mutableListOf<Int>()
+                    var hasRenderableCodePoint = false
 
-                                        val codePoint = hexDigits.toInt(16)
-                                        // Valid Unicode code point range (excluding surrogates)
-                                        if (codePoint <= 0x10FFFF && codePoint !in 0xD800..0xDFFF) {
-                                            // Skip whitespace characters - they won't be visible anyway
-                                            if (!Character.isWhitespace(codePoint)) {
-                                                // Only create folding if the font can display this character
-                                                if (editorFont?.canDisplay(codePoint) == true) {
-                                                    // Calculate absolute offsets in the document
-                                                    val startOffset =
-                                                        stringElement.textRange.startOffset + 1 + i // +1 for opening quote
-                                                    val endOffset =
-                                                        stringElement.textRange.startOffset + 1 + closingBraceIndex + 1 // +1 for closing brace
+                    while (content.startsWith("\\u{", i)) {
+                        val closingBraceIndex = content.indexOf('}', i + 3)
 
-                                                    val unicodeChar = String(intArrayOf(codePoint), 0, 1)
-                                                    descriptors.add(
-                                                        FoldingDescriptor(
-                                                            stringElement.node,
-                                                            com.intellij.openapi.util.TextRange(startOffset, endOffset),
-                                                            group,
-                                                            unicodeChar
-                                                        )
-                                                    )
-                                                }
-                                            }
-                                        }
-                                    }
-                                    i = closingBraceIndex + 1
-                                } else {
-                                    i++
-                                }
-                            } else {
-                                i++
+                        // Stop sequence if malformed (no closing brace)
+                        if (closingBraceIndex == -1) break
+
+                        val hexDigits = content.substring(i + 3, closingBraceIndex)
+                        val codePoint = parseUnicodeEscape(hexDigits)
+
+                        if (codePoint != null) {
+                            allCodePoints.add(codePoint)
+                            if (shouldFoldCodePoint(codePoint, editorFont)) {
+                                hasRenderableCodePoint = true
                             }
-                        } else {
-                            i++
                         }
-                    } else {
+
+                        i = closingBraceIndex + 1
+                    }
+
+                    // Create folding region if we have at least one renderable code point
+                    if (hasRenderableCodePoint && allCodePoints.isNotEmpty()) {
+                        val startOffset = stringElement.textRange.startOffset + 1 + sequenceStart
+                        val endOffset = stringElement.textRange.startOffset + 1 + i
+                        val unicodeString = String(allCodePoints.toIntArray(), 0, allCodePoints.size)
+
+                        descriptors.add(
+                            FoldingDescriptor(
+                                stringElement.node,
+                                com.intellij.openapi.util.TextRange(startOffset, endOffset),
+                                group,
+                                unicodeString
+                            )
+                        )
+                    }
+
+                    // Advance at least one character if we didn't move
+                    if (i == sequenceStart) {
                         i++
                     }
                 }
@@ -122,6 +113,28 @@ class MamlUnicodeFoldingBuilder : FoldingBuilderEx(), DumbAware {
     override fun isCollapsedByDefault(node: ASTNode): Boolean {
         // Check the IDE's folding settings
         return MamlCodeFoldingSettings.getInstance().isCollapseUnicodeEscapes
+    }
+
+    /**
+     * Parse a hex string into a valid Unicode code point.
+     * Returns null if the escape is invalid.
+     */
+    private fun parseUnicodeEscape(hexDigits: String): Int? {
+        if (hexDigits.isEmpty() || hexDigits.length > 6) return null
+        if (!hexDigits.all { it in '0'..'9' || it in 'a'..'f' || it in 'A'..'F' }) return null
+
+        val codePoint = hexDigits.toInt(16)
+        // Valid Unicode code point range (excluding surrogates)
+        return if (codePoint <= 0x10FFFF && codePoint !in 0xD800..0xDFFF) codePoint else null
+    }
+
+    /**
+     * Check if a code point should be folded.
+     * Returns false for whitespace or if the font cannot display it.
+     */
+    private fun shouldFoldCodePoint(codePoint: Int, editorFont: Font?): Boolean {
+        if (Character.isWhitespace(codePoint)) return false
+        return editorFont?.canDisplay(codePoint) == true
     }
 
     /**
