@@ -44,7 +44,7 @@ A plugin for JetBrains IDE's providing comprehensive language support for MAML (
 
 - **JSON Schema Support**: Automatic schema-based completions and validation
 - **Documentation**: Inline documentation from JSON schemas
-- **Code Folding**: Collapse and expand objects, arrays, and multiline strings
+- **Code Folding**: Collapse and expand objects, arrays, multiline strings, and unicode escape sequences
 - **URL and File Path Recognition**: Clickable links for URLs and file paths
 - **Code Completion**: Context-aware suggestions for keys and keyword values (`true`, `false`, `null`)
 
@@ -115,7 +115,6 @@ Keeps formatting as-is.
 
 1. Download the plugin from the JetBrains Marketplace
 2. Install via: **Settings** → **Plugins** → **Marketplace** → Search for "MAML"
-3. Restart IntelliJ IDEA
 
 ## Development
 
