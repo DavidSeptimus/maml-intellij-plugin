@@ -14,7 +14,6 @@ class MamlSettings : PersistentStateComponent<MamlSettings> {
 
     var commentPreviewWords: Int = 10
     var multilineStringPreviewWords: Int = 10
-    var showArrayItemCountHints: Boolean = true
     var enableKeywordCompletion: Boolean = true
     var enableKnownKeysCompletion: Boolean = true
 

@@ -2,7 +2,6 @@ package com.davidseptimus.maml.hints
 
 import com.davidseptimus.maml.MamlBundle
 import com.davidseptimus.maml.lang.psi.MamlArray
-import com.davidseptimus.maml.settings.MamlSettings
 import com.intellij.codeInsight.hints.*
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
@@ -14,9 +13,9 @@ import javax.swing.JPanel
  * Inlay hints provider that shows the number of items in arrays.
  */
 @Suppress("UnstableApiUsage")
-class MamlInlayHintsProvider : InlayHintsProvider<MamlInlayHintsProvider.Settings> {
+class MamlInlayHintsProvider : InlayHintsProvider<NoSettings> {
 
-    override val key: SettingsKey<Settings> = SettingsKey("maml.hints")
+    override val key: SettingsKey<NoSettings> = SettingsKey("maml.hints.array")
 
     override val name: String = MamlBundle.message("inlayHints.arrayItemCount.name")
 
@@ -30,7 +29,7 @@ class MamlInlayHintsProvider : InlayHintsProvider<MamlInlayHintsProvider.Setting
         }
     """.trimIndent()
 
-    override fun createConfigurable(settings: Settings): ImmediateConfigurable {
+    override fun createConfigurable(settings: NoSettings): ImmediateConfigurable {
         return object : ImmediateConfigurable {
             override fun createComponent(listener: ChangeListener): JComponent {
                 return JPanel()
@@ -38,17 +37,14 @@ class MamlInlayHintsProvider : InlayHintsProvider<MamlInlayHintsProvider.Setting
         }
     }
 
-    override fun createSettings(): Settings = Settings()
+    override fun createSettings(): NoSettings = NoSettings()
 
     override fun getCollectorFor(
         file: PsiFile,
         editor: Editor,
-        settings: Settings,
+        settings: NoSettings,
         sink: InlayHintsSink
-    ): InlayHintsCollector? {
-        val mamlSettings = MamlSettings.getInstance()
-        if (!mamlSettings.showArrayItemCountHints) return null
-
+    ): InlayHintsCollector {
         return object : FactoryInlayHintsCollector(editor) {
             override fun collect(element: PsiElement, editor: Editor, sink: InlayHintsSink): Boolean {
                 if (element is MamlArray) {
@@ -71,8 +67,4 @@ class MamlInlayHintsProvider : InlayHintsProvider<MamlInlayHintsProvider.Setting
             }
         }
     }
-
-    data class Settings(
-        var showArrayItemCount: Boolean = true
-    )
 }

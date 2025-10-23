@@ -23,11 +23,13 @@
 
         <!-- Settings -->
         <applicationService serviceImplementation="com.davidseptimus.maml.settings.MamlSettings"/>
+        <applicationService serviceImplementation="com.davidseptimus.maml.editor.MamlCodeFoldingSettings"/>
         <applicationConfigurable parentId="language"
                                  instance="com.davidseptimus.maml.settings.MamlSettingsConfigurable"
                                  id="com.davidseptimus.maml.settings.MamlSettingsConfigurable"
                                  key="settings.displayName"
                                  bundle="messages.MamlBundle"/>
+        <codeFoldingOptionsProvider instance="com.davidseptimus.maml.editor.MamlCodeFoldingOptionsProvider"/>
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij.json">
@@ -144,6 +146,8 @@
                    implementationClass="com.davidseptimus.maml.editor.MamlCommenter"/>
         <foldingBuilder language="MAML"
                         implementationClass="com.davidseptimus.maml.editor.MamlFoldingBuilder"/>
+        <foldingBuilder language="MAML"
+                        implementationClass="com.davidseptimus.maml.editor.MamlUnicodeFoldingBuilder"/>
         <namesValidator language="MAML"
                         implementationClass="com.davidseptimus.maml.refactoring.MamlNamesValidator"/>
         <psiStructureViewFactory language="MAML"

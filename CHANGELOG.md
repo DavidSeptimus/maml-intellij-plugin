@@ -6,7 +6,8 @@
 
 ### Added
 
-- Highlighting for escaped triple quotes in raw strings
+- Added folding for escaped unicode glyphs that can be rendered with the current font
+- Added highlighting for escaped triple quotes in raw strings
 
 ### Changed
 
@@ -16,6 +17,10 @@
 
 - Fixed incorrect handling of unicode escape sequences in strings
 - Fixed typo in message bundle
+
+### Removed
+
+- Removed unnecessary setting for disabling inlay hints
 
 ## [0.5.2] - 2025-10-11
 

@@ -14,7 +14,6 @@ class MamlSettingsConfigurable : Configurable {
 
     private val commentLengthField = JBTextField().apply { columns = 5 }
     private val stringLengthField = JBTextField().apply { columns = 5 }
-    private val showArrayCountHintsCheckBox = JBCheckBox(MamlBundle.message("settings.inlayHints.arrayCount"))
     private val enableKeywordCompletionCheckBox = JBCheckBox(MamlBundle.message("settings.completion.keywords"))
     private val enableKnownKeysCompletionCheckBox = JBCheckBox(MamlBundle.message("settings.completion.knownKeys"))
 
@@ -24,7 +23,6 @@ class MamlSettingsConfigurable : Configurable {
         // Initialize with current settings
         commentLengthField.text = settings.commentPreviewWords.toString()
         stringLengthField.text = settings.multilineStringPreviewWords.toString()
-        showArrayCountHintsCheckBox.isSelected = settings.showArrayItemCountHints
         enableKeywordCompletionCheckBox.isSelected = settings.enableKeywordCompletion
         enableKnownKeysCompletionCheckBox.isSelected = settings.enableKnownKeysCompletion
 
@@ -33,13 +31,12 @@ class MamlSettingsConfigurable : Configurable {
             .addLabeledComponent(MamlBundle.message("settings.commentPreviewLength"), commentLengthField)
             .addLabeledComponent(MamlBundle.message("settings.stringPreviewLength"), stringLengthField)
             .addVerticalGap(15)
-            .addComponent(JBLabel("<html><b>${MamlBundle.message("settings.inlayHints")}</b></html>"))
-            .addComponent(showArrayCountHintsCheckBox)
-            .addVerticalGap(15)
             .addComponent(JBLabel("<html><b>${MamlBundle.message("settings.completion")}</b></html>"))
             .addComponent(enableKeywordCompletionCheckBox)
             .addComponent(enableKnownKeysCompletionCheckBox)
             .addVerticalGap(15)
+            .addComponent(JBLabel("<html><i>Configure inlay hints in Settings → Editor → Inlay Hints → MAML</i></html>"))
+            .addVerticalGap(5)
             .addComponent(JBLabel("<html><i>Configure JSON Schema mappings in Settings → Languages & Frameworks → Schemas and DTDs → JSON Schema Mappings</i></html>"))
             .addComponentFillVertically(JPanel(), 0)
             .panel
@@ -51,7 +48,6 @@ class MamlSettingsConfigurable : Configurable {
         val settings = MamlSettings.getInstance()
         return commentLengthField.text.toIntOrNull() != settings.commentPreviewWords ||
                 stringLengthField.text.toIntOrNull() != settings.multilineStringPreviewWords ||
-                showArrayCountHintsCheckBox.isSelected != settings.showArrayItemCountHints ||
                 enableKeywordCompletionCheckBox.isSelected != settings.enableKeywordCompletion ||
                 enableKnownKeysCompletionCheckBox.isSelected != settings.enableKnownKeysCompletion
     }
@@ -60,7 +56,6 @@ class MamlSettingsConfigurable : Configurable {
         val settings = MamlSettings.getInstance()
         settings.commentPreviewWords = commentLengthField.text.toIntOrNull() ?: 10
         settings.multilineStringPreviewWords = stringLengthField.text.toIntOrNull() ?: 10
-        settings.showArrayItemCountHints = showArrayCountHintsCheckBox.isSelected
         settings.enableKeywordCompletion = enableKeywordCompletionCheckBox.isSelected
         settings.enableKnownKeysCompletion = enableKnownKeysCompletionCheckBox.isSelected
     }
@@ -69,7 +64,6 @@ class MamlSettingsConfigurable : Configurable {
         val settings = MamlSettings.getInstance()
         commentLengthField.text = settings.commentPreviewWords.toString()
         stringLengthField.text = settings.multilineStringPreviewWords.toString()
-        showArrayCountHintsCheckBox.isSelected = settings.showArrayItemCountHints
         enableKeywordCompletionCheckBox.isSelected = settings.enableKeywordCompletion
         enableKnownKeysCompletionCheckBox.isSelected = settings.enableKnownKeysCompletion
     }
