@@ -6,6 +6,7 @@ import com.davidseptimus.maml.lang.psi.MamlValueElement
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
+import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
@@ -13,7 +14,7 @@ import com.intellij.psi.impl.source.tree.LeafPsiElement
 /**
  * Annotator that highlights URLs and resolved file paths in string values and comments.
  */
-class MamlReferenceAnnotator : Annotator {
+class MamlReferenceAnnotator : Annotator, DumbAware {
 
     private val URL_PATTERN = Regex("https?://[^\\s\"']+|file://[^\\s\"']+")
 

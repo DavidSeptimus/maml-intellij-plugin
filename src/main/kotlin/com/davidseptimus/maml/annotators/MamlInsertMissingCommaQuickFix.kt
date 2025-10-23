@@ -3,6 +3,7 @@ package com.davidseptimus.maml.annotators
 import com.davidseptimus.maml.MamlBundle
 import com.intellij.codeInsight.intention.IntentionAction
 import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
@@ -10,7 +11,7 @@ import com.intellij.psi.PsiFile
 /**
  * Quick fix that inserts a comma after an element.
  */
-class MamlInsertMissingCommaQuickFix(private val element: PsiElement) : IntentionAction {
+class MamlInsertMissingCommaQuickFix(private val element: PsiElement) : IntentionAction, DumbAware {
 
     override fun getText(): String =
         MamlBundle.message("annotator.missing.comma.quickfix.insert")

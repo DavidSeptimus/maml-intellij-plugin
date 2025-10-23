@@ -8,6 +8,7 @@ import com.davidseptimus.maml.util.MamlSpacingUtil
 import com.intellij.codeInsight.intention.IntentionAction
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction
 import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.parentOfType
@@ -16,7 +17,7 @@ import com.intellij.psi.util.parentOfType
  * Intention action to remove commas from arrays and objects.
  * Ensures items are on separate lines before removing commas.
  */
-class RemoveCommasFromContainerIntention : PsiElementBaseIntentionAction(), IntentionAction {
+class RemoveCommasFromContainerIntention : PsiElementBaseIntentionAction(), IntentionAction, DumbAware {
 
     override fun getText(): String = MamlBundle.message("intention.remove.commas.text")
 

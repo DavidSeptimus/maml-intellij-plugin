@@ -5,6 +5,7 @@ import com.davidseptimus.maml.lang.psi.MamlElementFactory
 import com.davidseptimus.maml.lang.psi.MamlObject
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemDescriptor
+import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.psi.util.parentOfType
 
@@ -14,7 +15,7 @@ import com.intellij.psi.util.parentOfType
 class MamlMissingRequiredPropertyQuickFix(
     private val propertyName: String,
     private val suggestedValue: String = "\"\""
-) : LocalQuickFix {
+) : LocalQuickFix, DumbAware {
 
     override fun getName(): String =
         MamlBundle.message("inspection.missing.required.property.quickfix.name", propertyName)

@@ -8,6 +8,7 @@ import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.refactoring.RefactoringActionHandlerFactory
@@ -21,7 +22,7 @@ import com.intellij.refactoring.RefactoringActionHandlerFactory
  *
  * This inspection helps catch these issues early.
  */
-class MamlDuplicateKeysInspection : LocalInspectionTool() {
+class MamlDuplicateKeysInspection : LocalInspectionTool(), DumbAware {
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : MamlVisitor() {

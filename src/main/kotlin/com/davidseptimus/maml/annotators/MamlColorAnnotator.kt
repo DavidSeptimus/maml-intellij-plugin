@@ -11,6 +11,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.editor.markup.GutterIconRenderer
+import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.ui.ColorChooserService
@@ -23,7 +24,7 @@ import javax.swing.Icon
 /**
  * Annotator that adds gutter icons for hex color values with a color picker.
  */
-class MamlColorAnnotator : Annotator {
+class MamlColorAnnotator : Annotator, DumbAware {
 
     private val hexColorPattern = Regex("^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$")
     private val rgbPattern =
@@ -128,7 +129,7 @@ class MamlColorAnnotator : Annotator {
         private val hexColorPattern: Regex,
         private val rgbPattern: Regex,
         private val rgbaPattern: Regex
-    ) : GutterIconRenderer() {
+    ) : GutterIconRenderer(), DumbAware {
 
         override fun getIcon(): Icon {
             return ColorIcon(12, color)

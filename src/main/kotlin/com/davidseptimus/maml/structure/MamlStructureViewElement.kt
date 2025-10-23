@@ -1,6 +1,5 @@
 package com.davidseptimus.maml.structure
 
-import com.davidseptimus.maml.lang.psi.MamlFile
 import com.davidseptimus.maml.lang.psi.*
 import com.intellij.icons.AllIcons
 import com.intellij.ide.projectView.PresentationData

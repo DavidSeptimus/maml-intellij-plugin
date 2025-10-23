@@ -6,6 +6,7 @@ import com.davidseptimus.maml.lang.psi.MamlTypes
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
+import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElement
 
 /**
@@ -15,7 +16,7 @@ import com.intellij.psi.PsiElement
  * - Unterminated strings (e.g., "hello without closing quote)
  * - Invalid identifiers in value positions
  */
-class MamlInvalidValueAnnotator : Annotator {
+class MamlInvalidValueAnnotator : Annotator, DumbAware {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         if (element !is MamlInvalidValue) return

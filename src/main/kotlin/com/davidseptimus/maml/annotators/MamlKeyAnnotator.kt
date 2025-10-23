@@ -5,12 +5,13 @@ import com.davidseptimus.maml.lang.psi.MamlKey
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
+import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElement
 
 /**
  * Annotator that highlights string keys with the KEY text attribute.
  */
-class MamlKeyAnnotator : Annotator {
+class MamlKeyAnnotator : Annotator, DumbAware {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         if (element !is MamlKey) return

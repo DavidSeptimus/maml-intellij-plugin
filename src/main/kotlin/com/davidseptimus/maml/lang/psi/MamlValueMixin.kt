@@ -4,7 +4,10 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.paths.WebReference
 import com.intellij.openapi.util.TextRange
-import com.intellij.psi.*
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiManager
+import com.intellij.psi.PsiReference
+import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 
 abstract class MamlValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), MamlValueElement {

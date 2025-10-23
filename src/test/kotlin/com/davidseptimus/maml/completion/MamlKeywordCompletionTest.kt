@@ -1,6 +1,5 @@
 package com.davidseptimus.maml.completion
 
-import com.davidseptimus.maml.lang.MamlParserDefinition
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 
 class MamlKeywordCompletionTest : BasePlatformTestCase() {

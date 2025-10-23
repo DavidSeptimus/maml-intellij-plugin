@@ -1,7 +1,9 @@
 package com.davidseptimus.maml.formatter
 
 import com.davidseptimus.maml.lang.MamlLanguage
-import com.davidseptimus.maml.lang.psi.*
+import com.davidseptimus.maml.lang.psi.MamlArray
+import com.davidseptimus.maml.lang.psi.MamlObject
+import com.davidseptimus.maml.lang.psi.MamlRecursiveElementVisitor
 import com.davidseptimus.maml.lang.psi.MamlTypes
 import com.intellij.application.options.CodeStyle
 import com.intellij.lang.ASTNode

@@ -7,6 +7,7 @@ import com.davidseptimus.maml.util.MamlStringUtil
 import com.intellij.codeInsight.intention.IntentionAction
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction
 import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
@@ -14,7 +15,7 @@ import com.intellij.psi.util.elementType
 /**
  * Intention action to convert a single-line string to a multiline string.
  */
-class ConvertToMultilineStringIntention : PsiElementBaseIntentionAction(), IntentionAction {
+class ConvertToMultilineStringIntention : PsiElementBaseIntentionAction(), IntentionAction, DumbAware {
 
     override fun getFamilyName(): String =
         MamlBundle.message("intention.convert.to.multiline.string.family")

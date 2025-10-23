@@ -1,6 +1,5 @@
 package com.davidseptimus.maml.inspections
 
-import com.davidseptimus.maml.lang.MamlParserDefinition
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 

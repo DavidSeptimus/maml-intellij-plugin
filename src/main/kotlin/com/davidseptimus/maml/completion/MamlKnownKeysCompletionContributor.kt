@@ -1,19 +1,15 @@
 package com.davidseptimus.maml.completion
 
-import com.davidseptimus.maml.lang.psi.MamlKey
-import com.davidseptimus.maml.lang.psi.MamlObject
-import com.davidseptimus.maml.lang.psi.MamlRecursiveElementVisitor
-import com.davidseptimus.maml.lang.psi.MamlTypes
-import com.davidseptimus.maml.lang.psi.MamlValue
+import com.davidseptimus.maml.lang.psi.*
 import com.davidseptimus.maml.settings.MamlSettings
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.openapi.project.DumbAware
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.PsiModificationTracker
-import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
 import com.intellij.util.ProcessingContext
 
@@ -21,7 +17,7 @@ import com.intellij.util.ProcessingContext
  * Provides completion suggestions for known keys in the current file.
  * Collects all keys that appear in the file and suggests them when typing a new key.
  */
-class MamlKnownKeysCompletionContributor : CompletionContributor() {
+class MamlKnownKeysCompletionContributor : CompletionContributor(), DumbAware {
     init {
         val provider = KnownKeysCompletionProvider()
 

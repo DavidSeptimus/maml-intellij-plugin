@@ -1,13 +1,15 @@
 package com.davidseptimus.maml.json
 
 import com.intellij.codeInsight.AutoPopupController
-import com.intellij.codeInsight.completion.*
+import com.intellij.codeInsight.completion.CompletionContributor
+import com.intellij.codeInsight.completion.CompletionParameters
+import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.codeInsight.completion.InsertHandler
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.icons.AllIcons
 import com.intellij.json.pointer.JsonPointerPosition
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.EditorModificationUtil
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.text.StringUtil
@@ -244,7 +246,6 @@ class MamlJsonSchemaCompletionContributor : CompletionContributor() {
                 // Don't insert anything if we're inside a string literal
                 if (insideStringLiteral) return@InsertHandler
 
-                val insertComma = walker?.hasMissingCommaAfter(position) == true
                 val hasValue = walker?.let {
                     it.isPropertyWithValue(it.findElementToCheck(position))
                 } == true

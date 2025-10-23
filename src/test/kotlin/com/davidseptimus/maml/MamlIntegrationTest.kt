@@ -1,16 +1,10 @@
 package com.davidseptimus.maml
 
-import com.davidseptimus.maml.highlighting.MamlSyntaxHighlighter
-import com.davidseptimus.maml.lang.MamlFileType
-import com.davidseptimus.maml.lang.MamlLanguage
 import com.davidseptimus.maml.lang.psi.MamlFile
 import com.davidseptimus.maml.lang.psi.MamlObject
-import com.intellij.openapi.fileTypes.FileTypeManager
-import com.intellij.openapi.fileTypes.SyntaxHighlighter
 import com.intellij.psi.PsiManager
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import com.intellij.testFramework.fixtures.CodeInsightTestFixture
 
 class MamlIntegrationTest : BasePlatformTestCase() {
 

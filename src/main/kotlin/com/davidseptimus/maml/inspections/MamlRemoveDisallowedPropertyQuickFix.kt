@@ -4,6 +4,7 @@ import com.davidseptimus.maml.MamlBundle
 import com.davidseptimus.maml.lang.psi.MamlKeyValue
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemDescriptor
+import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.psi.util.parentOfType
 
@@ -12,7 +13,7 @@ import com.intellij.psi.util.parentOfType
  */
 class MamlRemoveDisallowedPropertyQuickFix(
     private val propertyName: String
-) : LocalQuickFix {
+) : LocalQuickFix, DumbAware {
 
     override fun getName(): String =
         MamlBundle.message("inspection.disallowed.property.quickfix.name", propertyName)

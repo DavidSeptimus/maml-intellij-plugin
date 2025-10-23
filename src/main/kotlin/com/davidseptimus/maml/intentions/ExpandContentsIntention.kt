@@ -9,6 +9,7 @@ import com.intellij.application.options.CodeStyle
 import com.intellij.codeInsight.intention.IntentionAction
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction
 import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.tree.TokenSet
@@ -18,7 +19,7 @@ import com.intellij.psi.util.elementType
  * Intention action that recursively expands/unfolds container contents onto multiple lines.
  * Respects user's code style settings for comma usage.
  */
-class ExpandContentsIntention : PsiElementBaseIntentionAction(), IntentionAction {
+class ExpandContentsIntention : PsiElementBaseIntentionAction(), IntentionAction, DumbAware {
 
     override fun getText(): String = MamlBundle.message("intention.expand.contents.text")
 

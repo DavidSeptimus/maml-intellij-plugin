@@ -7,6 +7,7 @@ import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
@@ -20,7 +21,7 @@ import com.intellij.psi.PsiElementVisitor
  *
  * Quoted string keys are always valid (including empty strings).
  */
-class MamlInvalidKeyInspection : LocalInspectionTool() {
+class MamlInvalidKeyInspection : LocalInspectionTool(), DumbAware {
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : PsiElementVisitor() {

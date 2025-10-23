@@ -1,8 +1,7 @@
 package com.davidseptimus.maml.highlighting
 
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors
-import com.intellij.openapi.editor.colors.CodeInsightColors
-import com.intellij.openapi.editor.colors.CodeInsightColors.*
+import com.intellij.openapi.editor.colors.CodeInsightColors.HYPERLINK_ATTRIBUTES
 import com.intellij.openapi.editor.colors.TextAttributesKey
 
 object MamlTokenAttributes {

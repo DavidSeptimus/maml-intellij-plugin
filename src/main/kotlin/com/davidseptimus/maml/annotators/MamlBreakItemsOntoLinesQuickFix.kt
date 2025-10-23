@@ -7,6 +7,7 @@ import com.davidseptimus.maml.lang.psi.MamlObject
 import com.davidseptimus.maml.util.MamlSpacingUtil
 import com.intellij.codeInsight.intention.IntentionAction
 import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
@@ -15,7 +16,7 @@ import com.intellij.psi.PsiFile
  * Quick fix that breaks all items in a container (array or object) onto separate lines.
  * This operates on the entire container.
  */
-class MamlBreakItemsOntoLinesQuickFix(private val container: PsiElement) : IntentionAction {
+class MamlBreakItemsOntoLinesQuickFix(private val container: PsiElement) : IntentionAction, DumbAware {
 
     override fun getText(): String =
         MamlBundle.message("annotator.missing.comma.quickfix.break.lines")

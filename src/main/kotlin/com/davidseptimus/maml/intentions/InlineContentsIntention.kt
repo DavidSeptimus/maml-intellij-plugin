@@ -7,6 +7,7 @@ import com.intellij.application.options.CodeStyle
 import com.intellij.codeInsight.intention.IntentionAction
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction
 import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 
@@ -14,7 +15,7 @@ import com.intellij.psi.PsiElement
  * Intention action that recursively inlines/flattens container contents onto a single line,
  * adding commas as needed between items.
  */
-class InlineContentsIntention : PsiElementBaseIntentionAction(), IntentionAction {
+class InlineContentsIntention : PsiElementBaseIntentionAction(), IntentionAction, DumbAware {
 
     override fun getText(): String = MamlBundle.message("intention.inline.contents.text")
 

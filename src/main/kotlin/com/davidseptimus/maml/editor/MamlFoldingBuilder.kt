@@ -8,11 +8,12 @@ import com.intellij.lang.ASTNode
 import com.intellij.lang.folding.FoldingBuilderEx
 import com.intellij.lang.folding.FoldingDescriptor
 import com.intellij.openapi.editor.Document
+import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 
-class MamlFoldingBuilder : FoldingBuilderEx() {
+class MamlFoldingBuilder : FoldingBuilderEx(), DumbAware {
 
     override fun buildFoldRegions(
         root: PsiElement,
@@ -126,7 +127,7 @@ class MamlFoldingBuilder : FoldingBuilderEx() {
     }
 
     private fun getMultilineStringPlaceholder(node: ASTNode): String {
-        val settings = MamlSettings.Companion.getInstance()
+        val settings = MamlSettings.getInstance()
         val text = node.text
 
         // Remove the triple quotes
@@ -148,7 +149,7 @@ class MamlFoldingBuilder : FoldingBuilderEx() {
     }
 
     private fun getCommentPlaceholder(node: ASTNode): String {
-        val settings = MamlSettings.Companion.getInstance()
+        val settings = MamlSettings.getInstance()
         val text = node.text
 
         // Get the first line of the comment block
