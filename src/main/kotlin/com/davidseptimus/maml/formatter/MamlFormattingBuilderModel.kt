@@ -26,22 +26,21 @@ class MamlFormattingBuilderModel : FormattingModelBuilder {
         )
     }
 
-    companion object {
-        fun createSpacingBuilder(settings: CodeStyleSettings): SpacingBuilder {
-            val mamlSettings = settings.getCustomSettings(MamlCodeStyleSettings::class.java)
-            val commonSettings = settings.getCommonSettings(MamlLanguage)
+}
 
-            val spacesBeforeComma = if (commonSettings.SPACE_BEFORE_COMMA) 1 else 0
-            val spacesBeforeColon = if (mamlSettings.SPACE_BEFORE_COLON) 1 else 0
-            val spacesAfterColon = if (mamlSettings.SPACE_AFTER_COLON) 1 else 0
+fun createSpacingBuilder(settings: CodeStyleSettings): SpacingBuilder {
+    val mamlSettings = settings.getCustomSettings(MamlCodeStyleSettings::class.java)
+    val commonSettings = settings.getCommonSettings(MamlLanguage)
 
-            return SpacingBuilder(settings, MamlLanguage)
-                .before(COLON).spacing(spacesBeforeColon, spacesBeforeColon, 0, false, 0)
-                .after(COLON).spacing(spacesAfterColon, spacesAfterColon, 0, false, 0)
-                .withinPair(LBRACKET, RBRACKET).spaceIf(commonSettings.SPACE_WITHIN_BRACKETS, true)
-                .withinPair(LBRACE, RBRACE).spaceIf(commonSettings.SPACE_WITHIN_BRACES, true)
-                .before(COMMA).spacing(spacesBeforeComma, spacesBeforeComma, 0, false, 0)
-                .after(COMMA).spaceIf(commonSettings.SPACE_AFTER_COMMA)
-        }
-    }
+    val spacesBeforeComma = if (commonSettings.SPACE_BEFORE_COMMA) 1 else 0
+    val spacesBeforeColon = if (mamlSettings.SPACE_BEFORE_COLON) 1 else 0
+    val spacesAfterColon = if (mamlSettings.SPACE_AFTER_COLON) 1 else 0
+
+    return SpacingBuilder(settings, MamlLanguage)
+        .before(COLON).spacing(spacesBeforeColon, spacesBeforeColon, 0, false, 0)
+        .after(COLON).spacing(spacesAfterColon, spacesAfterColon, 0, false, 0)
+        .withinPair(LBRACKET, RBRACKET).spaceIf(commonSettings.SPACE_WITHIN_BRACKETS, true)
+        .withinPair(LBRACE, RBRACE).spaceIf(commonSettings.SPACE_WITHIN_BRACES, true)
+        .before(COMMA).spacing(spacesBeforeComma, spacesBeforeComma, 0, false, 0)
+        .after(COMMA).spaceIf(commonSettings.SPACE_AFTER_COMMA)
 }

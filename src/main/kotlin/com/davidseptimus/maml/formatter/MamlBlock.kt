@@ -70,6 +70,26 @@ class MamlBlock(
                         alignment = it
                     }
                 }
+            } else if (MamlPsiUtil.hasElementType(childNode, MAML_CLOSE_BRACES)) {
+                wrap = this.childWrap
+                // Closing braces alignment depends on context:
+                // - If container is a property value (key: {...}), align with the key
+                // - If container is an array item (e.g., [1,2,3,{...}]), align with start of line (array child level)
+                // - Otherwise, align at the container's level
+                indent = when {
+                    MamlPsiUtil.isPropertyValue(psiElement.parent) || MamlPsiUtil.isArrayItem(psiElement.parent) -> {
+                        // Property value case: braces should align with key
+                        // Array item case: align with array's child indent level (start of items)
+                        // The opening brace may appear after other items like [1,2,3,{
+                        // Closing should align with where '1' starts, not where '{' is
+                        Indent.getNoneIndent()
+                    }
+
+                    else -> {
+                        // Other cases: use getSpaceIndent for proper wrapping behavior
+                        Indent.getSpaceIndent(0, true)
+                    }
+                }
             }
         }
         // Handle properties alignment

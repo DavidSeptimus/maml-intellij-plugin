@@ -4,6 +4,12 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed formatter handling of closing brackets/braces when wrapping is enabled
+
+## [0.6.0] - 2025-10-23
+
 ### Added
 
 - Added folding for escaped unicode glyphs that can be rendered with the current font

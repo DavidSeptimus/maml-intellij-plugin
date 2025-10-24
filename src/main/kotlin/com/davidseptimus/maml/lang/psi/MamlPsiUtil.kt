@@ -22,6 +22,11 @@ object MamlPsiUtil {
         return parent is MamlKeyValue && parent.value == element
     }
 
+    fun isArrayItem(element: PsiElement): Boolean {
+        val parent = element.parent
+        return parent is MamlItems && parent.valueList.contains(element)
+    }
+
     fun container(element: PsiElement?): PsiElement? {
         return findAncestor(element) { it is MamlArray || it is MamlObject }
     }
