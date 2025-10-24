@@ -819,6 +819,73 @@ class MamlFormatterTest : BasePlatformTestCase() {
             "[1, 2]"
         )
     }
+
+    fun testInlineCommentsNotMovedWithWrapping() {
+        mamlSettings.OBJECT_WRAPPING = CommonCodeStyleSettings.WRAP_ALWAYS
+        mamlSettings.ARRAY_WRAPPING = CommonCodeStyleSettings.WRAP_ALWAYS
+        doTest(
+            """
+            {
+            # Line comment should be indented
+              key: "value" # inline after value
+              number: 42 # inline after number
+              flag: true # inline after boolean
+
+              # Another line comment
+              nested: { # inline after opening brace
+                inner: "data" # inline after nested value
+                count: 10
+              } # inline after closing brace
+
+              items: [ # inline after opening bracket
+                1, 2, 3 # inline after array items
+              ] # inline after closing bracket
+
+              list: [
+                # Line comment in array
+                "first"
+                "second" # inline in array
+              ]
+
+              obj: {
+                # Line comment in object
+                a: 1, # inline after comma
+                b: 2 # inline without comma
+              }
+            }
+            """.trimIndent(),
+            """
+            {
+              # Line comment should be indented
+              key: "value" # inline after value
+              number: 42 # inline after number
+              flag: true # inline after boolean
+
+              # Another line comment
+              nested: { # inline after opening brace
+                inner: "data" # inline after nested value
+                count: 10
+              } # inline after closing brace
+
+              items: [ # inline after opening bracket
+                1, 2, 3 # inline after array items
+              ] # inline after closing bracket
+
+              list: [
+                # Line comment in array
+                "first"
+                "second" # inline in array
+              ]
+
+              obj: {
+                # Line comment in object
+                a: 1, # inline after comma
+                b: 2 # inline without comma
+              }
+            }
+            """.trimIndent()
+        )
+    }
     // ===========================================
     // EDGE CASE TESTS
     // ===========================================

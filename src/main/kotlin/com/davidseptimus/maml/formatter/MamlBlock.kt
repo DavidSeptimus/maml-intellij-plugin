@@ -12,6 +12,12 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.TokenType
 import com.intellij.psi.tree.TokenSet
 
+
+private val MAML_OPEN_BRACES = TokenSet.create(LBRACKET, LBRACE)
+private val MAML_CLOSE_BRACES = TokenSet.create(RBRACKET, RBRACE)
+private val MAML_ALL_BRACES = TokenSet.orSet(MAML_OPEN_BRACES, MAML_CLOSE_BRACES)
+private val MAML_CONTAINERS = TokenSet.create(ARRAY, OBJECT)
+
 class MamlBlock(
     private val parent: MamlBlock?,
     private val node: ASTNode,
@@ -59,6 +65,16 @@ class MamlBlock(
         if (MamlPsiUtil.hasElementType(node, MAML_CONTAINERS)) {
             if (MamlPsiUtil.hasElementType(childNode, COMMA)) {
                 wrap = Wrap.createWrap(WrapType.NONE, true)
+            } else if (MamlPsiUtil.hasElementType(childNode, COMMENT)) {
+                // Check if this is an inline comment (on same line as code)
+                if (isInlineComment(childNode)) {
+                    // Inline comments should not wrap to preserve their position on the same line
+                    wrap = Wrap.createWrap(WrapType.NONE, true)
+                } else {
+                    // Line comments get normal wrapping and indentation
+                    wrap = this.childWrap
+                    indent = Indent.getNormalIndent()
+                }
             } else if (!MamlPsiUtil.hasElementType(childNode, MAML_ALL_BRACES)) {
                 wrap = this.childWrap
                 indent = Indent.getNormalIndent()
@@ -126,8 +142,23 @@ class MamlBlock(
 
     override fun getAlignment(): Alignment? = alignment
 
-    override fun getSpacing(child1: Block?, child2: Block): Spacing? =
-        spacingBuilder.getSpacing(this, child1, child2)
+    override fun getSpacing(child1: Block?, child2: Block): Spacing? {
+        // Prevent line breaks before inline comments
+        if (child1 != null && child2 is MamlBlock) {
+            val node1 = (child1 as? MamlBlock)?.node
+            val node2 = child2.node
+
+            if (node1 != null &&
+                MamlPsiUtil.hasElementType(node2, COMMENT) &&
+                isInlineComment(node2)
+            ) {
+                // Force single space, no line breaks allowed for inline comments
+                return Spacing.createSpacing(1, 1, 0, false, 0)
+            }
+        }
+
+        return spacingBuilder.getSpacing(this, child1, child2)
+    }
 
     override fun getChildAttributes(newChildIndex: Int): ChildAttributes {
         return if (MamlPsiUtil.hasElementType(node, MAML_CONTAINERS)) {
@@ -161,13 +192,33 @@ class MamlBlock(
 
     override fun isLeaf(): Boolean = node.firstChildNode == null
 
-    companion object {
-        private val MAML_OPEN_BRACES = TokenSet.create(LBRACKET, LBRACE)
-        private val MAML_CLOSE_BRACES = TokenSet.create(RBRACKET, RBRACE)
-        private val MAML_ALL_BRACES = TokenSet.orSet(MAML_OPEN_BRACES, MAML_CLOSE_BRACES)
-        private val MAML_CONTAINERS = TokenSet.create(ARRAY, OBJECT)
+    private fun isWhitespaceOrEmpty(node: ASTNode): Boolean =
+        node.elementType == TokenType.WHITE_SPACE || node.textLength == 0
 
-        private fun isWhitespaceOrEmpty(node: ASTNode): Boolean =
-            node.elementType == TokenType.WHITE_SPACE || node.textLength == 0
+    /**
+     * Determines if a comment node is an inline comment (appears after code on the same line)
+     * vs a line comment (appears on its own line).
+     *
+     * @param commentNode The comment node to check
+     * @return true if the comment is inline (no newline between it and previous element)
+     */
+    private fun isInlineComment(commentNode: ASTNode): Boolean {
+        // Find previous non-whitespace sibling
+        var prevSibling = commentNode.treePrev
+        while (prevSibling != null && prevSibling.elementType == TokenType.WHITE_SPACE) {
+            prevSibling = prevSibling.treePrev
+        }
+
+        if (prevSibling == null) return false
+
+        // Check the text between the end of the previous sibling and the start of the comment
+        // If it contains a newline, the comment is on its own line (line comment)
+        // Otherwise, it's an inline comment
+        val textBetween = commentNode.psi.containingFile.text.substring(
+            prevSibling.textRange.endOffset,
+            commentNode.startOffset
+        )
+
+        return !textBetween.contains('\n')
     }
 }

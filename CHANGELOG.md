@@ -7,6 +7,7 @@
 ### Fixed
 
 - Fixed formatter handling of closing brackets/braces when wrapping is enabled
+- Fixed formatter wrapping behavior causing inline comments to be moved to new lines
 
 ## [0.6.0] - 2025-10-23
 
