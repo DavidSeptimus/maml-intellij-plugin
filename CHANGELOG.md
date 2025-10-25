@@ -11,6 +11,7 @@
 - Made the parser more resilient to unterminated quoted string keys to enable more precise error reporting and code
   completion
 - Key completions will now append a colon if the key is not followed by one already
+- Updated plugin icon to match the new MAML logo
 
 ### Fixed
 
