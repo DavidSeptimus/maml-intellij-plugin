@@ -1,6 +1,7 @@
 ## MAML IntelliJ Plugin
 
 ![Build](https://github.com/DavidSeptimus/maml-intellij-plugin/workflows/Build/badge.svg)
+[![codecov](https://codecov.io/gh/DavidSeptimus/maml-intellij-plugin/branch/main/graph/badge.svg)](https://codecov.io/gh/DavidSeptimus/maml-intellij-plugin)
 [![Version](https://img.shields.io/jetbrains/plugin/v/28634-maml.svg)](https://plugins.jetbrains.com/plugin/28634-maml)
 [![Downloads](https://img.shields.io/jetbrains/plugin/d/28634-maml.svg)](https://plugins.jetbrains.com/plugin/28634-maml)
 
