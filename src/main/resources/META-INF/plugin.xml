@@ -20,6 +20,7 @@
         <lang.braceMatcher language="MAML" implementationClass="com.davidseptimus.maml.editor.MamlBraceMatcher"/>
         <enterHandlerDelegate implementation="com.davidseptimus.maml.editor.MamlEnterBetweenBracesHandler"/>
         <colorSettingsPage implementation="com.davidseptimus.maml.highlighting.MamlColorSettingsPage"/>
+        <codeCompletionConfigurable instance="com.davidseptimus.maml.settings.MamlCodeCompletionConfigurable"/>
 
         <!-- Settings -->
         <applicationService serviceImplementation="com.davidseptimus.maml.settings.MamlSettings"/>
