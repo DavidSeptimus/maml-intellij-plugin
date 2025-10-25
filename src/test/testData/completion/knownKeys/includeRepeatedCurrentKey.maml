@@ -1,0 +1,9 @@
+[
+  {
+    repeated: "val"
+    repeatedWithSuffix: 123
+  },
+  {
+    repeated<caret>
+  }
+]

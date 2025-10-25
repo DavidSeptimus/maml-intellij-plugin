@@ -1,15 +1,16 @@
 // This is a generated file. Not intended for manual editing.
 package com.davidseptimus.maml.lang.psi;
 
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.PsiElement;
-import com.intellij.lang.ASTNode;
 import com.davidseptimus.maml.lang.psi.impl.*;
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.IElementType;
 
 public interface MamlTypes {
 
   IElementType ARRAY = new MamlElementType("ARRAY");
   IElementType INCOMPLETE_KEY_VALUE = new MamlElementType("INCOMPLETE_KEY_VALUE");
+  IElementType INVALID_KEY = new MamlElementType("INVALID_KEY");
   IElementType INVALID_VALUE = new MamlElementType("INVALID_VALUE");
   IElementType ITEMS = new MamlElementType("ITEMS");
   IElementType KEY = new MamlElementType("KEY");
@@ -42,6 +43,8 @@ public interface MamlTypes {
       }
       else if (type == INCOMPLETE_KEY_VALUE) {
         return new MamlIncompleteKeyValueImpl(node);
+      } else if (type == INVALID_KEY) {
+        return new MamlInvalidKeyImpl(node);
       }
       else if (type == INVALID_VALUE) {
         return new MamlInvalidValueImpl(node);

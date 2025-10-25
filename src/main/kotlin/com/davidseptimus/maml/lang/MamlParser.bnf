@@ -46,9 +46,11 @@ key_value ::= key COLON value {
 
 // Incomplete key-value pair - just a key without colon (for completion/error recovery)
 // Uses lookahead to only match if NOT followed by colon
-incomplete_key_value ::= key &(!(COLON)) {
+incomplete_key_value ::= invalid_key | (key &(!(COLON))) {
   methods=[getPresentation]
 }
+
+invalid_key ::= UNTERMINATED_STRING
 
 // Recovery: skip tokens until we see what could be the next key, end of object, comma, or EOF
 private key_value_recover ::= !(RBRACE | STRING | IDENTIFIER | COMMA | <<eof>>)

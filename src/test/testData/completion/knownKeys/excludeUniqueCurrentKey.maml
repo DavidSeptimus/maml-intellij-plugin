@@ -1,0 +1,7 @@
+{
+  obj: {
+    uniqueKeyWithSuffix: 30
+    uniqueKeyWithSuffix2: 40
+  }
+  uniqueKey<caret>
+}

@@ -1,0 +1,8 @@
+{
+  address: {
+    neat: "cool"
+  }
+  name: "John"
+  number: 42
+  <caret>
+}

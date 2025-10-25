@@ -1,15 +1,15 @@
 // This is a generated file. Not intended for manual editing.
 package com.davidseptimus.maml.lang.psi.impl;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import static com.davidseptimus.maml.lang.psi.MamlTypes.*;
+import com.davidseptimus.maml.lang.psi.MamlIncompleteKeyValue;
+import com.davidseptimus.maml.lang.psi.MamlInvalidKey;
+import com.davidseptimus.maml.lang.psi.MamlKey;
+import com.davidseptimus.maml.lang.psi.MamlVisitor;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.davidseptimus.maml.lang.psi.*;
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElementVisitor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class MamlIncompleteKeyValueImpl extends ASTWrapperPsiElement implements MamlIncompleteKeyValue {
 
@@ -28,9 +28,15 @@ public class MamlIncompleteKeyValueImpl extends ASTWrapperPsiElement implements 
   }
 
   @Override
-  @NotNull
+  @Nullable
+  public MamlInvalidKey getInvalidKey() {
+    return findChildByClass(MamlInvalidKey.class);
+  }
+
+  @Override
+  @Nullable
   public MamlKey getKey() {
-    return findNotNullChildByClass(MamlKey.class);
+    return findChildByClass(MamlKey.class);
   }
 
 }

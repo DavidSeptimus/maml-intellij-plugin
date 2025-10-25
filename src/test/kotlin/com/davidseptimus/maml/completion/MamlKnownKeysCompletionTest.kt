@@ -4,145 +4,35 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 
 class MamlKnownKeysCompletionTest : BasePlatformTestCase() {
 
-    override fun getTestDataPath(): String = "src/test/testData"
+    override fun getTestDataPath(): String = "src/test/testData/completion/knownKeys"
 
     fun testKnownKeysCompletion() {
-        myFixture.configureByText(
-            "test.maml", """
-            {
-              address: {
-                "neat": "cool"
-              }
-              name: "John"
-              number: 42
-              <caret>
-            }
-        """.trimIndent()
-        )
-        myFixture.completeBasic()
-
-        val lookupStrings = myFixture.lookupElementStrings
-        assertNotNull("Expected completion suggestions", lookupStrings)
-        assertEquals(1, lookupStrings?.size)
-        assertTrue("Expected 'neat' in completions", lookupStrings!!.contains("neat"))
+        myFixture.testCompletionVariants("knownKeysCompletion.maml", "neat")
     }
 
     fun testKnownKeysFromDifferentObjects() {
-        myFixture.configureByText(
-            "test.maml", """
-            {
-              user: {
-                name: "John"
-                email: "john@example.com"
-              }
-              settings: {
-                <caret>
-              }
-            }
-        """.trimIndent()
-        )
-        myFixture.completeBasic()
-
-        val lookupStrings = myFixture.lookupElementStrings
-        assertNotNull("Expected completion suggestions", lookupStrings)
-        assertTrue("Expected 'name' in completions", lookupStrings!!.contains("name"))
-        assertTrue("Expected 'email' in completions", lookupStrings.contains("email"))
+        myFixture.testCompletionVariants("knownKeysFromDifferentObjects.maml", "email", "name", "settings", "user")
     }
 
     fun testNoDuplicateKeyCompletion() {
-        myFixture.configureByText(
-            "test.maml", """
-            {
-              name: "John"
-              age: 30
-              name: <caret>
-            }
-        """.trimIndent()
-        )
-        myFixture.completeBasic()
+        myFixture.configureByFile("noDuplicateKeyCompletion.maml")
+        val completions = myFixture.completeBasic()
 
-        val lookupStrings = myFixture.lookupElementStrings
-        // 'name' should not be suggested again since it already exists in current object
-        if (lookupStrings != null) {
-            assertFalse("'name' should not appear in completions", lookupStrings.contains("name"))
-        }
+        // 'name' and 'age' should not be suggested again since they already exist in current object
+        val lookupStrings = completions?.map { it.lookupString } ?: emptyList()
+        assertFalse("'name' should not appear in completions", lookupStrings.contains("name"))
+        assertFalse("'age' should not appear in completions", lookupStrings.contains("age"))
     }
 
     fun testExcludeUniqueCurrentKey() {
-        myFixture.configureByText(
-            "test.maml", """
-            {
-              uniqueKey<caret>: "value"
-              obj: {
-                uniqueKeyWithSuffix: 30
-              }
-            }
-        """.trimIndent()
-        )
-        myFixture.completeBasic()
-
-        val lookupStrings = myFixture.lookupElementStrings
-        if (lookupStrings != null) {
-            assertFalse(
-                "'uniqueKey' should not appear in completions when it's unique",
-                lookupStrings.contains("uniqueKey")
-            )
-            assertTrue(
-                "'uniqueKeyWithSuffix' should appear in completions",
-                lookupStrings.contains("uniqueKeyWithSuffix")
-            )
-        } else {
-            fail("Expected completion suggestions")
-        }
+        myFixture.testCompletionVariants("excludeUniqueCurrentKey.maml", "uniqueKeyWithSuffix", "uniqueKeyWithSuffix2")
     }
 
     fun testIncludeRepeatedCurrentKey() {
-        myFixture.configureByText(
-            "test.maml", """
-            [
-                {
-                  name<caret>: "John"
-                  age: 30
-                }
-                {
-                  name: "Jane"
-                  city: "NYC"
-                }
-            ]
-        """.trimIndent()
-        )
-        myFixture.completeBasic()
-
-        val lookupStrings = myFixture.lookupElementStrings
-        // 'name' appears in another object, so it should be available in completions
-        if (lookupStrings != null) {
-            assertTrue(
-                "'name' should appear in completions when it exists elsewhere",
-                lookupStrings.contains("name")
-            )
-            assertTrue("'age' should appear in completions", lookupStrings.contains("age"))
-            assertTrue("'city' should appear in completions", lookupStrings.contains("city"))
-        } else {
-            fail("Expected completion suggestions")
-        }
+        myFixture.testCompletionVariants("includeRepeatedCurrentKey.maml", "repeated", "repeatedWithSuffix")
     }
 
     fun testNoKeyCompletionInValuePosition() {
-        myFixture.configureByText(
-            "test.maml", """
-            {
-              name: "John"
-              age: <caret>
-            }
-        """.trimIndent()
-        )
-        myFixture.completeBasic()
-
-        val lookupStrings = myFixture.lookupElementStrings
-        // In value positions, we shouldn't get known key completions
-        if (lookupStrings != null) {
-            // Should have keyword completions (true, false, null) but not key completions
-            assertTrue("Should have some completions in value position", lookupStrings.isNotEmpty())
-        }
+        myFixture.testCompletionVariants("noKeyCompletionInValuePosition.maml", "true", "false", "null")
     }
 }

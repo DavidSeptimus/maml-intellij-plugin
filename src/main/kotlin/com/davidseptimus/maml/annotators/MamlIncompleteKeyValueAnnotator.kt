@@ -2,6 +2,7 @@ package com.davidseptimus.maml.annotators
 
 import com.davidseptimus.maml.MamlBundle
 import com.davidseptimus.maml.lang.psi.MamlIncompleteKeyValue
+import com.davidseptimus.maml.lang.psi.impl.MamlInvalidKeyImpl
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
@@ -17,9 +18,25 @@ class MamlIncompleteKeyValueAnnotator : Annotator, DumbAware {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         if (element !is MamlIncompleteKeyValue) return
 
-        val key = element.key
+        val invalidKey = element.invalidKey
+        if (invalidKey is MamlInvalidKeyImpl) {
+            holder.newAnnotation(
+                HighlightSeverity.ERROR,
+                MamlBundle.message(
+                    "annotator.invalid.key.in.incomplete.key.value", invalidKey.text
+                )
+            )
+                .range(element.textRange)
+                .afterEndOfLine()
+                .create()
+            return
+        }
 
-        holder.newAnnotation(HighlightSeverity.ERROR, MamlBundle.message("annotator.incomplete.key.value", key.text))
+        val key = element.key
+        holder.newAnnotation(
+            HighlightSeverity.ERROR,
+            MamlBundle.message("annotator.incomplete.key.value", key?.text ?: "")
+        )
             .range(element.textRange)
             .afterEndOfLine()
             .create()

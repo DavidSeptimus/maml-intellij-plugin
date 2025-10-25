@@ -1,9 +1,9 @@
 // This is a generated file. Not intended for manual editing.
 package com.davidseptimus.maml.lang.psi;
 
-import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementVisitor;
+import org.jetbrains.annotations.NotNull;
 
 public class MamlVisitor extends PsiElementVisitor {
 
@@ -12,6 +12,10 @@ public class MamlVisitor extends PsiElementVisitor {
   }
 
   public void visitIncompleteKeyValue(@NotNull MamlIncompleteKeyValue o) {
+    visitPsiElement(o);
+  }
+
+  public void visitInvalidKey(@NotNull MamlInvalidKey o) {
     visitPsiElement(o);
   }
 

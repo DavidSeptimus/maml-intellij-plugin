@@ -1,15 +1,15 @@
 // This is a generated file. Not intended for manual editing.
 package com.davidseptimus.maml.lang.parser;
 
+import com.intellij.lang.ASTNode;
+import com.intellij.lang.LightPsiParser;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilder.Marker;
-import static com.davidseptimus.maml.lang.psi.MamlTypes.*;
-import static com.davidseptimus.maml.lang.parser.MamlParserUtil.*;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.tree.TokenSet;
 import com.intellij.lang.PsiParser;
-import com.intellij.lang.LightPsiParser;
+import com.intellij.psi.tree.IElementType;
+
+import static com.davidseptimus.maml.lang.parser.MamlParserUtil.*;
+import static com.davidseptimus.maml.lang.psi.MamlTypes.*;
 
 @SuppressWarnings({"SimplifiableIfStatement", "UnusedAssignment"})
 public class MamlParser implements PsiParser, LightPsiParser {
@@ -91,35 +91,57 @@ public class MamlParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // key &(!(COLON))
+  // invalid_key | (key &(!(COLON)))
   public static boolean incomplete_key_value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "incomplete_key_value")) return false;
-    if (!nextTokenIs(b, "<incomplete key value>", IDENTIFIER, STRING)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, INCOMPLETE_KEY_VALUE, "<incomplete key value>");
-    r = key(b, l + 1);
-    r = r && incomplete_key_value_1(b, l + 1);
+    r = invalid_key(b, l + 1);
+    if (!r) r = incomplete_key_value_1(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
 
-  // &(!(COLON))
+  // key &(!(COLON))
   private static boolean incomplete_key_value_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "incomplete_key_value_1")) return false;
     boolean r;
+    Marker m = enter_section_(b);
+    r = key(b, l + 1);
+    r = r && incomplete_key_value_1_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // &(!(COLON))
+  private static boolean incomplete_key_value_1_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "incomplete_key_value_1_1")) return false;
+    boolean r;
     Marker m = enter_section_(b, l, _AND_);
-    r = incomplete_key_value_1_0(b, l + 1);
+    r = incomplete_key_value_1_1_0(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
 
   // !(COLON)
-  private static boolean incomplete_key_value_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "incomplete_key_value_1_0")) return false;
+  private static boolean incomplete_key_value_1_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "incomplete_key_value_1_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NOT_);
     r = !consumeToken(b, COLON);
     exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // UNTERMINATED_STRING
+  public static boolean invalid_key(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "invalid_key")) return false;
+    if (!nextTokenIs(b, UNTERMINATED_STRING)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, UNTERMINATED_STRING);
+    exit_section_(b, m, INVALID_KEY, r);
     return r;
   }
 
@@ -262,7 +284,6 @@ public class MamlParser implements PsiParser, LightPsiParser {
   // key_value_recoverable (COMMA? key_value_recoverable)* COMMA?
   public static boolean members(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "members")) return false;
-    if (!nextTokenIs(b, "<members>", IDENTIFIER, STRING)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, MEMBERS, "<members>");
     r = key_value_recoverable(b, l + 1);
