@@ -1,13 +1,12 @@
 package com.davidseptimus.maml.completion
 
-import com.davidseptimus.maml.lang.psi.MamlKey
+import com.davidseptimus.maml.lang.psi.MamlInvalidValue
 import com.davidseptimus.maml.lang.psi.MamlTypes
 import com.davidseptimus.maml.settings.MamlSettings
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.project.DumbAware
 import com.intellij.patterns.PlatformPatterns
-import com.intellij.psi.util.parentOfType
 import com.intellij.util.ProcessingContext
 
 /**
@@ -18,7 +17,11 @@ class MamlKeywordCompletionContributor : CompletionContributor(), DumbAware {
     init {
         extend(
             CompletionType.BASIC,
-            PlatformPatterns.psiElement().withElementType(MamlTypes.IDENTIFIER),
+            PlatformPatterns.psiElement().withElementType(MamlTypes.IDENTIFIER).and(
+                PlatformPatterns.psiElement().withParent(
+                    MamlInvalidValue::class.java
+                )
+            ),
             KeywordCompletionProvider()
         )
     }
@@ -30,10 +33,6 @@ class MamlKeywordCompletionContributor : CompletionContributor(), DumbAware {
             result: CompletionResultSet
         ) {
             if (!MamlSettings.getInstance().enableKeywordCompletion) return
-
-            // Don't provide keyword completions in key positions
-            val position = parameters.position
-            if (position.parentOfType<MamlKey>() != null) return
 
             result.addElement(
                 LookupElementBuilder.create("true")
