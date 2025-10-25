@@ -37,7 +37,12 @@ class MamlJsonSchemaCompletionContributor : CompletionContributor() {
 
         val completionPosition = parameters.originalPosition ?: parameters.position
         val worker = Worker(jsonSchemaObject, parameters.position, completionPosition, result)
-        worker.work()
+        val isExhaustive = worker.work()
+
+        // Stop other contributors if our completions are exhaustive
+        if (isExhaustive) {
+            result.stopHere()
+        }
     }
 
     private class Worker(
@@ -51,6 +56,7 @@ class MamlJsonSchemaCompletionContributor : CompletionContributor() {
         private val project: Project = originalPosition.project
         private val wrapInQuotes: Boolean
         private val insideStringLiteral: Boolean
+        private var isExhaustive: Boolean = false
 
         init {
             val positionParent = position.parent
@@ -59,11 +65,11 @@ class MamlJsonSchemaCompletionContributor : CompletionContributor() {
             insideStringLiteral = isInsideQuotedString
         }
 
-        fun work() {
-            val checkable = walker?.findElementToCheck(position) ?: return
+        fun work(): Boolean {
+            val checkable = walker?.findElementToCheck(position) ?: return false
             val isName = walker.isName(checkable)
             val pointerPosition = walker.findPosition(checkable, isName == ThreeState.NO)
-            if (pointerPosition == null || pointerPosition.isEmpty && isName == ThreeState.NO) return
+            if (pointerPosition == null || pointerPosition.isEmpty && isName == ThreeState.NO) return false
 
             val expansionRequest = JsonSchemaNodeExpansionRequest(
                 walker.getParentPropertyAdapter(position)?.parentObject,
@@ -78,16 +84,35 @@ class MamlJsonSchemaCompletionContributor : CompletionContributor() {
                     val adapter = walker.getParentPropertyAdapter(checkable)
 
                     addAllPropertyVariants(schema, properties, adapter, knownNames)
+                    // Property completion is exhaustive if additionalProperties is not allowed
+                    if (!isAdditionalPropertiesAllowed(schema)) {
+                        isExhaustive = true
+                    }
                 }
 
                 if (isName != ThreeState.YES) {
-                    suggestValues(schema, isName == ThreeState.NO)
+                    val wasExhaustive = suggestValues(schema, isName == ThreeState.NO)
+                    if (wasExhaustive) {
+                        isExhaustive = true
+                    }
                 }
             }
 
             for (variant in completionVariants) {
                 resultConsumer.consume(variant)
             }
+
+            return isExhaustive
+        }
+
+        /**
+         * Checks if the schema allows additional properties beyond those defined.
+         * Returns true if additionalProperties is true or a schema, false if it's explicitly false.
+         */
+        private fun isAdditionalPropertiesAllowed(schema: JsonSchemaObject): Boolean {
+            // If additionalPropertiesAllowed is null, it's implicitly true (default behavior)
+            // If it's explicitly false, then only defined properties are allowed
+            return schema.additionalPropertiesAllowed != false
         }
 
         private fun addAllPropertyVariants(
@@ -127,6 +152,7 @@ class MamlJsonSchemaCompletionContributor : CompletionContributor() {
             if (description.isNullOrBlank()) {
                 description = JsonSchemaObjectReadingUtils.getTypeDescription(schemaObject, true).orEmpty()
             }
+            description = StringUtil.unescapeXmlEntities(description)
 
             val propertyKey = if (!shouldWrapInQuotes(key, false)) {
                 key
@@ -142,7 +168,11 @@ class MamlJsonSchemaCompletionContributor : CompletionContributor() {
             completionVariants.add(lookupElement)
         }
 
-        private fun suggestValues(schema: JsonSchemaObject, isSurelyValue: Boolean) {
+        /**
+         * Suggests values based on schema and returns whether the suggestions are exhaustive.
+         * Exhaustive means no other completion providers should add suggestions.
+         */
+        private fun suggestValues(schema: JsonSchemaObject, isSurelyValue: Boolean): Boolean {
             val enumVariants = schema.enum
             if (enumVariants != null) {
                 for (o in enumVariants) {
@@ -156,12 +186,20 @@ class MamlJsonSchemaCompletionContributor : CompletionContributor() {
                         addValueVariant(o.toString())
                     }
                 }
+                // Enums are exhaustive - only these specific values are allowed
+                return true
             } else if (isSurelyValue) {
                 val type = JsonSchemaObjectReadingUtils.guessType(schema)
                 suggestByType(schema, type)
+                // Value completions are always exhaustive when we have schema information
+                return true
             }
+            return false
         }
 
+        /**
+         * Suggests values by type.
+         */
         private fun suggestByType(schema: JsonSchemaObject, type: JsonSchemaType?) {
             if (type == JsonSchemaType._string) {
                 addPossibleStringValue(schema)
@@ -171,40 +209,50 @@ class MamlJsonSchemaCompletionContributor : CompletionContributor() {
             }
             when (type) {
                 JsonSchemaType._boolean -> {
-                    addValueVariant("true")
-                    addValueVariant("false")
+                    addValueVariant("true", type = JsonSchemaType._boolean)
+                    addValueVariant("false", type = JsonSchemaType._boolean)
                 }
+
                 JsonSchemaType._null -> {
-                    addValueVariant("null")
+                    addValueVariant("null", type = JsonSchemaType._null)
                 }
+
                 JsonSchemaType._array -> {
                     val value = walker!!.defaultArrayValue
                     addValueVariant(
                         key = value,
                         altText = "[...]",
-                        handler = createArrayOrObjectLiteralInsertHandler(value.length)
+                        handler = createArrayOrObjectLiteralInsertHandler(value.length),
+                        type = JsonSchemaType._array
                     )
                 }
+
                 JsonSchemaType._object -> {
                     val value = walker!!.defaultObjectValue
                     addValueVariant(
                         key = value,
                         altText = "{...}",
-                        handler = createArrayOrObjectLiteralInsertHandler(value.length)
+                        handler = createArrayOrObjectLiteralInsertHandler(value.length),
+                        type = JsonSchemaType._object
                     )
                 }
-                else -> { /* no suggestions */ }
+
+                else -> {
+                    //  no suggestions
+                }
             }
         }
 
         private fun addPossibleStringValue(schema: JsonSchemaObject) {
-            val defaultValue = schema.default
-            val defaultValueString = defaultValue?.toString()
-            addStringVariant(defaultValueString)
+            val defaultValue = schema.default?.toString() ?: ""
+            addStringVariant(defaultValue)
         }
 
-        private fun addStringVariant(defaultValueString: String?) {
-            if (defaultValueString == null) return
+        private fun addStringVariant(defaultValueString: String) {
+            if (defaultValueString.isEmpty()) {
+                completionVariants.add(createEmptyStringCompletion())
+                return
+            }
             var normalizedValue: String = defaultValueString
             val shouldQuote = walker!!.requiresValueQuotes()
             val isQuoted = StringUtil.isQuotedString(normalizedValue)
@@ -213,19 +261,32 @@ class MamlJsonSchemaCompletionContributor : CompletionContributor() {
             } else if (!shouldQuote && isQuoted) {
                 normalizedValue = StringUtil.unquoteString(normalizedValue)
             }
-            addValueVariant(normalizedValue)
+            addValueVariant(normalizedValue, type = JsonSchemaType._string)
+        }
+
+        private fun createEmptyStringCompletion(): LookupElement {
+            return LookupElementBuilder.create("\"\"")
+                .withPresentableText("\"\"")
+                .withInsertHandler { context, _ ->
+                    val editor = context.editor
+                    val caretOffset = context.tailOffset
+                    // Position caret between the quotes
+                    editor.caretModel.moveToOffset(caretOffset - 1)
+                }
         }
 
         private fun addValueVariant(
             key: String,
             altText: String? = null,
-            handler: InsertHandler<LookupElement?>? = null
+            handler: InsertHandler<LookupElement?>? = null,
+            type: JsonSchemaType? = null
         ) {
             val unquoted = StringUtil.unquoteString(key)
             val lookupString = if (!shouldWrapInQuotes(unquoted, true)) unquoted else key
             val builder = LookupElementBuilder.create(lookupString)
                 .withPresentableText(altText ?: lookupString)
                 .withInsertHandler(handler)
+                .withIcon(getIconForType(type))
 
             completionVariants.add(builder)
         }
@@ -233,10 +294,11 @@ class MamlJsonSchemaCompletionContributor : CompletionContributor() {
         private fun shouldWrapInQuotes(key: String?, isValue: Boolean): Boolean {
             return wrapInQuotes && walker != null &&
                     (isValue && walker.requiresValueQuotes() ||
-                     !isValue && walker.requiresNameQuotes() ||
-                     key != null && !walker.isValidIdentifier(key, project))
+                            !isValue && walker.requiresNameQuotes() ||
+                            key != null && !walker.isValidIdentifier(key, project))
         }
 
+        @Suppress("UNUSED_PARAMETER")
         private fun createDefaultPropertyInsertHandler(jsonSchemaObject: JsonSchemaObject): InsertHandler<LookupElement> {
             return InsertHandler { context, _ ->
                 ApplicationManager.getApplication().assertWriteAccessAllowed()
@@ -263,14 +325,18 @@ class MamlJsonSchemaCompletionContributor : CompletionContributor() {
 
                 if (hasValue) {
                     // Property already has a value, just ensure there's a colon
-                    if (offset < docChars.length && !docChars.subSequence(offset, docChars.length).startsWith(propertyValueSeparator)) {
+                    if (offset < docChars.length && !docChars.subSequence(offset, docChars.length)
+                            .startsWith(propertyValueSeparator)
+                    ) {
                         editor.document.insertString(initialOffset, propertyValueSeparator)
                     }
                     return@InsertHandler
                 }
 
                 // Check if colon already exists
-                if (offset < docChars.length && docChars.subSequence(offset, docChars.length).startsWith(propertyValueSeparator)) {
+                if (offset < docChars.length && docChars.subSequence(offset, docChars.length)
+                        .startsWith(propertyValueSeparator)
+                ) {
                     // Move caret after colon and space
                     val nextOffset = offset + propertyValueSeparator.length
                     if (nextOffset < docChars.length && docChars[nextOffset] == ' ') {
@@ -282,7 +348,13 @@ class MamlJsonSchemaCompletionContributor : CompletionContributor() {
                 } else {
                     // Insert colon and trigger autocomplete
                     val stringToInsert = "$propertyValueSeparator "
-                    EditorModificationUtil.insertStringAtCaret(editor, stringToInsert, false, true, stringToInsert.length)
+                    EditorModificationUtil.insertStringAtCaret(
+                        editor,
+                        stringToInsert,
+                        false,
+                        true,
+                        stringToInsert.length
+                    )
                 }
 
                 PsiDocumentManager.getInstance(project).commitDocument(editor.document)
@@ -290,6 +362,7 @@ class MamlJsonSchemaCompletionContributor : CompletionContributor() {
             }
         }
 
+        @Suppress("UNUSED_PARAMETER")
         private fun createArrayOrObjectLiteralInsertHandler(insertedTextSize: Int): InsertHandler<LookupElement?> {
             return InsertHandler { context, _ ->
                 val editor = context.editor
@@ -300,7 +373,7 @@ class MamlJsonSchemaCompletionContributor : CompletionContributor() {
         private fun getIconForType(type: JsonSchemaType?) = when (type) {
             JsonSchemaType._object -> AllIcons.Json.Object
             JsonSchemaType._array -> AllIcons.Json.Array
-            else -> AllIcons.Nodes.Property
+            else -> null // no icon for primitive types
         }
     }
 }

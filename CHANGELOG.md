@@ -4,10 +4,16 @@
 
 ## [Unreleased]
 
+### Changed
+
+- Key completions will no longer suggest the key under caret position if it is the only occurrence in the file
+
 ### Fixed
 
 - Fixed formatter handling of closing brackets/braces when wrapping is enabled
 - Fixed formatter wrapping behavior causing inline comments to be moved to new lines
+- Fixed inappropriate completion suggestions for values that have json schema type constraints
+- Fixed html entities not being unescaped in completion descriptions
 
 ## [0.6.0] - 2025-10-23
 

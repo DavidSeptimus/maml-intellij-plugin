@@ -13,6 +13,8 @@ import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.psi.util.parentOfType
 import com.intellij.util.ProcessingContext
 
+private val fakeString = "IntellijIdeaRulezzz"
+
 /**
  * Provides completion suggestions for known keys in the current file.
  * Collects all keys that appear in the file and suggests them when typing a new key.
@@ -53,19 +55,23 @@ class MamlKnownKeysCompletionContributor : CompletionContributor(), DumbAware {
             }
 
             val file = parameters.originalFile
-            val knownKeys = CachedValuesManager.getCachedValue(file) {
-                val keys = mutableSetOf<String>()
+
+            // Collect all keys with their occurrence counts
+            val keyOccurrences = CachedValuesManager.getCachedValue(file) {
+                val occurrences = mutableMapOf<String, Int>()
 
                 file.accept(object : MamlRecursiveElementVisitor() {
                     override fun visitElement(element: PsiElement) {
                         if (element is MamlKey) {
-                            element.name?.let { keys.add(it) }
+                            element.name?.let { keyName ->
+                                occurrences[keyName] = (occurrences[keyName] ?: 0) + 1
+                            }
                         }
                         super.visitElement(element)
                     }
                 })
 
-                CachedValueProvider.Result.create(keys, PsiModificationTracker.MODIFICATION_COUNT)
+                CachedValueProvider.Result.create(occurrences, PsiModificationTracker.MODIFICATION_COUNT)
             }
 
             // Get existing keys in the current object
@@ -74,8 +80,21 @@ class MamlKnownKeysCompletionContributor : CompletionContributor(), DumbAware {
                 ?.mapNotNull { it.key.name }
                 ?.toSet() ?: emptySet()
 
-            // Filter out keys that already exist in the current object
-            val availableKeys = knownKeys - existingKeys
+            // Get the current key being edited
+            val currentKey = position.parentOfType<MamlKey>()
+            val currentKeyName = currentKey?.name?.removeSuffix(fakeString)
+
+            // Determine which keys to exclude from suggestions
+            val keysToExclude = mutableSetOf<String>()
+            keysToExclude.addAll(existingKeys)
+
+            // If current key name appears only once in the file, exclude it
+            if (currentKeyName != null && keyOccurrences[currentKeyName] == 1) {
+                keysToExclude.add(currentKeyName)
+            }
+
+            // Filter available keys
+            val availableKeys = keyOccurrences.keys - keysToExclude
 
             // Add completion items for each available key
             for (key in availableKeys.sorted()) {
