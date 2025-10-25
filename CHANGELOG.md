@@ -7,6 +7,10 @@
 ### Changed
 
 - Key completions will no longer suggest the key under caret position if it is the only occurrence in the file
+- Migrated code completion settings to common code completion settings page
+- Made the parser more resilient to unterminated quoted string keys to enable more precise error reporting and code
+  completion
+- Key completions will now append a colon if the key is not followed by one already
 
 ### Fixed
 
@@ -14,6 +18,7 @@
 - Fixed formatter wrapping behavior causing inline comments to be moved to new lines
 - Fixed inappropriate completion suggestions for values that have json schema type constraints
 - Fixed html entities not being unescaped in completion descriptions
+- Fixed extra quotes being added when completing string values
 
 ## [0.6.0] - 2025-10-23
 
