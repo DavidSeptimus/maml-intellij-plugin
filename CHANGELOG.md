@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [0.6.1] - 2025-10-26
+
 ### Changed
 
 - Key completions will no longer suggest the key under caret position if it is the only occurrence in the file
@@ -93,6 +95,7 @@
 ## [0.2.0] - 2025-10-03
 
 ### Added
+
 - Comprehensive syntax highlighting for MAML files
 - JSON Schema integration for code intelligence and completions
 - Schema compliance inspections with detailed error reporting
@@ -114,3 +117,13 @@
 - Reference support for URLs and file paths in string values
 - Inlay hints showing array item counts
 - Support for escaped triple quotes in multiline strings
+
+[Unreleased]: https://github.com/DavidSeptimus/maml-intellij-plugin/compare/v0.6.1...HEAD
+[0.6.1]: https://github.com/DavidSeptimus/maml-intellij-plugin/compare/v0.6.0...v0.6.1
+[0.6.0]: https://github.com/DavidSeptimus/maml-intellij-plugin/compare/v0.5.2...v0.6.0
+[0.5.2]: https://github.com/DavidSeptimus/maml-intellij-plugin/compare/v0.5.1...v0.5.2
+[0.5.1]: https://github.com/DavidSeptimus/maml-intellij-plugin/compare/v0.5.0...v0.5.1
+[0.5.0]: https://github.com/DavidSeptimus/maml-intellij-plugin/compare/v0.4.0...v0.5.0
+[0.4.0]: https://github.com/DavidSeptimus/maml-intellij-plugin/compare/v0.3.0...v0.4.0
+[0.3.0]: https://github.com/DavidSeptimus/maml-intellij-plugin/compare/v0.2.0...v0.3.0
+[0.2.0]: https://github.com/DavidSeptimus/maml-intellij-plugin/commits/v0.2.0
