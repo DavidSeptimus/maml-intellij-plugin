@@ -1,0 +1,7 @@
+{
+  a: <error descr="Raw string must contain at least one character">""""""</error>
+  b: """test"""
+  c: """
+valid
+"""
+}
