@@ -136,8 +136,13 @@
         <renamePsiElementProcessor implementation="com.davidseptimus.maml.refactoring.MamlRenamePsiElementProcessor"/>
 
         <!-- Inlay Hints -->
-        <codeInsight.inlayProvider language="MAML"
-                                   implementationClass="com.davidseptimus.maml.hints.MamlInlayHintsProvider"/>
+        <codeInsight.declarativeInlayProvider language="MAML"
+                                              implementationClass="com.davidseptimus.maml.hints.MamlInlayHintsProvider"
+                                              isEnabledByDefault="false"
+                                              providerId="maml.hints.array"
+                                              group="OTHER_GROUP"
+                                              bundle="messages.MamlBundle"
+                                              nameKey="inlayHints.arrayItemCount.name"/>
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij.lang">
