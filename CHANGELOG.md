@@ -4,6 +4,18 @@
 
 ## [Unreleased]
 
+### Added
+
+- Added error annotation and quick-fix for empty raw strings (`""""""`)
+
+### Changed
+
+- Migrated array item count to declarative inlay hints API and disabled it by default
+
+### Fixed
+
+- Fixed incorrect handling of leading newline in raw strings when converting string formats
+
 ## [0.6.1] - 2025-10-26
 
 ### Changed
