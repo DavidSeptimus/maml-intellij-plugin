@@ -69,6 +69,8 @@
                    implementationClass="com.davidseptimus.maml.annotators.MamlIncompleteKeyValueAnnotator"/>
         <annotator language="MAML"
                    implementationClass="com.davidseptimus.maml.annotators.MamlMissingCommaAnnotator"/>
+        <annotator language="MAML"
+                   implementationClass="com.davidseptimus.maml.annotators.MamlEmptyRawStringAnnotator"/>
 
         <!-- JSON Schema validation (includes missing required properties quick fixes) -->
         <localInspection language="MAML"
