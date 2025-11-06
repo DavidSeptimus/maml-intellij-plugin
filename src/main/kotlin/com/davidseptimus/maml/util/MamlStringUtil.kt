@@ -50,7 +50,12 @@ object MamlStringUtil {
      */
     fun multilineToQuotedContent(multilineString: String): String {
         // Remove opening and closing triple quotes
-        val content = multilineString.substring(3, multilineString.length - 3)
+        var content = multilineString.substring(3, multilineString.length - 3)
+
+        // strip leading newline if it immediately follows the opening delimiter
+        if (content.startsWith('\n')) {
+            content = content.substring(1)
+        }
 
         // Escape special characters for single-line string
         val result = StringBuilder()
@@ -70,16 +75,15 @@ object MamlStringUtil {
 
     /**
      * Wraps content in multiline string triple quotes.
-     * If content has newlines, starts content on a new line after opening """.
      *
      * @param content The unescaped content
      * @return The full multiline string with triple quotes
      */
     fun wrapInMultilineQuotes(content: String): String {
-        return if (content.contains('\n')) {
-            "\"\"\"\n$content\"\"\""
-        } else {
-            "\"\"\"$content\"\"\""
+        return when {
+            content.isEmpty() -> "\"\"\"\n\"\"\""  // Empty string requires one newline
+            content.contains('\n') -> "\"\"\"\n$content\"\"\""
+            else -> "\"\"\"$content\"\"\""
         }
     }
 
