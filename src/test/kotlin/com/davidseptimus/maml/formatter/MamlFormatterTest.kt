@@ -937,6 +937,195 @@ class MamlFormatterTest : BasePlatformTestCase() {
         )
     }
 
+    fun testMultilineStringWithBadIndentation() {
+        // The content inside multiline strings should be preserved exactly,
+        // even if it has "bad" indentation
+        doTest(
+            """
+            {
+              text: ""${'"'}
+            badly indented
+              content here
+                  more content
+              ""${'"'}
+            }
+            """.trimIndent(),
+            """
+            {
+              text: ""${'"'}
+            badly indented
+              content here
+                  more content
+              ""${'"'}
+            }
+            """.trimIndent()
+        )
+    }
+
+    fun testMultilineStringWithVariousWhitespace() {
+        // Tabs, spaces, and newlines inside multiline strings should be preserved
+        doTest(
+            """
+            {
+              code: ""${'"'}
+            	if (x) {
+            		return true
+            	}
+              ""${'"'}
+            }
+            """.trimIndent(),
+            """
+            {
+              code: ""${'"'}
+            	if (x) {
+            		return true
+            	}
+              ""${'"'}
+            }
+            """.trimIndent()
+        )
+    }
+
+    fun testMultilineStringInArray() {
+        // raw strings inside arrays have their opening line indentation removed -- TBD how to indent only the first line, while preserving the rest
+        doTest(
+            """
+            [
+              ""${'"'}
+              First multiline
+                with indent
+              ""${'"'}
+              ""${'"'}
+            Second multiline
+              different indent
+              ""${'"'}
+            ]
+            """.trimIndent(),
+            """
+            [
+            ""${'"'}
+              First multiline
+                with indent
+              ""${'"'}
+            ""${'"'}
+            Second multiline
+              different indent
+              ""${'"'}
+            ]
+            """.trimIndent()
+        )
+    }
+
+    fun testMultilineStringInNestedObject() {
+        doTest(
+            """
+            {
+              outer: {
+                inner: {
+                  doc: ""${'"'}
+                This has specific
+                  indentation that
+                    must be preserved
+              ""${'"'}
+                }
+              }
+            }
+            """.trimIndent(),
+            """
+            {
+              outer: {
+                inner: {
+                  doc: ""${'"'}
+                This has specific
+                  indentation that
+                    must be preserved
+              ""${'"'}
+                }
+              }
+            }
+            """.trimIndent()
+        )
+    }
+
+    fun testMultipleMultilineStringsWithDifferentIndentation() {
+        doTest(
+            """
+            {
+              poem1: ""${'"'}
+            Roses are red
+              Violets are blue
+              ""${'"'}
+              poem2: ""${'"'}
+                  This one is indented
+                    even more
+              ""${'"'}
+            }
+            """.trimIndent(),
+            """
+            {
+              poem1: ""${'"'}
+            Roses are red
+              Violets are blue
+              ""${'"'}
+              poem2: ""${'"'}
+                  This one is indented
+                    even more
+              ""${'"'}
+            }
+            """.trimIndent()
+        )
+    }
+
+    fun testMultilineStringOpeningLineWithContent() {
+        // Only the line with opening """ can be moved, but content on that line stays with it
+        doTest(
+            """
+            {
+              greeting: ""${'"'}Hello World
+                More text here
+              ""${'"'}
+            }
+            """.trimIndent(),
+            """
+            {
+              greeting: ""${'"'}Hello World
+                More text here
+              ""${'"'}
+            }
+            """.trimIndent()
+        )
+    }
+
+    fun testMultilineStringWithEmptyLines() {
+        doTest(
+            """
+            {
+              text: ""${'"'}
+            Line 1
+
+            Line 3 (line 2 was empty)
+              ""${'"'}
+            }
+            """.trimIndent(),
+            """
+            {
+              text: ""${'"'}
+            Line 1
+
+            Line 3 (line 2 was empty)
+              ""${'"'}
+            }
+            """.trimIndent()
+        )
+    }
+
+    fun testMultilineStringWithTrailingSpaces() {
+        // Trailing spaces inside multiline strings should be preserved
+        val input = "{\n  text: \"\"\"\nLine with trailing spaces   \n    Another line  \n  \"\"\"\n}"
+        val expected = "{\n  text: \"\"\"\nLine with trailing spaces   \n    Another line  \n  \"\"\"\n}"
+        doTest(input, expected)
+    }
+
     fun testWrappingWithoutCommasResultsInOneItemPerLine() {
         mamlSettings.SPACE_AFTER_COLON = true
         mamlSettings.SPACE_BEFORE_COLON = false

@@ -123,6 +123,9 @@ class MamlBlock(
                     }
                 }
             }
+        } else if (childNode.elementType === MULTILINE_STRING) {
+            // Multiline strings should preserve their internal indentation by aligning at absolute none indent level
+            indent = Indent.getAbsoluteNoneIndent()
         }
 
         return MamlBlock(
@@ -154,6 +157,24 @@ class MamlBlock(
             ) {
                 // Force single space, no line breaks allowed for inline comments
                 return Spacing.createSpacing(1, 1, 0, false, 0)
+            }
+
+            // Handle multiline string wrapping when enabled
+            if (customSettings.WRAP_MULTILINE_STRINGS &&
+                node1 != null &&
+                MamlPsiUtil.hasElementType(node1, COLON) &&
+                MamlPsiUtil.hasElementType(node2, VALUE) &&
+                MamlPsiUtil.hasElementType(node, KEY_VALUE)
+            ) {
+                // Check if the value contains a multiline string
+                val valueChildren = node2.getChildren(null)
+                val hasMultilineString = valueChildren.any {
+                    MamlPsiUtil.hasElementType(it, MULTILINE_STRING)
+                }
+                if (hasMultilineString) {
+                    // Force line break after colon before multiline string
+                    return Spacing.createSpacing(0, 0, 1, true, 0)
+                }
             }
         }
 

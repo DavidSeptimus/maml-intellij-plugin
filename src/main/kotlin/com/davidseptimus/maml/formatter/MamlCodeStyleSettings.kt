@@ -39,6 +39,9 @@ class MamlCodeStyleSettings(container: CodeStyleSettings) :
     @CommonCodeStyleSettings.WrapConstant
     var ARRAY_WRAPPING: Int = CommonCodeStyleSettings.WRAP_ALWAYS
 
+    @JvmField
+    var WRAP_MULTILINE_STRINGS: Boolean = false
+
     enum class PropertyAlignment(val id: Int, private val key: String) {
         DO_NOT_ALIGN(0, "formatter.align.properties.none"),
         ALIGN_ON_VALUE(1, "formatter.align.properties.on.value"),

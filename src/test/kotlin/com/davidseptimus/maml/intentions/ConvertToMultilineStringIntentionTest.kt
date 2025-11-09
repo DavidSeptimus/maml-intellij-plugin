@@ -12,7 +12,7 @@ class ConvertToMultilineStringIntentionTest : BasePlatformTestCase() {
         """.trimIndent())
 
         val intentions = myFixture.availableIntentions.filter {
-            it.text.contains("Convert to multiline string")
+            it.text.contains("Convert to raw string")
         }
 
         assertTrue("Intention should be available on single-line strings", intentions.isNotEmpty())

@@ -4,6 +4,21 @@
 
 ## [Unreleased]
 
+### Added
+
+- Added option to wrap raw strings in formatter settings
+  When `Wrap raw strings` is enabled, raw string key values starting on the same line as the key will be moved to a new
+  line with 0 absolute indent.
+
+### Changed
+
+- Changed references to "multiline strings" to "raw strings" throughout the plugin to align with MAML specification
+  terminology
+
+### Fixed
+
+- Fixed raw strings being incorrectly indented by the formatter
+
 ## [0.7.0] - 2025-11-06
 
 ### Added

@@ -113,6 +113,13 @@ class MamlLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider(
                     KEY_QUOTING_OPTIONS,
                     KEY_QUOTING_VALUES
                 )
+
+                consumer.showCustomOption(
+                    MamlCodeStyleSettings::class.java,
+                    "WRAP_MULTILINE_STRINGS",
+                    MamlBundle.message("formatter.wrap_multiline_strings.label"),
+                    MamlBundle.message("formatter.wrapping.other_group.label"),
+                )
             }
             else -> {}
         }
