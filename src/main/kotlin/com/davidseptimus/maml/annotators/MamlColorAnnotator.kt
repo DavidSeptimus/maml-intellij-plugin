@@ -164,7 +164,7 @@ class MamlColorAnnotator : Annotator, DumbAware {
                     // Determine if we should enable opacity based on original color format
                     val enableOpacity = originalFormat == ColorFormat.RGBA || originalFormat == ColorFormat.HEX_RGBA
 
-                    ColorChooserService.instance.showDialog(
+                    ColorChooserService.getInstance().showDialog(
                         project,
                         editor.component,
                         MamlBundle.message("annotator.color.picker.title"),
