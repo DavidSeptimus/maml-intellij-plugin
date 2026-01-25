@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+### Changed
+
+- Added compatibility for platform version `261.*`
+
 ## [0.7.1] - 2025-11-11
 
 ### Added
