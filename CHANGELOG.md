@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [0.7.1] - 2025-11-11
+
 ### Added
 
 - Added option to wrap raw strings in formatter settings
@@ -147,7 +149,8 @@
 - Inlay hints showing array item counts
 - Support for escaped triple quotes in multiline strings
 
-[Unreleased]: https://github.com/DavidSeptimus/maml-intellij-plugin/compare/v0.7.0...HEAD
+[Unreleased]: https://github.com/DavidSeptimus/maml-intellij-plugin/compare/v0.7.1...HEAD
+[0.7.1]: https://github.com/DavidSeptimus/maml-intellij-plugin/compare/v0.7.0...v0.7.1
 [0.7.0]: https://github.com/DavidSeptimus/maml-intellij-plugin/compare/v0.6.1...v0.7.0
 [0.6.1]: https://github.com/DavidSeptimus/maml-intellij-plugin/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/DavidSeptimus/maml-intellij-plugin/compare/v0.5.2...v0.6.0
