@@ -781,17 +781,9 @@ class MamlFormatterTest : BasePlatformTestCase() {
     // ===========================================
 
     fun testObjectWrapAlways() {
-        // WRAP_ALWAYS wraps multi-line objects, but preserves inline ones
         mamlSettings.OBJECT_WRAPPING = CommonCodeStyleSettings.WRAP_ALWAYS
-        // Test with already multi-line input
         doTest(
-            """
-            {
-              a: 1,
-              b: 2,
-              c: 3
-            }
-            """.trimIndent(),
+            "{ a: 1, b: 2, c: 3 }",
             """
             {
               a: 1, b: 2, c: 3
@@ -801,17 +793,9 @@ class MamlFormatterTest : BasePlatformTestCase() {
     }
 
     fun testArrayWrapAlways() {
-        // WRAP_ALWAYS wraps multi-line arrays, but preserves inline ones
         mamlSettings.ARRAY_WRAPPING = CommonCodeStyleSettings.WRAP_ALWAYS
-        // Test with already multi-line input
         doTest(
-            """
-            [
-              1,
-              2,
-              3
-            ]
-            """.trimIndent(),
+            "[1, 2, 3]",
             """
             [
               1, 2, 3
@@ -1199,14 +1183,8 @@ class MamlFormatterTest : BasePlatformTestCase() {
         mamlSettings.KEY_QUOTING_STYLE = MamlCodeStyleSettings.KeyQuotingStyle.REMOVE_QUOTES.id
         mamlSettings.SPACE_AFTER_COLON = true
         commonSettings.SPACE_WITHIN_BRACES = true
-        // Note: inline objects are preserved, so we use multi-line input to test wrapping
         doTest(
-            """
-            {
-              "simple-key":"value"
-              "another":123
-            }
-            """.trimIndent(),
+            "{\"simple-key\":\"value\",\"another\":123}",
             """
             {
               simple-key: "value", another: 123
@@ -1221,28 +1199,8 @@ class MamlFormatterTest : BasePlatformTestCase() {
         mamlSettings.KEY_QUOTING_STYLE = MamlCodeStyleSettings.KeyQuotingStyle.REMOVE_QUOTES.id
         mamlSettings.SPACE_AFTER_COLON = true
 
-        // Note: With inline preservation, nested inline objects/arrays stay inline
-        // To test wrapping behavior, use already multi-line containers
         doTest(
-            """
-            {
-              a: "b"
-              b: [
-                1
-                2
-                3
-                {
-                  a: 1
-                  c: 2
-                }
-                [
-                  1
-                  2
-                  3
-                ]
-              ]
-            }
-            """.trimIndent(),
+            "{a: \"b\", b: [1, 2, 3, {a: 1, c: 2}, [1,2,3] ]}",
             """
             {
               a: "b", b: [
@@ -1258,34 +1216,31 @@ class MamlFormatterTest : BasePlatformTestCase() {
     }
 
     // ===========================================
-    // INLINE PRESERVATION TESTS
+    // DEFAULT WRAPPING BEHAVIOR TESTS
     // ===========================================
 
-    fun testInlineObjectPreservedWithWrapAlways() {
-        // Even with WRAP_ALWAYS, inline objects should be preserved
-        mamlSettings.OBJECT_WRAPPING = CommonCodeStyleSettings.WRAP_ALWAYS
+    fun testDefaultDoNotWrapPreservesInlineObjects() {
+        // With default DO_NOT_WRAP setting, inline objects stay inline
         doTest(
             "{ a: 1, b: 2, c: 3 }",
             "{ a: 1, b: 2, c: 3 }"
         )
     }
 
-    fun testInlineArrayPreservedWithWrapAlways() {
-        // Even with WRAP_ALWAYS, inline arrays should be preserved
-        mamlSettings.ARRAY_WRAPPING = CommonCodeStyleSettings.WRAP_ALWAYS
+    fun testDefaultDoNotWrapPreservesInlineArrays() {
+        // With default DO_NOT_WRAP setting, inline arrays stay inline
         doTest(
             "[1, 2, 3]",
             "[1, 2, 3]"
         )
     }
 
-    fun testMultilineObjectStillWrappedWithWrapAlways() {
-        // Multi-line objects should still be wrapped with WRAP_ALWAYS
-        mamlSettings.OBJECT_WRAPPING = CommonCodeStyleSettings.WRAP_ALWAYS
+    fun testDefaultDoNotWrapPreservesMultilineFormat() {
+        // With default DO_NOT_WRAP setting, multi-line format is preserved
         doTest(
             """
             {
-              a: 1,
+              a: 1
               b: 2
             }
             """.trimIndent(),
@@ -1297,140 +1252,8 @@ class MamlFormatterTest : BasePlatformTestCase() {
         )
     }
 
-    fun testMultilineArrayStillWrappedWithWrapAlways() {
-        // Multi-line arrays should still be wrapped with WRAP_ALWAYS
-        mamlSettings.ARRAY_WRAPPING = CommonCodeStyleSettings.WRAP_ALWAYS
-        doTest(
-            """
-            [
-              1,
-              2,
-              3
-            ]
-            """.trimIndent(),
-            """
-            [
-              1, 2, 3
-            ]
-            """.trimIndent()
-        )
-    }
-
-    fun testNestedInlineObjectsPreserved() {
-        // Nested inline objects should be preserved
-        mamlSettings.OBJECT_WRAPPING = CommonCodeStyleSettings.WRAP_ALWAYS
-        mamlSettings.ARRAY_WRAPPING = CommonCodeStyleSettings.WRAP_ALWAYS
-        doTest(
-            """
-            {
-              steps: [
-                { run: "pwd" }
-                { run: "./deploy.sh --prod" }
-                { run: "./verify-deployment.sh --prod" }
-              ]
-            }
-            """.trimIndent(),
-            """
-            {
-              steps: [
-                { run: "pwd" }
-                { run: "./deploy.sh --prod" }
-                { run: "./verify-deployment.sh --prod" }
-              ]
-            }
-            """.trimIndent()
-        )
-    }
-
-    fun testMixedInlineAndMultilineContainers() {
-        // Inline containers should be preserved, multi-line ones should be wrapped
-        mamlSettings.OBJECT_WRAPPING = CommonCodeStyleSettings.WRAP_ALWAYS
-        mamlSettings.ARRAY_WRAPPING = CommonCodeStyleSettings.WRAP_ALWAYS
-        doTest(
-            """
-            {
-              inline: { a: 1, b: 2 }
-              multiline: {
-                c: 3
-                d: 4
-              }
-              inlineArray: [1, 2, 3]
-              multilineArray: [
-                4
-                5
-              ]
-            }
-            """.trimIndent(),
-            """
-            {
-              inline: { a: 1, b: 2 }
-              multiline: {
-                c: 3, d: 4
-              }
-              inlineArray: [1, 2, 3]
-              multilineArray: [
-                4, 5
-              ]
-            }
-            """.trimIndent()
-        )
-    }
-
-    fun testInlineObjectWithSpacing() {
-        // Inline objects should preserve spacing settings
-        mamlSettings.OBJECT_WRAPPING = CommonCodeStyleSettings.WRAP_ALWAYS
-        commonSettings.SPACE_WITHIN_BRACES = true
-        mamlSettings.SPACE_AFTER_COLON = true
-        doTest(
-            "{a:1,b:2}",
-            "{ a: 1, b: 2 }"
-        )
-    }
-
-    fun testInlineArrayWithSpacing() {
-        // Inline arrays should preserve spacing settings
-        mamlSettings.ARRAY_WRAPPING = CommonCodeStyleSettings.WRAP_ALWAYS
-        commonSettings.SPACE_WITHIN_BRACKETS = true
-        commonSettings.SPACE_AFTER_COMMA = true
-        doTest(
-            "[1,2,3]",
-            "[ 1, 2, 3 ]"
-        )
-    }
-
-    fun testDeeplyNestedInlineContainers() {
-        // Deeply nested inline containers should all be preserved
-        mamlSettings.OBJECT_WRAPPING = CommonCodeStyleSettings.WRAP_ALWAYS
-        mamlSettings.ARRAY_WRAPPING = CommonCodeStyleSettings.WRAP_ALWAYS
-        doTest(
-            "{ a: { b: { c: [1, 2, 3] } } }",
-            "{ a: { b: { c: [1, 2, 3] } } }"
-        )
-    }
-
-    fun testInlineContainerWithComments() {
-        // Inline containers with inline comments should be preserved
-        mamlSettings.OBJECT_WRAPPING = CommonCodeStyleSettings.WRAP_ALWAYS
-        doTest(
-            "{ a: 1, b: 2 } # inline comment",
-            "{ a: 1, b: 2 } # inline comment"
-        )
-    }
-
-    fun testEmptyInlineContainersPreserved() {
-        // Empty inline containers should be preserved
-        mamlSettings.OBJECT_WRAPPING = CommonCodeStyleSettings.WRAP_ALWAYS
-        mamlSettings.ARRAY_WRAPPING = CommonCodeStyleSettings.WRAP_ALWAYS
-        doTest(
-            "{ empty: {}, emptyArray: [] }",
-            "{ empty: {}, emptyArray: [] }"
-        )
-    }
-
-    fun testRealWorldWorkflowExample() {
-        // Real-world example from the issue
-        mamlSettings.OBJECT_WRAPPING = CommonCodeStyleSettings.WRAP_ALWAYS
-        mamlSettings.ARRAY_WRAPPING = CommonCodeStyleSettings.WRAP_ALWAYS
+    fun testWorkflowStepsWithDefaultSettings() {
+        // Real-world example from the issue - inline objects stay inline by default
         mamlSettings.REMOVE_COMMAS = true
         doTest(
             """
@@ -1440,10 +1263,6 @@ class MamlFormatterTest : BasePlatformTestCase() {
                 { run: "./deploy.sh --prod" }
                 { run: "./verify-deployment.sh --prod" }
               ]
-              config: {
-                timeout: 300
-                env: { NODE_ENV: "production", LOG_LEVEL: "info" }
-              }
             }
             """.trimIndent(),
             """
@@ -1453,10 +1272,6 @@ class MamlFormatterTest : BasePlatformTestCase() {
                 { run: "./deploy.sh --prod" }
                 { run: "./verify-deployment.sh --prod" }
               ]
-              config: {
-                timeout: 300
-                env: { NODE_ENV: "production", LOG_LEVEL: "info" }
-              }
             }
             """.trimIndent()
         )

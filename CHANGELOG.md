@@ -4,14 +4,10 @@
 
 ## [Unreleased]
 
-### Added
-
-- Formatter now automatically preserves single-line (inline) objects and arrays during reformatting
-  When objects or arrays are written on a single line (e.g., `{ run: "pwd" }`), the formatter will keep them inline
-  regardless of the wrapping settings. Multi-line containers will still respect the configured wrapping behavior.
-
 ### Changed
 
+- Changed default formatter wrapping behavior for objects and arrays from "Wrap always" to "Do not wrap"
+  This preserves the user's defined wrapping or inline declaration when reformatting code.
 - Added compatibility for platform version `261.*`
 
 ## [0.7.1] - 2025-11-11

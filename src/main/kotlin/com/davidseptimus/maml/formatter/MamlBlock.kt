@@ -30,22 +30,8 @@ class MamlBlock(
 
     private val psiElement: PsiElement = node.psi
     private val childWrap: Wrap? = when (psiElement) {
-        is MamlObject -> {
-            // Preserve inline objects - if the object is on a single line, don't wrap it
-            if (isInlineContainer(node)) {
-                Wrap.createWrap(WrapType.NONE, true)
-            } else {
-                Wrap.createWrap(customSettings.OBJECT_WRAPPING, true)
-            }
-        }
-        is MamlArray -> {
-            // Preserve inline arrays - if the array is on a single line, don't wrap it
-            if (isInlineContainer(node)) {
-                Wrap.createWrap(WrapType.NONE, true)
-            } else {
-                Wrap.createWrap(customSettings.ARRAY_WRAPPING, true)
-            }
-        }
+        is MamlObject -> Wrap.createWrap(customSettings.OBJECT_WRAPPING, true)
+        is MamlArray -> Wrap.createWrap(customSettings.ARRAY_WRAPPING, true)
         else -> null
     }
     private val propertyValueAlignment: Alignment? = when {
@@ -255,21 +241,5 @@ class MamlBlock(
         )
 
         return !textBetween.contains('\n')
-    }
-
-    /**
-     * Determines if a container (object or array) is written on a single line.
-     * This is used to preserve inline formatting during reformatting.
-     *
-     * @param containerNode The container node (MamlObject or MamlArray) to check
-     * @return true if the entire container is on a single line (no newlines between opening and closing braces/brackets)
-     */
-    private fun isInlineContainer(containerNode: ASTNode): Boolean {
-        // Get the text of the entire container
-        val containerText = containerNode.text
-
-        // Check if the container text contains any newlines
-        // If it doesn't, the container is inline
-        return !containerText.contains('\n')
     }
 }
