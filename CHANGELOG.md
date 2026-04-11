@@ -4,17 +4,19 @@
 
 ## [Unreleased]
 
-## [0.7.2] - 2026-01-25
-
-### Changed
-
-- Added compatibility for platform version `261.*`
 - Changed default wrapping from "wrap always" to "chop down if long" to preserve short inline objects and arrays
 - Updated file type icons and plugin icons to the official MAML mascot from maml.dev
 
 ### Fixed
 
-- Fixed formatter wrapping to apply at the item level within objects and arrays, enabling correct behavior for all four wrapping modes (do not wrap, wrap if long, chop down if long, wrap always)
+- Fixed formatter wrapping to apply at the item level within objects and arrays, enabling correct behavior for all four
+  wrapping modes (do not wrap, wrap if long, chop down if long, wrap always)
+
+## [0.7.2] - 2026-01-25
+
+### Changed
+
+- Added compatibility for platform version `261.*`
 
 ## [0.7.1] - 2025-11-11
 
