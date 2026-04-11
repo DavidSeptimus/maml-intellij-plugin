@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [0.7.3] - 2026-04-11
+
 - Changed default wrapping from "wrap always" to "chop down if long" to preserve short inline objects and arrays
 - Updated file type icons and plugin icons to the official MAML mascot from maml.dev
 
@@ -163,7 +165,8 @@
 - Inlay hints showing array item counts
 - Support for escaped triple quotes in multiline strings
 
-[Unreleased]: https://github.com/DavidSeptimus/maml-intellij-plugin/compare/v0.7.2...HEAD
+[Unreleased]: https://github.com/DavidSeptimus/maml-intellij-plugin/compare/v0.7.3...HEAD
+[0.7.3]: https://github.com/DavidSeptimus/maml-intellij-plugin/compare/v0.7.2...v0.7.3
 [0.7.2]: https://github.com/DavidSeptimus/maml-intellij-plugin/compare/v0.7.1...v0.7.2
 [0.7.1]: https://github.com/DavidSeptimus/maml-intellij-plugin/compare/v0.7.0...v0.7.1
 [0.7.0]: https://github.com/DavidSeptimus/maml-intellij-plugin/compare/v0.6.1...v0.7.0
