@@ -7,6 +7,7 @@ import com.davidseptimus.maml.lang.psi.MamlPsiUtil
 import com.davidseptimus.maml.lang.psi.MamlTypes.*
 import com.intellij.formatting.*
 import com.intellij.lang.ASTNode
+import com.intellij.psi.codeStyle.CommonCodeStyleSettings
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.TokenType
@@ -17,6 +18,7 @@ private val MAML_OPEN_BRACES = TokenSet.create(LBRACKET, LBRACE)
 private val MAML_CLOSE_BRACES = TokenSet.create(RBRACKET, RBRACE)
 private val MAML_ALL_BRACES = TokenSet.orSet(MAML_OPEN_BRACES, MAML_CLOSE_BRACES)
 private val MAML_CONTAINERS = TokenSet.create(ARRAY, OBJECT)
+private val MAML_MEMBER_LISTS = TokenSet.create(MEMBERS, ITEMS)
 
 class MamlBlock(
     private val parent: MamlBlock?,
@@ -29,10 +31,39 @@ class MamlBlock(
 ) : ASTBlock {
 
     private val psiElement: PsiElement = node.psi
-    private val childWrap: Wrap? = when (psiElement) {
-        is MamlObject -> Wrap.createWrap(customSettings.OBJECT_WRAPPING, true)
-        is MamlArray -> Wrap.createWrap(customSettings.ARRAY_WRAPPING, true)
+
+    // The wrap type constant for children of this block
+    private val childWrapType: Int = when {
+        psiElement is MamlObject -> customSettings.OBJECT_WRAPPING
+        psiElement is MamlArray -> customSettings.ARRAY_WRAPPING
+        MamlPsiUtil.hasElementType(node, MEMBERS) -> customSettings.OBJECT_WRAPPING
+        MamlPsiUtil.hasElementType(node, ITEMS) -> customSettings.ARRAY_WRAPPING
+        else -> CommonCodeStyleSettings.DO_NOT_WRAP
+    }
+
+    // Shared wrap instance used by chop-down-if-long and wrap-always.
+    // For wrap-if-long (WRAP_AS_NEEDED), each child gets its own Wrap via createChildWrap()
+    // so items wrap independently based on line length.
+    private val childWrap: Wrap? = when {
+        // OBJECT/ARRAY: always shared (wraps MEMBERS/ITEMS + closing brace as a group)
+        psiElement is MamlObject || psiElement is MamlArray ->
+            Wrap.createWrap(childWrapType, true)
+        // MEMBERS/ITEMS with WRAP_AS_NEEDED: per-child (independent wrapping)
+        childWrapType == CommonCodeStyleSettings.WRAP_AS_NEEDED -> null
+        // MEMBERS/ITEMS with other types: shared (chop-down or wrap-always)
+        childWrapType != CommonCodeStyleSettings.DO_NOT_WRAP ->
+            Wrap.createWrap(childWrapType, false)
         else -> null
+    }
+
+    private fun createChildWrap(): Wrap? = when (childWrapType) {
+        CommonCodeStyleSettings.DO_NOT_WRAP -> null
+        CommonCodeStyleSettings.WRAP_AS_NEEDED ->
+            if (MamlPsiUtil.hasElementType(node, MAML_MEMBER_LISTS))
+                Wrap.createWrap(childWrapType, false) // new instance per child
+            else
+                childWrap // shared for OBJECT/ARRAY level
+        else -> childWrap // shared for chop-down and wrap-always
     }
     private val propertyValueAlignment: Alignment? = when {
         psiElement is MamlObject -> Alignment.createAlignment(true)
@@ -106,6 +137,15 @@ class MamlBlock(
                         Indent.getSpaceIndent(0, true)
                     }
                 }
+            }
+        }
+        // Handle wrapping of items within MEMBERS/ITEMS lists
+        else if (MamlPsiUtil.hasElementType(node, MAML_MEMBER_LISTS)) {
+            wrap = when {
+                MamlPsiUtil.hasElementType(childNode, COMMA) -> Wrap.createWrap(WrapType.NONE, true)
+                MamlPsiUtil.hasElementType(childNode, COMMENT) && isInlineComment(childNode) ->
+                    Wrap.createWrap(WrapType.NONE, true)
+                else -> createChildWrap()
             }
         }
         // Handle properties alignment
@@ -232,14 +272,14 @@ class MamlBlock(
 
         if (prevSibling == null) return false
 
-        // Check the text between the end of the previous sibling and the start of the comment
-        // If it contains a newline, the comment is on its own line (line comment)
-        // Otherwise, it's an inline comment
-        val textBetween = commentNode.psi.containingFile.text.substring(
-            prevSibling.textRange.endOffset,
-            commentNode.startOffset
-        )
-
-        return !textBetween.contains('\n')
+        // Scan for a newline between the previous sibling and the comment
+        // without allocating a substring
+        val fileText = commentNode.psi.containingFile.text
+        val start = prevSibling.textRange.endOffset
+        val end = commentNode.startOffset
+        for (i in start until end) {
+            if (fileText[i] == '\n') return false
+        }
+        return true
     }
 }

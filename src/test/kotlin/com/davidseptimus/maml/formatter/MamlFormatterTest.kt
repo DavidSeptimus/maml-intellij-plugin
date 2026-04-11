@@ -32,9 +32,11 @@ class MamlFormatterTest : BasePlatformTestCase() {
         )
         commonSettings = settings.getCommonSettings(MamlLanguage)
         mamlSettings = settings.getCustomSettings(MamlCodeStyleSettings::class.java)
-        // Set defaults explicitly to match MamlLanguageCodeStyleSettingsProvider
+        // Set defaults explicitly for test isolation
         commonSettings.indentOptions?.INDENT_SIZE = 2
         commonSettings.KEEP_BLANK_LINES_IN_CODE = 0
+        mamlSettings.OBJECT_WRAPPING = CommonCodeStyleSettings.WRAP_ALWAYS
+        mamlSettings.ARRAY_WRAPPING = CommonCodeStyleSettings.WRAP_ALWAYS
         CodeStyleSettingsManager.getInstance(project).setTemporarySettings(settings)
     }
 
@@ -53,6 +55,7 @@ class MamlFormatterTest : BasePlatformTestCase() {
         }
         myFixture.checkResult(expected)
     }
+
     // ===========================================
     // SPACING TESTS
     // ===========================================
@@ -483,7 +486,9 @@ class MamlFormatterTest : BasePlatformTestCase() {
                         key: "value"
                       }
               array:  [
-                        1, 2, 3
+                        1,
+                        2,
+                        3
                       ]
               string: "test"
             }
@@ -500,7 +505,8 @@ class MamlFormatterTest : BasePlatformTestCase() {
             "{ \"quoted\": 1, unquoted: 2 }",
             """
             {
-              "quoted": 1, unquoted: 2
+              "quoted": 1,
+              unquoted: 2
             }
             """.trimIndent()
         )
@@ -512,7 +518,8 @@ class MamlFormatterTest : BasePlatformTestCase() {
             "{ \"simple-key\": 1, \"hello_world\": 2 }",
             """
             {
-              simple-key: 1, hello_world: 2
+              simple-key: 1,
+              hello_world: 2
             }
             """.trimIndent()
         )
@@ -524,7 +531,9 @@ class MamlFormatterTest : BasePlatformTestCase() {
             "{ \"true\": 1, \"false\": 2, \"null\": 3 }",
             """
             {
-              "true": 1, "false": 2, "null": 3
+              "true": 1,
+              "false": 2,
+              "null": 3
             }
             """.trimIndent()
         )
@@ -536,7 +545,8 @@ class MamlFormatterTest : BasePlatformTestCase() {
             "{ \"with space\": 1, \"with.dot\": 2 }",
             """
             {
-              "with space": 1, "with.dot": 2
+              "with space": 1,
+              "with.dot": 2
             }
             """.trimIndent()
         )
@@ -548,7 +558,8 @@ class MamlFormatterTest : BasePlatformTestCase() {
             "{ simple-key: 1, hello_world: 2 }",
             """
             {
-              "simple-key": 1, "hello_world": 2
+              "simple-key": 1,
+              "hello_world": 2
             }
             """.trimIndent()
         )
@@ -643,7 +654,9 @@ class MamlFormatterTest : BasePlatformTestCase() {
             "[1, 2, 3,]",
             """
             [
-              1, 2, 3
+              1,
+              2,
+              3
             ]
             """.trimIndent()
         )
@@ -655,7 +668,8 @@ class MamlFormatterTest : BasePlatformTestCase() {
             "{ a: 1, b: 2, }",
             """
             {
-              a: 1, b: 2
+              a: 1,
+              b: 2
             }
             """.trimIndent()
         )
@@ -667,7 +681,9 @@ class MamlFormatterTest : BasePlatformTestCase() {
             "[1, 2, 3,]",
             """
             [
-              1, 2, 3,
+              1,
+              2,
+              3,
             ]
             """.trimIndent()
         )
@@ -679,7 +695,8 @@ class MamlFormatterTest : BasePlatformTestCase() {
             "{ a: 1, b: 2, }",
             """
             {
-              a: 1, b: 2,
+              a: 1,
+              b: 2,
             }
             """.trimIndent()
         )
@@ -786,7 +803,9 @@ class MamlFormatterTest : BasePlatformTestCase() {
             "{ a: 1, b: 2, c: 3 }",
             """
             {
-              a: 1, b: 2, c: 3
+              a: 1,
+              b: 2,
+              c: 3
             }
             """.trimIndent()
         )
@@ -798,7 +817,104 @@ class MamlFormatterTest : BasePlatformTestCase() {
             "[1, 2, 3]",
             """
             [
-              1, 2, 3
+              1,
+              2,
+              3
+            ]
+            """.trimIndent()
+        )
+    }
+
+    fun testObjectWrapAsNeededShortFitsOnOneLine() {
+        mamlSettings.OBJECT_WRAPPING = CommonCodeStyleSettings.WRAP_AS_NEEDED
+        commonSettings.SPACE_WITHIN_BRACES = true
+        doTest(
+            "{ run: \"pwd\" }",
+            "{ run: \"pwd\" }"
+        )
+    }
+
+    fun testObjectWrapAsNeededLongWrapsAtMargin() {
+        mamlSettings.OBJECT_WRAPPING = CommonCodeStyleSettings.WRAP_AS_NEEDED
+        commonSettings.RIGHT_MARGIN = 40
+        doTest(
+            "{a: \"short\", b: \"medium value\", c: \"another value\", d: \"end\"}",
+            """
+            {
+              a: "short", b: "medium value",
+              c: "another value", d: "end"
+            }
+            """.trimIndent()
+        )
+    }
+
+    fun testArrayWrapAsNeededShortFitsOnOneLine() {
+        mamlSettings.ARRAY_WRAPPING = CommonCodeStyleSettings.WRAP_AS_NEEDED
+        doTest(
+            "[1, 2, 3]",
+            "[1, 2, 3]"
+        )
+    }
+
+    fun testArrayWrapAsNeededLongWrapsAtMargin() {
+        mamlSettings.ARRAY_WRAPPING = CommonCodeStyleSettings.WRAP_AS_NEEDED
+        commonSettings.RIGHT_MARGIN = 30
+        doTest(
+            "[\"alpha\", \"bravo\", \"charlie\", \"delta\", \"echo\"]",
+            """
+            [
+              "alpha", "bravo", "charlie",
+              "delta", "echo"
+            ]
+            """.trimIndent()
+        )
+    }
+
+    fun testObjectChopDownShortFitsOnOneLine() {
+        mamlSettings.OBJECT_WRAPPING = CommonCodeStyleSettings.WRAP_AS_NEEDED or CommonCodeStyleSettings.WRAP_ON_EVERY_ITEM
+        commonSettings.SPACE_WITHIN_BRACES = true
+        doTest(
+            "{ run: \"pwd\" }",
+            "{ run: \"pwd\" }"
+        )
+    }
+
+    fun testObjectChopDownLongExpandsAll() {
+        mamlSettings.OBJECT_WRAPPING = CommonCodeStyleSettings.WRAP_AS_NEEDED or CommonCodeStyleSettings.WRAP_ON_EVERY_ITEM
+        commonSettings.RIGHT_MARGIN = 40
+        doTest(
+            "{a: \"short\", b: \"medium value\", c: \"another value\", d: \"end\"}",
+            """
+            {
+              a: "short",
+              b: "medium value",
+              c: "another value",
+              d: "end"
+            }
+            """.trimIndent()
+        )
+    }
+
+    fun testArrayChopDownShortFitsOnOneLine() {
+        mamlSettings.ARRAY_WRAPPING = CommonCodeStyleSettings.WRAP_AS_NEEDED or CommonCodeStyleSettings.WRAP_ON_EVERY_ITEM
+        doTest(
+            "[1, 2, 3]",
+            "[1, 2, 3]"
+        )
+    }
+
+    fun testArrayChopDownLongExpandsAll() {
+        mamlSettings.ARRAY_WRAPPING = CommonCodeStyleSettings.WRAP_AS_NEEDED or CommonCodeStyleSettings.WRAP_ON_EVERY_ITEM
+        commonSettings.RIGHT_MARGIN = 30
+        doTest(
+            "[\"alpha\", \"bravo\", \"charlie\", \"delta\", \"echo\"]",
+            """
+            [
+              "alpha",
+              "bravo",
+              "charlie",
+              "delta",
+              "echo"
             ]
             """.trimIndent()
         )
@@ -868,7 +984,9 @@ class MamlFormatterTest : BasePlatformTestCase() {
               } # inline after closing brace
 
               items: [ # inline after opening bracket
-                1, 2, 3 # inline after array items
+                1,
+                2,
+                3 # inline after array items
               ] # inline after closing bracket
 
               list: [
@@ -886,6 +1004,89 @@ class MamlFormatterTest : BasePlatformTestCase() {
             """.trimIndent()
         )
     }
+    fun testCommentsInObjectWithWrapAsNeeded() {
+        mamlSettings.OBJECT_WRAPPING = CommonCodeStyleSettings.WRAP_AS_NEEDED
+        commonSettings.SPACE_WITHIN_BRACES = true
+        doTest(
+            "{ # comment\na: 1, b: 2 }",
+            """
+            { # comment
+              a: 1, b: 2
+            }
+            """.trimIndent()
+        )
+    }
+
+    fun testCommentsInObjectWithChopDown() {
+        mamlSettings.OBJECT_WRAPPING = CommonCodeStyleSettings.WRAP_AS_NEEDED or CommonCodeStyleSettings.WRAP_ON_EVERY_ITEM
+        commonSettings.RIGHT_MARGIN = 30
+        doTest(
+            "{a: \"value one\", # inline\nb: \"value two\", c: \"value three\"}",
+            """
+            {
+              a: "value one", # inline
+              b: "value two",
+              c: "value three"
+            }
+            """.trimIndent()
+        )
+    }
+
+    fun testCommentsInArrayWithChopDown() {
+        mamlSettings.ARRAY_WRAPPING = CommonCodeStyleSettings.WRAP_AS_NEEDED or CommonCodeStyleSettings.WRAP_ON_EVERY_ITEM
+        commonSettings.RIGHT_MARGIN = 30
+        doTest(
+            "[\"alpha\", # inline\n\"bravo\", \"charlie\", \"delta\", \"echo\"]",
+            """
+            [
+              "alpha", # inline
+              "bravo",
+              "charlie",
+              "delta",
+              "echo"
+            ]
+            """.trimIndent()
+        )
+    }
+
+    fun testLineCommentInArrayWithWrapAsNeeded() {
+        mamlSettings.ARRAY_WRAPPING = CommonCodeStyleSettings.WRAP_AS_NEEDED
+        doTest(
+            """
+            [
+              # a comment
+              1, 2, 3
+            ]
+            """.trimIndent(),
+            """
+            [
+              # a comment
+              1, 2, 3
+            ]
+            """.trimIndent()
+        )
+    }
+
+    fun testLineCommentInObjectWithWrapAlways() {
+        mamlSettings.OBJECT_WRAPPING = CommonCodeStyleSettings.WRAP_ALWAYS
+        doTest(
+            """
+            {
+              # a comment
+              a: 1
+              b: 2
+            }
+            """.trimIndent(),
+            """
+            {
+              # a comment
+              a: 1
+              b: 2
+            }
+            """.trimIndent()
+        )
+    }
+
     // ===========================================
     // EDGE CASE TESTS
     // ===========================================
@@ -1155,7 +1356,7 @@ class MamlFormatterTest : BasePlatformTestCase() {
         )
     }
 
-    fun testWrappingWithoutRemovingCommasDoesntResultInOneItemPerLine() {
+    fun testWrappingWithCommasResultsInOneItemPerLine() {
         mamlSettings.SPACE_AFTER_COLON = true
         mamlSettings.SPACE_BEFORE_COLON = false
         commonSettings.SPACE_AFTER_COMMA = true
@@ -1169,10 +1370,15 @@ class MamlFormatterTest : BasePlatformTestCase() {
             """.trimIndent(),
             """
             {
-              name: "John Doe", age: 30, address: {
-                street: "123 Main St", city: "Springfield"
-              }, tags: [
-                "developer", "kotlin"
+              name: "John Doe",
+              age: 30,
+              address: {
+                street: "123 Main St",
+                city: "Springfield"
+              },
+              tags: [
+                "developer",
+                "kotlin"
               ]
             }
             """.trimIndent()
@@ -1187,7 +1393,8 @@ class MamlFormatterTest : BasePlatformTestCase() {
             "{\"simple-key\":\"value\",\"another\":123}",
             """
             {
-              simple-key: "value", another: 123
+              simple-key: "value",
+              another: 123
             }
             """.trimIndent()
         )
@@ -1203,15 +1410,24 @@ class MamlFormatterTest : BasePlatformTestCase() {
             "{a: \"b\", b: [1, 2, 3, {a: 1, c: 2}, [1,2,3] ]}",
             """
             {
-              a: "b", b: [
-                1, 2, 3, {
-                  a: 1, c: 2
-                }, [
-                  1, 2, 3
+              a: "b",
+              b: [
+                1,
+                2,
+                3,
+                {
+                  a: 1,
+                  c: 2
+                },
+                [
+                  1,
+                  2,
+                  3
                 ]
               ]
             }
             """.trimIndent()
         )
     }
+
 }

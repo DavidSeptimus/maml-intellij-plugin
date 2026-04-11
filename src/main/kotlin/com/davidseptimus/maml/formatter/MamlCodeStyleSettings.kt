@@ -33,11 +33,11 @@ class MamlCodeStyleSettings(container: CodeStyleSettings) :
 
     @JvmField
     @CommonCodeStyleSettings.WrapConstant
-    var OBJECT_WRAPPING: Int = CommonCodeStyleSettings.WRAP_ALWAYS
+    var OBJECT_WRAPPING: Int = CommonCodeStyleSettings.WRAP_AS_NEEDED or CommonCodeStyleSettings.WRAP_ON_EVERY_ITEM
 
     @JvmField
     @CommonCodeStyleSettings.WrapConstant
-    var ARRAY_WRAPPING: Int = CommonCodeStyleSettings.WRAP_ALWAYS
+    var ARRAY_WRAPPING: Int = CommonCodeStyleSettings.WRAP_AS_NEEDED or CommonCodeStyleSettings.WRAP_ON_EVERY_ITEM
 
     @JvmField
     var WRAP_MULTILINE_STRINGS: Boolean = false
