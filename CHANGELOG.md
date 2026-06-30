@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+### Removed
+
+- maximum IDE version cap.
+
 ## [0.7.3] - 2026-04-11
 
 - Changed default wrapping from "wrap always" to "chop down if long" to preserve short inline objects and arrays
